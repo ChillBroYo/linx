@@ -16,6 +16,7 @@
     "@emotion/native": "^10.0.27",
     "@expo/samples": "~3.0.3",
     "@expo/vector-icons": "^10.0.3",
+    "@ptomasroos/react-native-multi-slider": "^2.2.2",
     "@react-navigation/web": "^1.0.0-alpha.9",
     "expo": "^35.0.0",
     "expo-asset": "^7.0.0",
