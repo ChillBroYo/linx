@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
     Alert,
-    Button,
     Keyboard,
     KeyboardAvoidingView,
     SafeAreaView,
@@ -13,6 +12,7 @@ import {
     View
 } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { LinearGradient} from 'expo-linear-gradient';
 import styled from '@emotion/native'
 
@@ -29,29 +29,37 @@ export default function SignUp(props) {
     // screen 3
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
-    const [distance, setDistance] = useState(10);
+    const [distance, setDistance] = useState(25);
     // screen 4
     const [birthDay, setBirthDay] = useState('');
     const [birthMonth, setBirthMonth] = useState('');
     const [birthYear, setBirthYear] = useState('');
-    const [ageRange, setAgeRange] = useState(new Array(2));
+    const [birthday, setBirthday] = useState('');
+    const [ageRange, setAgeRange] = useState([23, 29]);
     // screen 5
     const [gender, setGender] = useState('');
     const [connectWith, setConnectWith] = useState('');
 
     function onBack() {
-        if (page == 1) {
-            props.navigation.navigate('SignIn');
-        }
-        else {
-            setPage(page - 1);
-        }
+        page == 1 ? onBackToLogin() : setPage(page - 1);
+    }
+
+    function onBackToLogin() {
+        props.navigation.navigate('SignIn');
     }
 
     function onContinue() {
         // if (page == 1) {
         //     if (!username) {
         //         Alert.alert('Username is empty');
+        //         return;
+        //     }
+        //     else if (!email) {
+        //         Alert.alert('Email is empty');
+        //         return;
+        //     }
+        //     else if (!password || !passwordRetype) {
+        //         Alert.alert('Password is empty');
         //         return;
         //     }
         //     else if (password != passwordRetype) {
@@ -61,6 +69,10 @@ export default function SignUp(props) {
         //     else {
         //         if (!validate()) {
         //             Alert.alert('Username is already taken');
+        //             return;
+        //         }
+        //         if (!validate()) {
+        //             Alert.alert('Email is already taken');
         //             return;
         //         }
         //     }
@@ -78,23 +90,34 @@ export default function SignUp(props) {
         //     }
         // }
 
-        if (page == 1) {
-            fetch('https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/sign-in/?username=sam&password=123')
-            .then(res => {
-                console.log(res);
-                return res.json();
-            })
-            .then(json => {
-                console.log(json);
-                return json;
-            })
-            .catch(err => {
-                console.log('ERROR:', err);
-                console.log(JSON.stringify(err));
-            })
-        }
-
         setPage(page + 1);
+    }
+
+    function validate() {
+        // TODO: fill in later
+        return true;
+    }
+
+    function onDone() {
+        let email = `email=${email}`;
+        let username = `username=${username}`;
+        let password = `password=${password}`;
+        let securityLevel = `security_level=user`;
+        let info = `info=`;
+
+        fetch(`http://192.168.1.15:8080/sign_up/?${email}&${username}&${password}&${securityLevel}&${info}`)
+        .then(res => {
+            console.log(res);
+            return res.json();
+        })
+        .then(json => {
+            console.log(json);
+            return json;
+        })
+        .catch(err => {
+            console.log('ERROR:', err);
+            console.log(JSON.stringify(err));
+        });
     }
 
     let view;
@@ -133,9 +156,11 @@ export default function SignUp(props) {
             birthDay={birthDay}
             birthMonth={birthMonth}
             birthYear={birthYear}
+            ageRange={ageRange}
             setBirthDay={setBirthDay}
             setBirthMonth={setBirthMonth}
             setBirthYear={setBirthYear}
+            setAgeRange={setAgeRange}
         />;
     }
     else if (page == 5) {
@@ -154,14 +179,18 @@ export default function SignUp(props) {
         // SafeAreaView automatically adjusts for the notch on iOS
         <Container>
             <LinearGradient colors={['rgba(254, 241, 2, 0)', 'rgba(254, 241, 2, 0.1)']} style={{flex: 1}}>
-                <KeyboardAvoidingView behavior='height'>
-                    <SafeAreaView>
+                <KeyboardAvoidingView behavior='height' style={{flex: 1}}>
+                    <SafeAreaView style={{flex: 1}}>
                         <ProgressBar page={page} />
-                        <Column>
-                            <BackArrow onPress={onBack}>&#10094;</BackArrow>
+                        <View style={{flex: 1}}>
+                            <Back onPress={onBack}>&#10094;</Back>
                             {view}
-                            <Button onPress={onContinue} title='Continue' style={styles.continue} />
-                        </Column>
+                            <TouchableWithoutFeedback onPress={onContinue}>
+                                <Continue>
+                                    <Text style={{color: 'white', fontSize: 20, fontWeight: '600', lineHeight: 27}}>Continue</Text>
+                                </Continue>
+                            </TouchableWithoutFeedback>
+                        </View>
                     </SafeAreaView>
                 </KeyboardAvoidingView>
             </LinearGradient>
@@ -171,10 +200,10 @@ export default function SignUp(props) {
 
 function SignUpOne(props) {
     return (
-        <View>
-            <Text style={styles.header}>Sign up</Text>
-            <View style={styles.form}>
-                <TextInput
+        <SignUpWrapper>
+            <SignUpHeader>Sign up</SignUpHeader>
+            <SignUpFormWrapper>
+                <SignUpFormField
                     autoFocus
                     name='username'
                     placeholder='Username'
@@ -182,7 +211,7 @@ function SignUpOne(props) {
                     onChangeText={username => props.setUsername(username)}
                     style={styles.input}
                 />
-                <TextInput
+                <SignUpFormField
                     keyboardType='email-address'
                     name='email'
                     placeholder='Email'
@@ -190,7 +219,7 @@ function SignUpOne(props) {
                     onChangeText={email => props.setEmail(email)}
                     style={styles.input}
                 />
-                <TextInput
+                <SignUpFormField
                     secureTextEntry
                     name='password'
                     placeholder='Password'
@@ -198,7 +227,7 @@ function SignUpOne(props) {
                     onChangeText={password => props.setPassword(password)}
                     style={styles.input}
                 />
-                <TextInput
+                <SignUpFormField
                     secureTextEntry
                     name='passwordRetype'
                     placeholder='Retype Password'
@@ -206,17 +235,17 @@ function SignUpOne(props) {
                     onChangeText={password => props.setPasswordRetype(password)}
                     style={styles.input}
                 />
-            </View>
-        </View>
+            </SignUpFormWrapper>
+        </SignUpWrapper>
     );
 }
 
 function SignUpTwo(props) {
     return (
-        <View>
-            <Text style={styles.header}>My name is</Text>
-            <View style={styles.form}>
-                <TextInput
+        <SignUpWrapper>
+            <SignUpHeader>My name is</SignUpHeader>
+            <SignUpFormWrapper>
+                <SignUpFormField
                     autoFocus
                     name='fname'
                     placeholder='First Name'
@@ -224,52 +253,68 @@ function SignUpTwo(props) {
                     onChangeText={fname => props.setFname(fname)}
                     style={styles.input}
                 />
-                <TextInput
+                <SignUpFormField
                     name='lname'
                     placeholder='Last Name'
                     value={props.lname}
                     onChangeText={lname => props.setLname(lname)}
                     style={styles.input}
                 />
-            </View>
-        </View>
+            </SignUpFormWrapper>
+        </SignUpWrapper>
     );
 }
 
 function SignUpThree(props) {
     return (
-        <View>
-            <Text style={styles.header}>I live in</Text>
-            <View style={styles.form}>
-                <TextInput
+        <SignUpWrapper>
+            <SignUpHeader>I live in</SignUpHeader>
+            <SignUpFormWrapper>
+                <SignUpFormField
                     autoFocus
                     placeholder='City'
                     value={props.city}
                     onChangeText={city => props.setCity(city)}
                     style={styles.input}
                 />
-                <TextInput
+                <SignUpFormField
                     placeholder='State'
                     value={props.state}
                     onChangeText={state => props.setState(state)}
                     style={styles.input}
                 />
-                <Text>Connect with people who are less than {props.distance} miles away</Text>
+                <SignUpText>
+                    Connect with people who are less than <Text style={{color: PURPLE, fontWeight: 700}}>{props.distance}</Text> miles away
+                </SignUpText>
+                <MultiSlider
+                    min={5}
+                    max={50}
+                    value={[props.distance]}
+                    onValuesChange={distance => props.setDistance(parseInt(distance))}
+                    selectedStyle={{backgroundColor: PURPLE}}
+                    trackStyle={{backgroundColor: PURPLE}}
+                />
+
+                {/*
                 <Slider
                     minimumValue={5}
                     maximumValue={50}
-                    step={5}
                     value={props.distance}
-                    onSlidingComplete={distance => props.setDistance(parseInt(distance))}
+                    onValueChange={distance => props.setDistance(parseInt(distance))}
+                    minimumTrackTintColor={PURPLE}
+                    maximumTrackTintColor={PURPLE}
+                    thumbTintColor={PURPLE}
+                    style={{width: '100%'}}
                 />
-            </View>
-        </View>
+                */}
+            </SignUpFormWrapper>
+        </SignUpWrapper>
     );
 }
 
 function SignUpFour(props) {
     return (
-        <View>
+        <SignUpWrapper>
             <Text>My birthday is</Text>
             <View style={styles.form}>
                 <TextInput
@@ -294,31 +339,43 @@ function SignUpFour(props) {
                     value={props.birthYear}
                     onChangeText={year => props.setBirthYear(year)}
                 />
-                <Text>Connect with people who are between AGE_RANGE_LOW and AGE_RANGE_HIGH years old</Text>
+                <SignUpText>
+                    Connect with people who are between <Text>{props.ageRange[0]}</Text> and <Text>{props.ageRange[1]}</Text> years old
+                </SignUpText>
+                <MultiSlider
+                    min={21}
+                    max={40}
+                    values={props.ageRange}
+                    onValuesChange={ageRange => props.setAgeRange(ageRange)}
+                    selectedStyle={{backgroundColor: PURPLE}}
+                    trackStyle={{backgroundColor: PURPLE}}
+                />
             </View>
-        </View>
+        </SignUpWrapper>
     );
 }
 
 function SignUpFive(props) {
     return (
-        <View>
+        <SignUpWrapper>
 
-        </View>
+        </SignUpWrapper>
     );
 }
 
 function SignUpSix(props) {
     return (
-        <View>
+        <SignUpWrapper>
 
-        </View>
+        </SignUpWrapper>
     );
 }
 
 
-// Sign Up Colors
+// constant css values
 const PURPLE = '#8002FE'
+const INPUT_HEIGHT = '44px';
+const INPUT_WIDTH = '252px';
 
 const Container = styled.View`
     flex: 1;
@@ -333,55 +390,62 @@ const Row = styled.View`
     display: flex;
 `;
 
-const BackArrow = styled.Text`
+const Back = styled.Text`
     color: #1B1B1B;
     font-size: 36;
     font-weight: 900;
     margin: 12px 30px 0;
 `;
 
+const Continue = styled.View`
+    background: ${props => props.page < 6 ? '#8D99AE' : '#439E73'};
+    align-items: center;
+    justify-content: center;
+    height: 56px;
+    margin-top: 16px;
+`;
+
 const ProgressBar = styled.View(props => ({
     backgroundColor: PURPLE,
     height: 11,
-    width: (props.page / 6) * 100 + '%',
+    width: `${(props.page / 6) * 100}%`,
 }));
 
-const styles = StyleSheet.create({
-    back: {
-        color: '#1B1B1B',
-        fontSize: 36,
-        fontWeight: '900',
-    },
-    continue: {
-        backgroundColor: '#8D99AE',
-        marginBottom: 'auto',
-        marginTop: 'auto',
-        width: '100%'
-    },
-    form: {
-        flexGrow: 1,
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    header: {
-        color: '#8002FE',
-        fontSize: 30,
-        lineHeight: 41,
-        marginLeft: 30,
-        marginRight: 30,
-        marginBottom: 16,
-        marginTop: 16,
-    },
-    input: {
-        borderColor: '#1B1B1B',
-        borderStyle: 'solid',
-        borderBottomWidth: 1,
-        marginBottom: 10,
-        padding: 10,
-        height: 44,
-        width: 252,
-        fontSize: 20,
-        fontStyle: 'italic',
-    },
-});
+const SignUpWrapper = styled.View`
+    flex: 1;
+    margin: 0 60px;
+`;
+
+const SignUpHeader = styled.Text`
+    color: ${PURPLE};
+    fontSize: 30px;
+    lineHeight: 41px;
+    margin: 16px 0 32px;
+`;
+
+const SignUpFormWrapper = styled.View`
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+`;
+
+const SignUpFormField = styled.TextInput`
+    border-color: #1B1B1B;
+    border-style: solid;
+    border-bottom-width: 1px;
+    font-size: 20px;
+    font-style: ${props => props.value ? 'normal' : 'italic'};
+    margin-bottom: 10px;
+    padding: 10px;
+    height: ${INPUT_HEIGHT};
+    width: 100%;
+`;
+
+const SignUpText = styled.Text`
+    color: black;
+    font-size: 18px;
+    line-height: 25px;
+    margin-top: 20px;
+`;
+
+const styles = StyleSheet.create({});
