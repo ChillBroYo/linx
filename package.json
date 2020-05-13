@@ -12,6 +12,8 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@emotion/core": "^10.0.28",
+    "@emotion/native": "^10.0.27",
     "@expo/samples": "~3.0.3",
     "@expo/vector-icons": "^10.0.3",
     "@react-navigation/web": "^1.0.0-alpha.9",
@@ -19,6 +21,7 @@
     "expo-asset": "^7.0.0",
     "expo-constants": "^7.0.0",
     "expo-font": "^7.0.0",
+    "expo-linear-gradient": "^8.1.0",
     "expo-web-browser": "^7.0.0",
     "flatlist": "0.0.0",
     "mobiscroll": "^3.0.0-beta6",
@@ -35,6 +38,7 @@
     "rollup": "^1.27.2"
   },
   "devDependencies": {
+    "babel-plugin-emotion": "^10.0.33",
     "babel-preset-expo": "^7.0.0",
     "jest-expo": "^35.0.0"
   },
