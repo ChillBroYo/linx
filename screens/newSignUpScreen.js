@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import {
     Alert,
+    FlatList,
     Keyboard,
     KeyboardAvoidingView,
     SafeAreaView,
-    Slider,
     StyleSheet,
+    Switch,
     Text,
     TextInput,
     TouchableWithoutFeedback,
@@ -31,14 +32,15 @@ export default function SignUp(props) {
     const [state, setState] = useState('');
     const [distance, setDistance] = useState(25);
     // screen 4
-    const [birthDay, setBirthDay] = useState('');
-    const [birthMonth, setBirthMonth] = useState('');
-    const [birthYear, setBirthYear] = useState('');
     const [birthday, setBirthday] = useState('');
     const [ageRange, setAgeRange] = useState([23, 29]);
     // screen 5
     const [gender, setGender] = useState('');
-    const [connectWith, setConnectWith] = useState('');
+    const [sameGender, setSameGender] = useState(false);
+    // screen 6
+    const interests = ['art', 'food', 'nature', 'sports'];
+    const [selectedInterests, setSelectedInterests] = useState(new Set());
+    const [sameInterests, setSameInterests] = useState(false);
 
     function onBack() {
         page == 1 ? onBackToLogin() : setPage(page - 1);
@@ -99,13 +101,26 @@ export default function SignUp(props) {
     }
 
     function onDone() {
-        let email = `email=${email}`;
-        let username = `username=${username}`;
-        let password = `password=${password}`;
-        let securityLevel = `security_level=user`;
-        let info = `info=`;
+        let emailData = `email=${email}`;
+        let usernameData = `username=${username}`;
+        let passwordData = `password=${password}`;
+        let securityLevelData = `security_level=user`;
+        let infoData = `info={
+            name: ${{
+                first: fname,
+                last: lname
+            }},
+            city: ${city},
+            state: ${state},
+            distance: ${distance},
+            birthday: ${birthday},
+            ageRange: ${ageRange},
+            gender: ${gender},
+            sameGender: ${sameGender},
+            interests: ${[...selectedInterests]},
+        }`;
 
-        fetch(`http://192.168.1.15:8080/sign_up/?${email}&${username}&${password}&${securityLevel}&${info}`)
+        fetch(`http://192.168.1.15:8080/sign_up/?${emailData}&${usernameData}&${passwordData}&${securityLevelData}&${infoData}`)
         .then(res => {
             console.log(res);
             return res.json();
@@ -153,26 +168,28 @@ export default function SignUp(props) {
     }
     else if (page == 4) {
         view = <SignUpFour
-            birthDay={birthDay}
-            birthMonth={birthMonth}
-            birthYear={birthYear}
+            birthday={birthday}
             ageRange={ageRange}
-            setBirthDay={setBirthDay}
-            setBirthMonth={setBirthMonth}
-            setBirthYear={setBirthYear}
+            setBirthday={setBirthday}
             setAgeRange={setAgeRange}
         />;
     }
     else if (page == 5) {
         view = <SignUpFive
             gender={gender}
-            connectWith={connectWith}
+            sameGender={sameGender}
             setGender={setGender}
-            setConnectWith={setConnectWith}
+            setSameGender={setSameGender}
         />;
     }
     else if (page == 6) {
-        view = <SignUpSix />;
+        view = <SignUpSix
+            interests={interests}
+            selectedInterests={selectedInterests}
+            sameInterests={sameInterests}
+            setSelectedInterests={setSelectedInterests}
+            setSameInterests={setSameInterests}
+        />;
     }
 
     return (
@@ -185,7 +202,7 @@ export default function SignUp(props) {
                         <View style={{flex: 1}}>
                             <Back onPress={onBack}>&#10094;</Back>
                             {view}
-                            <TouchableWithoutFeedback onPress={onContinue}>
+                            <TouchableWithoutFeedback onPress={page < 6 ? onContinue : onDone}>
                                 <Continue>
                                     <Text style={{color: 'white', fontSize: 20, fontWeight: '600', lineHeight: 27}}>Continue</Text>
                                 </Continue>
@@ -203,15 +220,14 @@ function SignUpOne(props) {
         <SignUpWrapper>
             <SignUpHeader>Sign up</SignUpHeader>
             <SignUpFormWrapper>
-                <SignUpFormField
-                    autoFocus
+                <SignUpTextInput
                     name='username'
                     placeholder='Username'
                     value={props.username}
                     onChangeText={username => props.setUsername(username)}
                     style={styles.input}
                 />
-                <SignUpFormField
+                <SignUpTextInput
                     keyboardType='email-address'
                     name='email'
                     placeholder='Email'
@@ -219,7 +235,7 @@ function SignUpOne(props) {
                     onChangeText={email => props.setEmail(email)}
                     style={styles.input}
                 />
-                <SignUpFormField
+                <SignUpTextInput
                     secureTextEntry
                     name='password'
                     placeholder='Password'
@@ -227,7 +243,7 @@ function SignUpOne(props) {
                     onChangeText={password => props.setPassword(password)}
                     style={styles.input}
                 />
-                <SignUpFormField
+                <SignUpTextInput
                     secureTextEntry
                     name='passwordRetype'
                     placeholder='Retype Password'
@@ -245,15 +261,14 @@ function SignUpTwo(props) {
         <SignUpWrapper>
             <SignUpHeader>My name is</SignUpHeader>
             <SignUpFormWrapper>
-                <SignUpFormField
-                    autoFocus
+                <SignUpTextInput
                     name='fname'
                     placeholder='First Name'
                     value={props.fname}
                     onChangeText={fname => props.setFname(fname)}
                     style={styles.input}
                 />
-                <SignUpFormField
+                <SignUpTextInput
                     name='lname'
                     placeholder='Last Name'
                     value={props.lname}
@@ -270,43 +285,29 @@ function SignUpThree(props) {
         <SignUpWrapper>
             <SignUpHeader>I live in</SignUpHeader>
             <SignUpFormWrapper>
-                <SignUpFormField
-                    autoFocus
+                <SignUpTextInput
                     placeholder='City'
                     value={props.city}
                     onChangeText={city => props.setCity(city)}
                     style={styles.input}
                 />
-                <SignUpFormField
+                <SignUpTextInput
                     placeholder='State'
                     value={props.state}
                     onChangeText={state => props.setState(state)}
                     style={styles.input}
                 />
                 <SignUpText>
-                    Connect with people who are less than <Text style={{color: PURPLE, fontWeight: 700}}>{props.distance}</Text> miles away
+                    Connect with people who are less than <SignUpTextValue>{props.distance}</SignUpTextValue> miles away
                 </SignUpText>
                 <MultiSlider
                     min={5}
                     max={50}
-                    value={[props.distance]}
+                    values={[props.distance]}
                     onValuesChange={distance => props.setDistance(parseInt(distance))}
                     selectedStyle={{backgroundColor: PURPLE}}
                     trackStyle={{backgroundColor: PURPLE}}
                 />
-
-                {/*
-                <Slider
-                    minimumValue={5}
-                    maximumValue={50}
-                    value={props.distance}
-                    onValueChange={distance => props.setDistance(parseInt(distance))}
-                    minimumTrackTintColor={PURPLE}
-                    maximumTrackTintColor={PURPLE}
-                    thumbTintColor={PURPLE}
-                    style={{width: '100%'}}
-                />
-                */}
             </SignUpFormWrapper>
         </SignUpWrapper>
     );
@@ -315,42 +316,28 @@ function SignUpThree(props) {
 function SignUpFour(props) {
     return (
         <SignUpWrapper>
-            <Text>My birthday is</Text>
-            <View style={styles.form}>
-                <TextInput
-                    autoFocus
+            <SignUpHeader>My birthday is</SignUpHeader>
+            <SignUpFormWrapper>
+                <TextInputMask
                     keyboardType='number-pad'
-                    maxLength={2}
-                    placeholder='MM'
-                    value={props.birthMonth}
-                    onChangeText={month => props.setBirthMonth(month)}
-                />
-                <TextInput
-                    keyboardType='number-pad'
-                    maxLength={2}
-                    placeholder='DD'
-                    value={props.birthDay}
-                    onChangeText={day => props.setBirthDay(day)}
-                />
-                <TextInput
-                    keyboardType='number-pad'
-                    maxLength={4}
-                    placeholder='YYYY'
-                    value={props.birthYear}
-                    onChangeText={year => props.setBirthYear(year)}
+                    type='datetime'
+                    options={{ format:'MM / DD / YYYY' }}
+                    placeholder='MM / DD / YYYY'
+                    value={props.birthday}
+                    onChangeText={props.setBirthday}
                 />
                 <SignUpText>
-                    Connect with people who are between <Text>{props.ageRange[0]}</Text> and <Text>{props.ageRange[1]}</Text> years old
+                    Connect with people who are between <SignUpTextValue>{props.ageRange[0]}</SignUpTextValue> and <SignUpTextValue>{props.ageRange[1]}</SignUpTextValue> years old
                 </SignUpText>
                 <MultiSlider
                     min={21}
                     max={40}
                     values={props.ageRange}
-                    onValuesChange={ageRange => props.setAgeRange(ageRange)}
+                    onValuesChange={ageRange => props.setAgeRange(ageRange.map(age => parseInt(age)))}
                     selectedStyle={{backgroundColor: PURPLE}}
                     trackStyle={{backgroundColor: PURPLE}}
                 />
-            </View>
+            </SignUpFormWrapper>
         </SignUpWrapper>
     );
 }
@@ -358,15 +345,82 @@ function SignUpFour(props) {
 function SignUpFive(props) {
     return (
         <SignUpWrapper>
-
+            <SignUpHeader>I'm a</SignUpHeader>
+            <SignUpFormWrapper>
+                <TouchableWithoutFeedback onPress={() => props.setGender('woman')}>
+                    <PillButton selected={props.gender == 'woman'}>
+                        <PillText selected={props.gender == 'woman'}>Woman</PillText>
+                    </PillButton>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={() => props.setGender('man')}>
+                    <PillButton selected={props.gender == 'man'}>
+                        <PillText selected={props.gender == 'man'}>Man</PillText>
+                    </PillButton>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={() => props.setGender('other')}>
+                    <PillButton selected={props.gender == 'other'}>
+                        <PillText selected={props.gender == 'other'}>Other</PillText>
+                    </PillButton>
+                </TouchableWithoutFeedback>
+                <SignUpText>Connect only with the same gender as me</SignUpText>
+                <Toggle
+                    value={props.sameGender}
+                    onValueChange={sameGender => props.setSameGender(sameGender)}
+                    trackColor={{
+                        false: '#8D99AE',
+                        true: PURPLE
+                    }}
+                />
+            </SignUpFormWrapper>
         </SignUpWrapper>
     );
 }
 
 function SignUpSix(props) {
+    // FlatList renderItem passes { index: <i>, item: <data[i]> }
+    function renderInterest({ item: interest }) {
+        let isSelected = props.selectedInterests.has(interest);
+
+        return (
+            <TouchableWithoutFeedback onPress={() => toggleInterest(interest)}>
+                <PillButton selected={isSelected}>
+                    <PillText selected={isSelected}>{interest}</PillText>
+                </PillButton>
+            </TouchableWithoutFeedback>
+        );
+    }
+
+    function toggleInterest(interest) {
+        let nextInterests = new Set([...props.selectedInterests]);
+        console.log({
+            selectedInterests: props.selectedInterests,
+            nextInterests
+        });
+        props.selectedInterests.has(interest) ? nextInterests.delete(interest) : nextInterests.add(interest);
+        props.setSelectedInterests(nextInterests);
+    }
+
     return (
         <SignUpWrapper>
-
+            <SignUpHeader>I like</SignUpHeader>
+            <SignUpFormWrapper wide={true}>
+                <FlatList
+                    data={props.interests}
+                    extraData={props.selectedInterests}
+                    horizontal={false}
+                    numColumns={2}
+                    renderItem={renderInterest}
+                />
+                <SignUpText>Connect only with people that like the same things as me</SignUpText>
+                <Toggle
+                    value={props.sameInterests}
+                    onValueChange={sameInterests => props.setSameInterests(sameInterests)}
+                    trackColor={{
+                        false: '#8D99AE',
+                        true: PURPLE
+                    }}
+                />
+            </SignUpFormWrapper>
         </SignUpWrapper>
     );
 }
@@ -405,6 +459,24 @@ const Continue = styled.View`
     margin-top: 16px;
 `;
 
+const PillButton = styled.View`
+    align-items: center;
+    justify-content: center;
+    background: ${props => props.selected ? PURPLE : 'transparent'};
+    border-color: ${props => props.selected ? PURPLE : '#1B1B1B'};
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 100px;
+    height: 42px;
+    width: 141px;
+    margin: 0 11px 23px;
+`;
+
+const PillText = styled.Text(props => ({
+    color: props.selected ? 'white' : '#1B1B1B',
+    fontWeight: props.selected ? '700' : '400'
+}));
+
 const ProgressBar = styled.View(props => ({
     backgroundColor: PURPLE,
     height: 11,
@@ -413,23 +485,23 @@ const ProgressBar = styled.View(props => ({
 
 const SignUpWrapper = styled.View`
     flex: 1;
-    margin: 0 60px;
 `;
 
 const SignUpHeader = styled.Text`
     color: ${PURPLE};
     fontSize: 30px;
     lineHeight: 41px;
-    margin: 16px 0 32px;
+    margin: 16px 60px 32px;
 `;
 
 const SignUpFormWrapper = styled.View`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin: ${props => props.wide ? '0 40px' : '0 60px'};
 `;
 
-const SignUpFormField = styled.TextInput`
+const SignUpTextInput = styled.TextInput`
     border-color: #1B1B1B;
     border-style: solid;
     border-bottom-width: 1px;
@@ -443,9 +515,21 @@ const SignUpFormField = styled.TextInput`
 
 const SignUpText = styled.Text`
     color: black;
-    font-size: 18px;
+    font-size: 20px;
     line-height: 25px;
     margin-top: 20px;
+    width: 252px;
+`;
+
+const SignUpTextValue = styled.Text`
+    color: ${PURPLE};
+    font-weight: 700;
+`;
+
+const Toggle = styled.Switch`
+    margin-top: 16px;
+    height: 36px;
+    width: 80px;
 `;
 
 const styles = StyleSheet.create({});
