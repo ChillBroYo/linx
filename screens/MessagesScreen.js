@@ -7,21 +7,28 @@ export default class App extends Component {
     super(props);
     
     this.state = {
-      response : null
+      response : "yellow"
     };
   }
 
-  async componentDidMount() {
-    
-      console.log('bambi')
-      fetch('https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/get-convo/?uid=1&oid=2&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=')
-        .then(response => response.json())
-        .then(data => console.log(data));
-      // this.response = response.messages;
-      // this.setState({response: this.response})
-      // console.log('bambi', this.response)
-    
-    
+  componentDidMount() {
+    // try {
+    //   const response = await axios('https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/get-convo/?uid=1&oid=2&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=');
+
+    // }
+    fetch('https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/get-convo/?uid=1&oid=2&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=')
+      .then(response => {
+          console.log(response);
+          return response.json();
+      })
+      .then(json => {
+          console.log(json);
+          this.setState({response: json.messages[1]})
+          return json;
+      })
+      .catch(error => {
+          console.log(error);
+      });
     
   }
   
@@ -29,7 +36,7 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Messages</Text>
+        <Text>Messages {this.state.response}</Text>
 
         {/*<Text style={{ fontWeight: 'bold', fontSize: 40 }}>
         <Text style={{ color: 'red' }}>Linx</Text>
@@ -50,7 +57,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ecf0f1',
+    backgroundColor: 'yellow',
   },
   input: {
     width: 200,

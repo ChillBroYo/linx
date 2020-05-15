@@ -1,6 +1,7 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
+    "webdev": "webpack-dev-server --mode development --open",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
@@ -14,6 +15,7 @@
   "dependencies": {
     "@expo/samples": "~3.0.3",
     "@expo/vector-icons": "^10.0.3",
+    "@expo/webpack-config": "^0.12.6",
     "@react-navigation/web": "^1.0.0-alpha.9",
     "axios": "^0.19.2",
     "expo": "^35.0.0",
