@@ -102,5 +102,6 @@ const Button = styled.View`
 const ButtonText = styled.Text`
     color: ${props => props.colored ? GREEN : 'white'};
     font-size: 20px;
+    font-weight: 600;
     line-height: 27px;
 `;

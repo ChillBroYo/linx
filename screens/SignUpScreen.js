@@ -330,8 +330,8 @@ function SignUpFour(props) {
                     Connect with people who are between <SignUpTextValue>{props.ageRange[0]}</SignUpTextValue> and <SignUpTextValue>{props.ageRange[1]}</SignUpTextValue> years old
                 </SignUpText>
                 <MultiSlider
-                    min={21}
-                    max={40}
+                    min={18}
+                    max={99}
                     values={props.ageRange}
                     onValuesChange={ageRange => props.setAgeRange(ageRange.map(age => parseInt(age)))}
                     selectedStyle={{backgroundColor: PURPLE}}
