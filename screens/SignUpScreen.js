@@ -105,34 +105,36 @@ export default function SignUp(props) {
         let usernameData = `username=${username}`;
         let passwordData = `password=${password}`;
         let securityLevelData = `security_level=user`;
-        let infoData = `info={
-            name: ${{
+        let info = {
+            name: {
                 first: fname,
                 last: lname
-            }},
-            city: ${city},
-            state: ${state},
-            distance: ${distance},
-            birthday: ${birthday},
-            ageRange: ${ageRange},
-            gender: ${gender},
-            sameGender: ${sameGender},
-            interests: ${[...selectedInterests]},
-        }`;
+            },
+            city,
+            state,
+            distance,
+            birthday,
+            ageRange,
+            gender,
+            sameGender,
+            interests: [...selectedInterests],
+            sameInterests,
+        };
+        let infoData = `info=${JSON.stringify(info)}`;
 
         fetch(`http://192.168.1.15:8080/sign_up/?${emailData}&${usernameData}&${passwordData}&${securityLevelData}&${infoData}`)
-        .then(res => {
-            console.log(res);
-            return res.json();
-        })
-        .then(json => {
-            console.log(json);
-            return json;
-        })
-        .catch(err => {
-            console.log('ERROR:', err);
-            console.log(JSON.stringify(err));
-        });
+            .then(res => {
+                console.log(res);
+                return res.json();
+            })
+            .then(json => {
+                console.log(json);
+                return json;
+            })
+            .catch(err => {
+                console.log('ERROR:', err);
+                console.log(JSON.stringify(err));
+            });
     }
 
     let view;
