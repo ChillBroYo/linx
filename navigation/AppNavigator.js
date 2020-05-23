@@ -14,5 +14,6 @@ export default createAppContainer(
     SignIn: SignIn,
     SignUp: SignUp,
     Main: MainTabNavigator,
+    // MessagesScreen: MessagesScreen, // put here to make bottom nav show
   })
 );

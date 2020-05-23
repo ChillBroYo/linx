@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Text,  Alert, Button, TextInput, View, StyleSheet } from 'react-native';
+import {LinearGradient} from 'expo-linear-gradient';
 import axios from 'axios';
 
 export default class App extends Component {
@@ -51,20 +52,24 @@ export default class App extends Component {
   
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.heading}>Messages</Text>
-        <Text>
-          {this.state.otherUsers}
-        </Text>
-        {/*<Text style={{ fontWeight: 'bold', fontSize: 40 }}>
-        <Text style={{ color: 'red' }}>Linx</Text>
-        </Text>
-        <View style={{ width: 50, height: 50 }} />
-        <Button
-          title={'Logout'}
-          style={styles.input}
-          onPress={this.onLogin.bind(this)}
-        />*/}
+      <View>
+        <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
+          <View style={styles.container}>
+            <Text style={styles.heading}>Messages</Text>
+            <Text>
+              {this.state.otherUsers}
+            </Text>
+            {/*<Text style={{ fontWeight: 'bold', fontSize: 40 }}>
+            <Text style={{ color: 'red' }}>Linx</Text>
+            </Text>
+            <View style={{ width: 50, height: 50 }} />
+            <Button
+              title={'Logout'}
+              style={styles.input}
+              onPress={this.onLogin.bind(this)}
+            />*/}
+          </View>
+        </LinearGradient>
       </View>
     );
   }
@@ -75,7 +80,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center', // flexDirection is 'column' by default
-    backgroundColor: 'yellow',
     paddingTop: "25%",
   },
   heading: {
@@ -83,13 +87,13 @@ const styles = StyleSheet.create({
     color: '#454759',
     letterSpacing: 1,
   },
-  input: {
-    width: 200,
-    height: 44,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: 'black',
-    marginBottom: 10,
-  },
+  // input: {
+  //   width: 200,
+  //   height: 44,
+  //   padding: 10,
+  //   borderWidth: 1,
+  //   borderColor: 'black',
+  //   marginBottom: 10,
+  // },
 });
 
