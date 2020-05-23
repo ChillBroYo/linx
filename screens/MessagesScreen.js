@@ -1,52 +1,54 @@
 import React, { Component } from 'react';
 import { Text,  Alert, Button, TextInput, View, StyleSheet } from 'react-native';
-import {LinearGradient} from 'expo-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      otherUsers : []
+      conversationsObj : {},
+      isRead : false,
     };
     
   }
 
   async componentDidMount() {
     try {
-      const response = await axios('https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/messages/?uid=1&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=');
-      const otherUsers = response.data.users;
-      this.setState({otherUsers: Object.keys(otherUsers)})
-      console.log('bambi', Object.keys(otherUsers), 'hi', otherUsers)
+      const responseUsers = await axios('https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/messages/?uid=1&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=');
+      const otherUsers = responseUsers.data.users;
 
+      const responseMessages = await axios('https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/get-convo/?uid=1&oid=2&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=');
+      const messages = responseMessages.data.messages;
+
+      const conversations = {}
+      
+      for (const user in otherUsers) {
+        conversations[user] = messages[0].message; // hack; need restructure get-convo json
+      }
+      
+      this.setState({conversationsObj: conversations});
     }
     catch(error) {
-      alert(`An error occurred with obtaining the other users: ${error}`);
-    }
+      alert(`An error occurred: ${error}`);
+    }    
+  }
 
-    try {
-      const response = await axios('https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/get-convo/?uid=1&oid=2&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=');
-      const mostRecentMessage = response.data.messages[0];
-
+  mapConversations() {
+    const convoList = [];
+    const convos = this.state.conversationsObj;
+    for (const user in convos) {
+      convoList.push(
+        <View key={user} style={styles.convoItem}>
+          <View style={styles.userIcon}></View>
+          <View style={styles.convoText}>
+            <Text>{user}</Text>
+            <Text>{convos[user]}</Text>
+          </View>
+        </View>
+      )
     }
-    catch(error) {
-      alert(`An error occurred with getting the messages: ${error}`);
-    }
-
-    // fetch('https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/get-convo/?uid=1&oid=2&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=')
-    //   .then(response => {
-    //       console.log('response', response);
-    //       return response.json();
-    //   })
-    //   .then(json => {
-    //       console.log('json show', json);
-    //       this.setState({response: json.messages[1]})
-    //       return json;
-    //   })
-    //   .catch(error => {
-    //       console.log(error);
-    //   });
-    
+    return convoList;
   }
   
   
@@ -56,13 +58,8 @@ export default class App extends Component {
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
           <View style={styles.container}>
             <Text style={styles.heading}>Messages</Text>
-            <Text>
-              {this.state.otherUsers}
-            </Text>
-            {/*<Text style={{ fontWeight: 'bold', fontSize: 40 }}>
-            <Text style={{ color: 'red' }}>Linx</Text>
-            </Text>
-            <View style={{ width: 50, height: 50 }} />
+            {this.mapConversations()}
+            {/*
             <Button
               title={'Logout'}
               style={styles.input}
@@ -86,7 +83,31 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#454759',
     letterSpacing: 1,
+    marginBottom: 30
   },
+  convoItem: {
+    width: '70%',
+    backgroundColor: "pink",
+    height: '10%',
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  userIcon: {
+    width: 50,
+    height: 50,
+    backgroundColor:'goldenrod',
+    borderRadius: 25,
+    flex: 1
+  },
+  convoText: {
+    flex: 5
+  },
+  unreadProfilePic: {
+
+  },
+  unreadConvo: {
+
+  }
   // input: {
   //   width: 200,
   //   height: 44,
