@@ -40,10 +40,10 @@ export default class App extends Component {
     for (const user in convos) {
       convoList.push(
         <View key={user} style={styles.convoItem}>
-          <View style={styles.userIcon}></View>
+          <View style={[styles.userIcon, this.state.isRead ? null : styles.unreadUserIcon]}></View>
           <View style={styles.convoText}>
-            <Text>{user}</Text>
-            <Text>{convos[user]}</Text>
+            <Text style={[styles.opponentName, this.state.isRead ? styles.readText : styles.unreadName]}>{user}</Text>
+            <Text style={[styles.messageText, this.state.isRead ? styles.readText : styles.unreadText]}>{convos[user]}</Text>
           </View>
         </View>
       )
@@ -72,6 +72,8 @@ export default class App extends Component {
   }
 }
 
+const unreadPurple = '#9F42FE';
+const readGray = '#8D99AE';
 const styles = StyleSheet.create({
 
   container: {
@@ -86,35 +88,51 @@ const styles = StyleSheet.create({
     marginBottom: 30
   },
   convoItem: {
-    width: '70%',
-    backgroundColor: "pink",
+    width: '80%',
+    // backgroundColor: "pink",
     height: '10%',
     alignItems: 'center',
     flexDirection: 'row'
   },
   userIcon: {
-    width: 50,
-    height: 50,
-    backgroundColor:'goldenrod',
-    borderRadius: 25,
-    flex: 1
+    width: 60,
+    height: 60,
+    backgroundColor:'#f0f0f0',
+    borderRadius: 30,
+    borderStyle: 'solid',
+    borderColor: readGray,
+    borderWidth: 2,
+    marginRight: '7%'
   },
   convoText: {
-    flex: 5
+    justifyContent: 'space-around',
+    // backgroundColor: 'yellow',
+    flex: 1,
+    height: '100%',
+    
   },
-  unreadProfilePic: {
-
+  opponentName: {
+    fontSize: 26,
+    fontWeight: "300",
+    letterSpacing: 1,
   },
-  unreadConvo: {
+  messageText: {
+    fontSize: 22,
+    fontWeight: "200"
+  },
+  unreadUserIcon: {
+    borderColor: unreadPurple
+  },
+  readText: {
+    color: readGray,
+  },
+  unreadName: {
+    color: unreadPurple,
+    fontWeight: '600',
+  },
+  unreadText: {
+    color: unreadPurple,
+  },
 
-  }
-  // input: {
-  //   width: 200,
-  //   height: 44,
-  //   padding: 10,
-  //   borderWidth: 1,
-  //   borderColor: 'black',
-  //   marginBottom: 10,
-  // },
 });
 
