@@ -113,12 +113,11 @@ const styles = StyleSheet.create({
   },
   opponentName: {
     fontSize: 26,
-    fontWeight: "300",
     letterSpacing: 1,
   },
   messageText: {
     fontSize: 22,
-    fontWeight: "200"
+    fontWeight: "300"
   },
   unreadUserIcon: {
     borderColor: unreadPurple
