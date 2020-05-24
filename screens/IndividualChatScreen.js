@@ -42,7 +42,7 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Messages {this.state.data}</Text>
+        <Text>Fantasia</Text>
 
         {/*<Text style={{ fontWeight: 'bold', fontSize: 40 }}>
         <Text style={{ color: 'red' }}>Linx</Text>
