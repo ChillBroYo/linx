@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text,  Alert, Button, TextInput, View, StyleSheet } from 'react-native';
+import { Text,  Alert, Button, TextInput, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 
@@ -37,15 +37,18 @@ export default class App extends Component {
   mapConversations() {
     const convoList = [];
     const convos = this.state.conversationsObj;
+    const pressHandler = () => {
+      this.props.navigation.navigate('IndividualChatScreen');
+    }
     for (const user in convos) {
       convoList.push(
-        <View key={user} style={styles.convoItem}>
+        <TouchableOpacity key={user} style={styles.convoItem} onPress={pressHandler}>
           <View style={[styles.userIcon, this.state.isRead ? null : styles.unreadUserIcon]}></View>
           <View style={styles.convoText}>
             <Text style={[styles.opponentName, this.state.isRead ? styles.readText : styles.unreadName]}>{user}</Text>
             <Text style={[styles.messageText, this.state.isRead ? styles.readText : styles.unreadText]}>{convos[user]}</Text>
           </View>
-        </View>
+        </TouchableOpacity>
       )
     }
     return convoList;
