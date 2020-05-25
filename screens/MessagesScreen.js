@@ -37,15 +37,16 @@ export default class App extends Component {
   mapConversations() {
     const convoList = [];
     const convos = this.state.conversationsObj;
-    const pressHandler = () => {
-      this.props.navigation.navigate('IndividualChatScreen');
-    }
+    
     for (const user in convos) {
+      const pressHandler = () => {
+        this.props.navigation.navigate('IndividualChatScreen', {user : user});
+      }
       convoList.push(
         <TouchableOpacity key={user} style={styles.convoItem} onPress={pressHandler}>
           <View style={[styles.userIcon, this.state.isRead ? null : styles.unreadUserIcon]}></View>
           <View style={styles.convoText}>
-            <Text style={[styles.opponentName, this.state.isRead ? styles.readText : styles.unreadName]}>{user}</Text>
+            <Text style={[styles.contactName, this.state.isRead ? styles.readText : styles.unreadName]}>{user}</Text>
             <Text style={[styles.messageText, this.state.isRead ? styles.readText : styles.unreadText]}>{convos[user]}</Text>
           </View>
         </TouchableOpacity>
@@ -62,12 +63,6 @@ export default class App extends Component {
           <View style={styles.container}>
             <Text style={styles.heading}>Messages</Text>
             {this.mapConversations()}
-            {/*
-            <Button
-              title={'Logout'}
-              style={styles.input}
-              onPress={this.onLogin.bind(this)}
-            />*/}
           </View>
         </LinearGradient>
       </View>
@@ -114,7 +109,7 @@ const styles = StyleSheet.create({
     height: '100%',
     
   },
-  opponentName: {
+  contactName: {
     fontSize: 26,
     letterSpacing: 1,
   },
