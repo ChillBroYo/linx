@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text,  Alert, Button, Platform, TextInput, View, StyleSheet } from 'react-native';
+import { Text,  Alert, Button, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 import axios from 'axios';
 
@@ -34,11 +34,13 @@ export default class App extends Component {
         
         {/*<Text>Fantasia {this.state.messages[0].message}</Text>*/}
         <View style={styles.topBanner}>
-          <View style={styles.backArrowContainer}>
+          <TouchableOpacity style={styles.backArrowContainer} onPress={() => alert('back')}>
             <Icon name='keyboard-arrow-left' color='#1B1B1B' size={50} />
-          </View>
-          <Text style={styles.contactName}>Kevin L.</Text>
-          
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.contactInfoTouch} onPress={() => alert('info')}>
+            <Text style={styles.contactName}>Kevin L.</Text>
+            <View style={styles.contactInfoBtn}><Text style={styles.infoLetter}>i</Text></View>
+          </TouchableOpacity>
         </View>
         
       </View>
@@ -50,7 +52,7 @@ const platform = Platform.OS;
 let iOSPlatformStyle = {};
 if (platform === 'ios') iOSPlatformStyle = {paddingTop: 40};
 
-const purple = '#9F42FE';
+const contactPurple = '#7F06FE';
 
 const styles = StyleSheet.create({
   // container: {
@@ -65,8 +67,7 @@ const styles = StyleSheet.create({
     shadowColor: '#8e8e8e',
     shadowOpacity: 0.5,
     shadowRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center'
+    
   },
   backArrowContainer: {
     position: 'absolute',
@@ -74,11 +75,33 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    left: 0
+    left: 0,
+    zIndex: 1,
+  },
+  contactInfoTouch: {
+    flexDirection: 'row',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   contactName: {
-    color: purple,
+    color: contactPurple,
     fontSize: 26,
     letterSpacing: 1
+  },
+  contactInfoBtn: {
+    fontSize: 24,
+    backgroundColor: contactPurple,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: '2%'
+  },
+  infoLetter: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: '600'
   }
 });
