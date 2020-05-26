@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import { Text,  Alert, Button, TextInput, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text,  Alert, Button, Image, TextInput, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.currentUserID = 1;
+    this.currentUserID = 3;
     this.tokens = {
       1 : '58db4abf-fd9c-451f-ab5d-199f04118335',
       3 : '12b2d376-d566-42a8-8109-11586e205698',
-      4 : '410735d6-1ac9-4e16-b0db-88282c77858',
+      4 : '410735d6-1ac9-4e16-b0db-88282c77858f',
       5 : '289f72a7-3cdf-401f-b589-5366f5ccb9a1',
       7 : 'b617cc9f-3c0b-4506-ab10-e2941ba4dfd5',
     };
@@ -29,12 +29,18 @@ export default class App extends Component {
       const conversations = {}
       
       for (const contact in contacts) {
+
         const responseMessages = await axios(`https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/get-convo/?uid=${this.currentUserID}&oid=${contact}&token=${this.tokens[this.currentUserID]}&ts=`);
         const mostRecentMessage = responseMessages.data.messages[0].message;
 
-        // const responseContactProfile = await axios(``)
-        
-        conversations[contact] = {mostRecentMessage: mostRecentMessage};
+        const responseContactProfile = await axios(`http://ec2-35-172-118-51.compute-1.amazonaws.com:8080/get_profile/?uid=${contact}&token=${this.tokens[contact]}`);
+        const contactName = responseContactProfile.data.username;
+
+        const contactInfoStr = responseContactProfile.data.info;
+        const contactInfoStrParsed = contactInfoStr.replace("=", ":");// replace the "=" with ":", b/c the str isn't configured correctly -_-
+        const profilePicURL = JSON.parse(contactInfoStrParsed).profile_pic;
+
+        conversations[contact] = {contactName: contactName, mostRecentMessage: mostRecentMessage, profilePicURL: profilePicURL};
       }
       this.setState({conversations: conversations});
     }
@@ -47,17 +53,19 @@ export default class App extends Component {
     const convoList = [];
     const {conversations} = this.state;
     let i = 0;
-    for (const user in conversations) {
+
+    for (const contact in conversations) {
+
       const pressHandler = () => {
-        this.props.navigation.navigate('IndividualChatScreen', {user : user});
+        this.props.navigation.navigate('IndividualChatScreen', conversations[contact]);
       }
       
       convoList.push(
-        <TouchableOpacity key={user} style={[styles.convoItem, i === 0 ? null : styles.convoSeparator]} onPress={pressHandler}>
-          <View style={[styles.userIcon, this.state.isRead ? null : styles.unreadUserIcon]}></View>
+        <TouchableOpacity key={contact} style={[styles.convoItem, i === 0 ? null : styles.convoSeparator]} onPress={pressHandler}>
+          <View style={[styles.userIcon, this.state.isRead ? null : styles.unreadUserIcon]}><Image style={{width: 60, height: 60}} source={{uri: conversations[contact].profilePicURL}}></Image></View>
           <View style={styles.convoText}>
-            <Text style={[styles.contactName, this.state.isRead ? styles.readText : styles.unreadName]}>{user}</Text>
-            <Text style={[styles.messageText, this.state.isRead ? styles.readText : styles.unreadText]}>{conversations[user].mostRecentMessage}</Text>
+            <Text style={[styles.contactName, this.state.isRead ? styles.readText : styles.unreadName]}>{conversations[contact].contactName}</Text>
+            <Text style={[styles.messageText, this.state.isRead ? styles.readText : styles.unreadText]}>{conversations[contact].mostRecentMessage}</Text>
           </View>
         </TouchableOpacity>
       )

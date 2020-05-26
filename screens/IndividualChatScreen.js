@@ -50,7 +50,7 @@ export default class App extends Component {
           <TouchableOpacity style={styles.backArrowContainer} onPress={goBackToContacts}>
             <Icon name='keyboard-arrow-left' color='#1B1B1B' size={50} />
           </TouchableOpacity>
-          <Text style={styles.contactName}>Dummy N.{navigation.getParam('user')}</Text>
+          <Text style={styles.contactName}>Placeholder {navigation.getParam('name')}</Text>
           <TouchableOpacity style={styles.contactInfoBtn} onPress={() => alert('info')}><Text style={styles.infoLetter}>i</Text></TouchableOpacity>
         </View>
 
