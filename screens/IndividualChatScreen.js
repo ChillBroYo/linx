@@ -21,28 +21,39 @@ export default class App extends Component {
     catch(error) {
       alert(`An error occurred : ${error}`);
     }
-    
   }
   
+  mapMessages() {
+    const messagesList = [];
+    let lastDisplayedDate = "";
+    for (const msgObj in this.state.messages) {
+      messagesList.push(
+        <Text></Text>
+        
+      )
+    }
+  }
   // {this.props.navigation.getParam('user')}
   render() {
     
-    
+    const {navigation} = this.props;
 
+    const goBackToContacts = () => {
+      navigation.navigate('MessagesScreen');
+    }
+    
     return (
       <View style={{...styles.container, ...iOSPlatformStyle}}>
         
         {/*<Text>Fantasia {this.state.messages[0].message}</Text>*/}
         <View style={styles.topBanner}>
-          <TouchableOpacity style={styles.backArrowContainer} onPress={() => alert('back')}>
+          <TouchableOpacity style={styles.backArrowContainer} onPress={goBackToContacts}>
             <Icon name='keyboard-arrow-left' color='#1B1B1B' size={50} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.contactInfoTouch} onPress={() => alert('info')}>
-            <Text style={styles.contactName}>Kevin L.</Text>
-            <View style={styles.contactInfoBtn}><Text style={styles.infoLetter}>i</Text></View>
-          </TouchableOpacity>
+          <Text style={styles.contactName}>Dummy N.{navigation.getParam('user')}</Text>
+          <TouchableOpacity style={styles.contactInfoBtn} onPress={() => alert('info')}><Text style={styles.infoLetter}>i</Text></TouchableOpacity>
         </View>
-        
+
       </View>
     );
   }
@@ -55,10 +66,9 @@ if (platform === 'ios') iOSPlatformStyle = {paddingTop: 40};
 const contactPurple = '#7F06FE';
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   alignItems: 'center', // flexDirection is 'column' by default
-  // },
+  container: {
+    padding: '0 5%',
+  },
   topBanner: {
     height: '30%',
     width: '100%',
@@ -67,7 +77,9 @@ const styles = StyleSheet.create({
     shadowColor: '#8e8e8e',
     shadowOpacity: 0.5,
     shadowRadius: 10,
-    
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   backArrowContainer: {
     position: 'absolute',
@@ -77,12 +89,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     left: 0,
     zIndex: 1,
-  },
-  contactInfoTouch: {
-    flexDirection: 'row',
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   contactName: {
     color: contactPurple,

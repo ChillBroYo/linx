@@ -6,27 +6,26 @@ import axios from 'axios';
 export default class App extends Component {
   constructor(props) {
     super(props);
+    this.currentUserID = 3;
+    this.token = '12b2d376-d566-42a8-8109-11586e205698';
     this.state = {
       conversationsObj : {},
       isRead : false,
     };
-    
   }
 
   async componentDidMount() {
     try {
-      const responseUsers = await axios('https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/messages/?uid=1&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=');
-      const otherUsers = responseUsers.data.users;
-
-      const responseMessages = await axios('https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/get-convo/?uid=1&oid=2&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=');
-      const messages = responseMessages.data.messages;
+      const responseContacts = await axios(`https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/messages/?uid=${this.currentUserID}&token=${this.token}&ts=`);
+      const contacts = responseContacts.data.users;
 
       const conversations = {}
       
-      for (const user in otherUsers) {
-        conversations[user] = messages[0].message; // hack; need restructure get-convo json
+      for (const contact in contacts) {
+        const responseMessages = await axios(`https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/get-convo/?uid=${this.currentUserID}&oid=${contact}&token=${this.token}&ts=`);
+        const mostRecentMessage = responseMessages.data.messages[0].message;
+        conversations[contact] = mostRecentMessage;
       }
-      
       this.setState({conversationsObj: conversations});
     }
     catch(error) {
