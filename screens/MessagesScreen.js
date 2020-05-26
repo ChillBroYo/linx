@@ -8,8 +8,11 @@ export default class App extends Component {
     super(props);
     this.currentUserID = 3;
     this.token = '12b2d376-d566-42a8-8109-11586e205698';
+    // this.tokenU4 = '410735d6-1ac9-4e16-b0db-88282c77858';
+    // this.tokenU5 = '289f72a7-3cdf-401f-b589-5366f5ccb9a1';
     this.state = {
-      conversationsObj : {},
+      conversations : {},
+      convosInfo: [],
       isRead : false,
     };
   }
@@ -24,9 +27,10 @@ export default class App extends Component {
       for (const contact in contacts) {
         const responseMessages = await axios(`https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/get-convo/?uid=${this.currentUserID}&oid=${contact}&token=${this.token}&ts=`);
         const mostRecentMessage = responseMessages.data.messages[0].message;
-        conversations[contact] = mostRecentMessage;
+        
+        conversations[contact] = {mostRecentMessage: mostRecentMessage};
       }
-      this.setState({conversationsObj: conversations});
+      this.setState({conversations: conversations});
     }
     catch(error) {
       alert(`An error occurred: ${error}`);
@@ -35,27 +39,30 @@ export default class App extends Component {
 
   mapConversations() {
     const convoList = [];
-    const convos = this.state.conversationsObj;
-    
-    for (const user in convos) {
+    const {conversations} = this.state;
+    let i = 0;
+    for (const user in conversations) {
       const pressHandler = () => {
         this.props.navigation.navigate('IndividualChatScreen', {user : user});
       }
+      
       convoList.push(
-        <TouchableOpacity key={user} style={styles.convoItem} onPress={pressHandler}>
+        <TouchableOpacity key={user} style={[styles.convoItem, i === 0 ? null : styles.convoSeparator]} onPress={pressHandler}>
           <View style={[styles.userIcon, this.state.isRead ? null : styles.unreadUserIcon]}></View>
           <View style={styles.convoText}>
             <Text style={[styles.contactName, this.state.isRead ? styles.readText : styles.unreadName]}>{user}</Text>
-            <Text style={[styles.messageText, this.state.isRead ? styles.readText : styles.unreadText]}>{convos[user]}</Text>
+            <Text style={[styles.messageText, this.state.isRead ? styles.readText : styles.unreadText]}>{conversations[user].mostRecentMessage}</Text>
           </View>
         </TouchableOpacity>
       )
+      i++;
     }
     return convoList;
   }
   
   
   render() {
+    console.log('show', this.state.conversations)
     return (
       <View>
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
@@ -82,14 +89,19 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#454759',
     letterSpacing: 1,
-    marginBottom: 30
+    marginBottom: 10
   },
   convoItem: {
     width: '80%',
-    // backgroundColor: "pink",
-    height: '10%',
+    height: '14.5%',
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    paddingTop: '2.5%',
+    paddingBottom: '2%',
+  },
+  convoSeparator: {
+    borderTopWidth: 1,
+    borderTopColor: '#9BA6B7',
   },
   userIcon: {
     width: 60,
