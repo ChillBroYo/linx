@@ -6,10 +6,14 @@ import axios from 'axios';
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.currentUserID = 3;
-    this.token = '12b2d376-d566-42a8-8109-11586e205698';
-    // this.tokenU4 = '410735d6-1ac9-4e16-b0db-88282c77858';
-    // this.tokenU5 = '289f72a7-3cdf-401f-b589-5366f5ccb9a1';
+    this.currentUserID = 1;
+    this.tokens = {
+      1 : '58db4abf-fd9c-451f-ab5d-199f04118335',
+      3 : '12b2d376-d566-42a8-8109-11586e205698',
+      4 : '410735d6-1ac9-4e16-b0db-88282c77858',
+      5 : '289f72a7-3cdf-401f-b589-5366f5ccb9a1',
+      7 : 'b617cc9f-3c0b-4506-ab10-e2941ba4dfd5',
+    };
     this.state = {
       conversations : {},
       convosInfo: [],
@@ -19,14 +23,16 @@ export default class App extends Component {
 
   async componentDidMount() {
     try {
-      const responseContacts = await axios(`https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/messages/?uid=${this.currentUserID}&token=${this.token}&ts=`);
+      const responseContacts = await axios(`https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/messages/?uid=${this.currentUserID}&token=${this.tokens[this.currentUserID]}&ts=`);
       const contacts = responseContacts.data.users;
 
       const conversations = {}
       
       for (const contact in contacts) {
-        const responseMessages = await axios(`https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/get-convo/?uid=${this.currentUserID}&oid=${contact}&token=${this.token}&ts=`);
+        const responseMessages = await axios(`https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/get-convo/?uid=${this.currentUserID}&oid=${contact}&token=${this.tokens[this.currentUserID]}&ts=`);
         const mostRecentMessage = responseMessages.data.messages[0].message;
+
+        // const responseContactProfile = await axios(``)
         
         conversations[contact] = {mostRecentMessage: mostRecentMessage};
       }
@@ -62,7 +68,7 @@ export default class App extends Component {
   
   
   render() {
-    console.log('show', this.state.conversations)
+    // console.log('show', this.state.conversations)
     return (
       <View>
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
@@ -118,7 +124,6 @@ const styles = StyleSheet.create({
     // backgroundColor: 'yellow',
     flex: 1,
     height: '100%',
-    
   },
   contactName: {
     fontSize: 26,
