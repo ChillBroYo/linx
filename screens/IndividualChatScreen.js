@@ -46,13 +46,13 @@ export default class App extends Component {
       <View style={{...styles.container, ...iOSPlatformStyle}}>
         
         {/*<Text>Fantasia {this.state.messages[0].message}</Text>*/}
-        <View style={styles.topBanner}>
+        <TouchableOpacity style={styles.topBanner} onPress={() => alert('info')}>
           <TouchableOpacity style={styles.backArrowContainer} onPress={goBackToContacts}>
             <Icon name='keyboard-arrow-left' color='#1B1B1B' size={50} />
           </TouchableOpacity>
-          <Text style={styles.contactName}>Placeholder {navigation.getParam('name')}</Text>
-          <TouchableOpacity style={styles.contactInfoBtn} onPress={() => alert('info')}><Text style={styles.infoLetter}>i</Text></TouchableOpacity>
-        </View>
+          <Text style={styles.contactName}>Placeholder {navigation.getParam('contactName')}</Text>
+          <View style={styles.contactInfoBtn} ><Text style={styles.infoLetter}>i</Text></View>
+        </TouchableOpacity>
 
       </View>
     );
@@ -93,7 +93,8 @@ const styles = StyleSheet.create({
   contactName: {
     color: contactPurple,
     fontSize: 26,
-    letterSpacing: 1
+    letterSpacing: 1,
+    paddingLeft: '7%',
   },
   contactInfoBtn: {
     fontSize: 24,
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: '2%'
+    marginLeft: '4%'
   },
   infoLetter: {
     color: 'white',

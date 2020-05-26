@@ -16,7 +16,7 @@ export default class App extends Component {
     };
     this.state = {
       conversations : {},
-      convosInfo: [],
+      // convosInfo: [],
       isRead : false,
     };
   }
@@ -37,8 +37,11 @@ export default class App extends Component {
         const contactName = responseContactProfile.data.username;
 
         const contactInfoStr = responseContactProfile.data.info;
-        const contactInfoStrParsed = contactInfoStr.replace("=", ":");// replace the "=" with ":", b/c the str isn't configured correctly -_-
-        const profilePicURL = JSON.parse(contactInfoStrParsed).profile_pic;
+
+        if (contactInfoStr.includes('=')) {
+          contactInfoStr = contactInfoStr.replace("=", ":");// replace the "=" with ":", b/c the str isn't configured correctly -_-
+        }
+        const profilePicURL = JSON.parse(contactInfoStr).profile_pic;
 
         conversations[contact] = {contactName: contactName, mostRecentMessage: mostRecentMessage, profilePicURL: profilePicURL};
       }
@@ -62,7 +65,7 @@ export default class App extends Component {
       
       convoList.push(
         <TouchableOpacity key={contact} style={[styles.convoItem, i === 0 ? null : styles.convoSeparator]} onPress={pressHandler}>
-          <View style={[styles.userIcon, this.state.isRead ? null : styles.unreadUserIcon]}><Image style={{width: 60, height: 60}} source={{uri: conversations[contact].profilePicURL}}></Image></View>
+          <Image style={[styles.userIcon, this.state.isRead ? null : styles.unreadUserIcon]} source={{uri: conversations[contact].profilePicURL}}></Image>
           <View style={styles.convoText}>
             <Text style={[styles.contactName, this.state.isRead ? styles.readText : styles.unreadName]}>{conversations[contact].contactName}</Text>
             <Text style={[styles.messageText, this.state.isRead ? styles.readText : styles.unreadText]}>{conversations[contact].mostRecentMessage}</Text>
@@ -122,7 +125,6 @@ const styles = StyleSheet.create({
     height: 60,
     backgroundColor:'#f0f0f0',
     borderRadius: 30,
-    borderStyle: 'solid',
     borderColor: readGray,
     borderWidth: 2,
     marginRight: '7%'
