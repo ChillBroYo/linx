@@ -17,7 +17,7 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { LinearGradient} from 'expo-linear-gradient';
 import styled from '@emotion/native'
 
-export default function SignUp(props) {
+export default function SignUp({ navigation }) {
     const [page, setPage] = useState(1);
     // screen 1
     const [email, setEmail] = useState('');
@@ -43,77 +43,91 @@ export default function SignUp(props) {
     const [sameInterests, setSameInterests] = useState(false);
 
     function onBack() {
-        page == 1 ? onBackToLogin() : setPage(page - 1);
+        page == 1 ? onBackToSignIn() : setPage(page - 1);
     }
 
-    function onBackToLogin() {
-        props.navigation.navigate('SignIn');
+    function onBackToSignIn() {
+        navigation.navigate('SignIn');
     }
 
     function onContinue() {
-        // if (page == 1) {
-        //     if (!username) {
-        //         Alert.alert('Username is empty');
-        //         return;
-        //     }
-        //     else if (!email) {
-        //         Alert.alert('Email is empty');
-        //         return;
-        //     }
-        //     else if (!password || !passwordRetype) {
-        //         Alert.alert('Password is empty');
-        //         return;
-        //     }
-        //     else if (password != passwordRetype) {
-        //         Alert.alert("Passwords don't match");
-        //         return;
-        //     }
-        //     else {
-        //         if (!validate()) {
-        //             Alert.alert('Username is already taken');
-        //             return;
-        //         }
-        //         if (!validate()) {
-        //             Alert.alert('Email is already taken');
-        //             return;
-        //         }
-        //     }
-        // }
-        // else if (page == 2) {
-        //     if (!fname || !lname) {
-        //         Alert.alert('Missing First or Last Name');
-        //         return;
-        //     }
-        // }
-        // else if (page == 3) {
-        //     if (!city || !state) {
-        //         Alert.alert('Missing City or State');
-        //         return;
-        //     }
-        // }
+        if (page == 1) {
+            if (!username) {
+                Alert.alert('Username is empty');
+                return;
+            }
+            else if (!email) {
+                Alert.alert('Email is empty');
+                return;
+            }
+            else if (!password || !passwordRetype) {
+                Alert.alert('Password is empty');
+                return;
+            }
+            else if (password !== passwordRetype) {
+                Alert.alert("Passwords do not match");
+                return;
+            }
+            else {
+                if (!validateUsername()) {
+                    Alert.alert('Username is already taken');
+                    return;
+                }
+                if (!validateEmail()) {
+                    Alert.alert('Email is already taken');
+                    return;
+                }
+            }
+        }
+        else if (page == 2) {
+            if (!fname) {
+                Alert.alert('First name is empty');
+                return;
+            }
+            else if (!lname) {
+                Alert.alert('Last name is empty');
+                return;
+            }
+        }
+        else if (page == 3) {
+            if (!city || !state) {
+                Alert.alert('Missing City or State');
+                return;
+            }
+            else if (!state) {
+                Alert.alert('State is empty');
+                return;
+            }
+        }
 
         setPage(page + 1);
     }
 
-    function validate() {
-        // TODO: fill in later
+    function validateEmail() {
+        // TODO: check if email is already in DB
+        const emailRegex = /^(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/;
+        return emailRegex.test(email);
+    }
+
+    function validateUsername() {
+        // TODO: check if username is already in DB
         return true;
     }
 
-    function onDone() {
-        let emailData = `email=${email}`;
-        let usernameData = `username=${username}`;
-        let passwordData = `password=${password}`;
+    async function onSubmit() {
+        let emailData = `email=${email.trim()}`;
+        let usernameData = `username=${username.trim()}`;
+        let passwordData = `password=${password.trim()}`;
         let securityLevelData = `security_level=user`;
         let info = {
             name: {
-                first: fname,
-                last: lname
+                first: fname.trim(),
+                last: lname.trim(),
             },
-            city,
-            state,
+            city: city.trim(),
+            state: state.trim(),
             distance,
-            birthday,
+            birthday: birthday.trim(),
             ageRange,
             gender,
             sameGender,
@@ -122,19 +136,27 @@ export default function SignUp(props) {
         };
         let infoData = `info=${JSON.stringify(info)}`;
 
-        fetch(`http://192.168.1.15:8080/sign_up/?${emailData}&${usernameData}&${passwordData}&${securityLevelData}&${infoData}`)
-            .then(res => {
-                console.log(res);
-                return res.json();
-            })
-            .then(json => {
-                console.log(json);
-                return json;
-            })
-            .catch(err => {
-                console.log('ERROR:', err);
-                console.log(JSON.stringify(err));
-            });
+        try {
+            const res = await fetch(`http://192.168.1.15:8080/sign_up/?${emailData}&${usernameData}&${passwordData}&${securityLevelData}&${infoData}`)
+            const json = await res.json();
+
+            console.log('RESPONSE:', res);
+            console.log('JSON:', json);
+
+            if (res.status != 200) {
+                Alert.alert('Sign up failed. Please try again');
+                return;
+            }
+            if (!json.success) {
+                Alert.alert(json.errmsg);
+                return;
+            }
+
+            navigation.navigate('SignIn');
+        }
+        catch(error) {
+            console.log('Sign Up error:', error);
+        }
     }
 
     let view;
@@ -204,7 +226,7 @@ export default function SignUp(props) {
                         <View style={{flex: 1}}>
                             <Back onPress={onBack}>&#10094;</Back>
                             {view}
-                            <TouchableWithoutFeedback onPress={page < 6 ? onContinue : onDone}>
+                            <TouchableWithoutFeedback onPress={page < 6 ? onContinue : onSubmit}>
                                 <Continue>
                                     <Text style={{color: 'white', fontSize: 20, fontWeight: '600', lineHeight: 27}}>Continue</Text>
                                 </Continue>
@@ -217,7 +239,16 @@ export default function SignUp(props) {
     );
 }
 
-function SignUpOne(props) {
+function SignUpOne({
+    username,
+    email,
+    password,
+    passwordRetype,
+    setUsername,
+    setEmail,
+    setPassword,
+    setPasswordRetype
+}) {
     return (
         <SignUpWrapper>
             <SignUpHeader>Sign up</SignUpHeader>
@@ -225,32 +256,32 @@ function SignUpOne(props) {
                 <SignUpTextInput
                     name='username'
                     placeholder='Username'
-                    value={props.username}
-                    onChangeText={username => props.setUsername(username)}
+                    value={username}
+                    onChangeText={username => setUsername(username)}
                     style={styles.input}
                 />
                 <SignUpTextInput
                     keyboardType='email-address'
                     name='email'
                     placeholder='Email'
-                    value={props.email}
-                    onChangeText={email => props.setEmail(email)}
+                    value={email}
+                    onChangeText={email => setEmail(email)}
                     style={styles.input}
                 />
                 <SignUpTextInput
                     secureTextEntry
                     name='password'
                     placeholder='Password'
-                    value={props.password}
-                    onChangeText={password => props.setPassword(password)}
+                    value={password}
+                    onChangeText={password => setPassword(password)}
                     style={styles.input}
                 />
                 <SignUpTextInput
                     secureTextEntry
                     name='passwordRetype'
                     placeholder='Retype Password'
-                    value={props.passwordRetype}
-                    onChangeText={password => props.setPasswordRetype(password)}
+                    value={passwordRetype}
+                    onChangeText={password => setPasswordRetype(password)}
                     style={styles.input}
                 />
             </SignUpFormWrapper>
@@ -258,7 +289,7 @@ function SignUpOne(props) {
     );
 }
 
-function SignUpTwo(props) {
+function SignUpTwo({ fname, lname, setFname, setLname }) {
     return (
         <SignUpWrapper>
             <SignUpHeader>My name is</SignUpHeader>
@@ -266,15 +297,15 @@ function SignUpTwo(props) {
                 <SignUpTextInput
                     name='fname'
                     placeholder='First Name'
-                    value={props.fname}
-                    onChangeText={fname => props.setFname(fname)}
+                    value={fname}
+                    onChangeText={fname => setFname(fname)}
                     style={styles.input}
                 />
                 <SignUpTextInput
                     name='lname'
                     placeholder='Last Name'
-                    value={props.lname}
-                    onChangeText={lname => props.setLname(lname)}
+                    value={lname}
+                    onChangeText={lname => setLname(lname)}
                     style={styles.input}
                 />
             </SignUpFormWrapper>
@@ -282,31 +313,38 @@ function SignUpTwo(props) {
     );
 }
 
-function SignUpThree(props) {
+function SignUpThree({
+    city,
+    state,
+    distance,
+    setCity,
+    setState,
+    setDistance
+}) {
     return (
         <SignUpWrapper>
             <SignUpHeader>I live in</SignUpHeader>
             <SignUpFormWrapper>
                 <SignUpTextInput
                     placeholder='City'
-                    value={props.city}
-                    onChangeText={city => props.setCity(city)}
+                    value={city}
+                    onChangeText={city => setCity(city)}
                     style={styles.input}
                 />
                 <SignUpTextInput
                     placeholder='State'
-                    value={props.state}
-                    onChangeText={state => props.setState(state)}
+                    value={state}
+                    onChangeText={state => setState(state)}
                     style={styles.input}
                 />
                 <SignUpText>
-                    Connect with people who are less than <SignUpTextValue>{props.distance}</SignUpTextValue> miles away
+                    Connect with people who are less than <SignUpTextValue>{distance}</SignUpTextValue> miles away
                 </SignUpText>
                 <MultiSlider
                     min={5}
                     max={50}
-                    values={[props.distance]}
-                    onValuesChange={distance => props.setDistance(parseInt(distance))}
+                    values={[distance]}
+                    onValuesChange={distance => setDistance(parseInt(distance))}
                     selectedStyle={{backgroundColor: PURPLE}}
                     trackStyle={{backgroundColor: PURPLE}}
                 />
@@ -315,7 +353,7 @@ function SignUpThree(props) {
     );
 }
 
-function SignUpFour(props) {
+function SignUpFour({ birthday, ageRange, setBirthday, setAgeRange }) {
     return (
         <SignUpWrapper>
             <SignUpHeader>My birthday is</SignUpHeader>
@@ -323,19 +361,19 @@ function SignUpFour(props) {
                 <TextInputMask
                     keyboardType='number-pad'
                     type='datetime'
-                    options={{ format:'MM / DD / YYYY' }}
-                    placeholder='MM / DD / YYYY'
-                    value={props.birthday}
-                    onChangeText={props.setBirthday}
+                    options={{ format:'MM/DD/YYYY' }}
+                    placeholder='MM/DD/YYYY'
+                    value={birthday}
+                    onChangeText={setBirthday}
                 />
                 <SignUpText>
-                    Connect with people who are between <SignUpTextValue>{props.ageRange[0]}</SignUpTextValue> and <SignUpTextValue>{props.ageRange[1]}</SignUpTextValue> years old
+                    Connect with people who are between <SignUpTextValue>{ageRange[0]}</SignUpTextValue> and <SignUpTextValue>{ageRange[1]}</SignUpTextValue> years old
                 </SignUpText>
                 <MultiSlider
                     min={18}
                     max={99}
-                    values={props.ageRange}
-                    onValuesChange={ageRange => props.setAgeRange(ageRange.map(age => parseInt(age)))}
+                    values={ageRange}
+                    onValuesChange={ageRange => setAgeRange(ageRange.map(age => parseInt(age)))}
                     selectedStyle={{backgroundColor: PURPLE}}
                     trackStyle={{backgroundColor: PURPLE}}
                 />
@@ -344,30 +382,35 @@ function SignUpFour(props) {
     );
 }
 
-function SignUpFive(props) {
+function SignUpFive({
+    gender,
+    sameGender,
+    setGender,
+    setSameGender
+}) {
     return (
         <SignUpWrapper>
             <SignUpHeader>I'm a</SignUpHeader>
             <SignUpFormWrapper>
-                <TouchableWithoutFeedback onPress={() => props.setGender('woman')}>
-                    <PillButton selected={props.gender == 'woman'}>
-                        <PillText selected={props.gender == 'woman'}>Woman</PillText>
+                <TouchableWithoutFeedback onPress={() => setGender('woman')}>
+                    <PillButton selected={gender == 'woman'}>
+                        <PillText selected={gender == 'woman'}>Woman</PillText>
                     </PillButton>
                 </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={() => props.setGender('man')}>
-                    <PillButton selected={props.gender == 'man'}>
-                        <PillText selected={props.gender == 'man'}>Man</PillText>
+                <TouchableWithoutFeedback onPress={() => setGender('man')}>
+                    <PillButton selected={gender == 'man'}>
+                        <PillText selected={gender == 'man'}>Man</PillText>
                     </PillButton>
                 </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={() => props.setGender('other')}>
-                    <PillButton selected={props.gender == 'other'}>
-                        <PillText selected={props.gender == 'other'}>Other</PillText>
+                <TouchableWithoutFeedback onPress={() => setGender('other')}>
+                    <PillButton selected={gender == 'other'}>
+                        <PillText selected={gender == 'other'}>Other</PillText>
                     </PillButton>
                 </TouchableWithoutFeedback>
                 <SignUpText>Connect only with the same gender as me</SignUpText>
                 <Toggle
-                    value={props.sameGender}
-                    onValueChange={sameGender => props.setSameGender(sameGender)}
+                    value={sameGender}
+                    onValueChange={sameGender => setSameGender(sameGender)}
                     trackColor={{
                         false: '#8D99AE',
                         true: PURPLE
@@ -378,10 +421,16 @@ function SignUpFive(props) {
     );
 }
 
-function SignUpSix(props) {
+function SignUpSix({
+    interests,
+    selectedInterests,
+    sameInterests,
+    setSelectedInterests,
+    setSameInterests
+}) {
     // FlatList renderItem passes { index: <i>, item: <data[i]> }
     function renderInterest({ item: interest }) {
-        let isSelected = props.selectedInterests.has(interest);
+        let isSelected = selectedInterests.has(interest);
 
         return (
             <TouchableWithoutFeedback onPress={() => toggleInterest(interest)}>
@@ -393,13 +442,9 @@ function SignUpSix(props) {
     }
 
     function toggleInterest(interest) {
-        let nextInterests = new Set([...props.selectedInterests]);
-        console.log({
-            selectedInterests: props.selectedInterests,
-            nextInterests
-        });
-        props.selectedInterests.has(interest) ? nextInterests.delete(interest) : nextInterests.add(interest);
-        props.setSelectedInterests(nextInterests);
+        let nextInterests = new Set([...selectedInterests]);
+        selectedInterests.has(interest) ? nextInterests.delete(interest) : nextInterests.add(interest);
+        setSelectedInterests(nextInterests);
     }
 
     return (
@@ -407,16 +452,16 @@ function SignUpSix(props) {
             <SignUpHeader>I like</SignUpHeader>
             <SignUpFormWrapper wide={true}>
                 <FlatList
-                    data={props.interests}
-                    extraData={props.selectedInterests}
+                    data={interests}
+                    extraData={selectedInterests}
                     horizontal={false}
                     numColumns={2}
                     renderItem={renderInterest}
                 />
                 <SignUpText>Connect only with people that like the same things as me</SignUpText>
                 <Toggle
-                    value={props.sameInterests}
-                    onValueChange={sameInterests => props.setSameInterests(sameInterests)}
+                    value={sameInterests}
+                    onValueChange={sameInterests => setSameInterests(sameInterests)}
                     trackColor={{
                         false: '#8D99AE',
                         true: PURPLE
@@ -474,15 +519,15 @@ const PillButton = styled.View`
     margin: 0 11px 23px;
 `;
 
-const PillText = styled.Text(props => ({
-    color: props.selected ? 'white' : '#1B1B1B',
-    fontWeight: props.selected ? '700' : '400'
+const PillText = styled.Text(({ selected }) => ({
+    color: selected ? 'white' : '#1B1B1B',
+    fontWeight: selected ? '700' : '400'
 }));
 
-const ProgressBar = styled.View(props => ({
+const ProgressBar = styled.View(({ page }) => ({
     backgroundColor: PURPLE,
     height: 11,
-    width: `${(props.page / 6) * 100}%`,
+    width: `${(page / 6) * 100}%`,
 }));
 
 const SignUpWrapper = styled.View`

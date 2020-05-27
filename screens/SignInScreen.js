@@ -12,44 +12,27 @@ import styled from '@emotion/native'
 
 const BACKGROUND_IMAGE = { uri: 'https://linx-images.s3-us-west-2.amazonaws.com/reference/main_pic.png' };
 
-export default function SignIn(props) {
+export default function SignIn({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    function onSignIn() {
-        // Alert.alert(`Credentials: ${email} + ${password}`);
+    async function onSignIn() {
+        try {
+            let res = await fetch(`http://192.168.1.15:8080/sign_in/?username=${email}&password=${password}`);
+            let json = await res.json();
 
-        fetch(`http://192.168.1.15:8080/sign_in/?username=${email}&password=${password}`)
-            .then(res => {
-                console.log('RESPONSE:', res);
-                return res.json();
-            })
-            .then(json => {
-                let info;
-                console.log('JSON:', json);
-                for (let key in json) {
-                    console.log(key + ' ' + json[key]);
-                    if (key == 'info') {
-                        info = JSON.parse(json[key]);
-                    }
-                }
+            console.log('RESPONSE:', res);
+            console.log('JSON:', json);
 
-                for (let key in info) {
-                    console.log(key + ' ' + info[key]);
-                }
-                // TODO: save info in global store
-                return json;
-            })
-            .catch(err => {
-                console.log('ERROR:', err);
-                console.log(JSON.stringify(err));
-            });
-
-        props.navigation.navigate('Home');
+            navigation.navigate('Home');
+        }
+        catch(error) {
+            console.log('Sign In error:', error);
+        }
     }
 
     function onSignUp() {
-        props.navigation.navigate('SignUp');
+        navigation.navigate('SignUp');
     }
 
     return (
