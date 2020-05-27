@@ -7,7 +7,7 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      messages : "why"
+      messages : null
     };
     
   }
@@ -24,7 +24,8 @@ export default class App extends Component {
   }
   
   mapMessages() {
-    const messagesList = [];
+    const messages = this.state.messages.slice();
+    const displayedMessages = [];
     let lastDisplayedDate = "";
     for (const msgObj in this.state.messages) {
       messagesList.push(
@@ -42,6 +43,7 @@ export default class App extends Component {
       navigation.navigate('MessagesScreen');
     }
     
+    console.log('yo', this.state.messages)
     return (
       <View style={{...styles.container, ...iOSPlatformStyle}}>
         
@@ -51,9 +53,15 @@ export default class App extends Component {
             <Icon name='keyboard-arrow-left' color='#1B1B1B' size={50} />
           </TouchableOpacity>
           <Text style={styles.contactName}>Placeholder {navigation.getParam('contactName')}</Text>
-          <View style={styles.contactInfoBtn} ><Text style={styles.infoLetter}>i</Text></View>
+          <View style={styles.contactInfoBtn}><Text style={styles.infoLetter}>i</Text></View>
         </TouchableOpacity>
 
+        
+        <Text>please show up</Text>
+        {this.state.messages ? this.state.messages.map(message => 
+          <Text key={message.message_id}>{message.message}</Text>
+
+        ) : null}
       </View>
     );
   }

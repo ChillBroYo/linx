@@ -6,9 +6,10 @@ import axios from 'axios';
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.currentUserID = 3;
+    this.currentUserID = 1;
     this.tokens = {
       1 : '58db4abf-fd9c-451f-ab5d-199f04118335',
+      2 : 'beacde9c-d02f-40ea-a987-fac7b8b1b019',
       3 : '12b2d376-d566-42a8-8109-11586e205698',
       4 : '410735d6-1ac9-4e16-b0db-88282c77858f',
       5 : '289f72a7-3cdf-401f-b589-5366f5ccb9a1',
