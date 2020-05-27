@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-    Alert,
     ImageBackground,
     StyleSheet,
     Text,
@@ -9,8 +8,6 @@ import {
     View
 } from 'react-native';
 import styled from '@emotion/native'
-
-const BACKGROUND_IMAGE = { uri: 'https://linx-images.s3-us-west-2.amazonaws.com/reference/main_pic.png' };
 
 export default function SignIn({ navigation }) {
     const [email, setEmail] = useState('');
@@ -36,82 +33,96 @@ export default function SignIn({ navigation }) {
     }
 
     return (
-        <Container>
-            <Background source={BACKGROUND_IMAGE}>
-                <Wrapper>
-                    <Header>Linx</Header>
-                    <Input
+        <View style={styles.container}>
+            <ImageBackground source={BACKGROUND_IMAGE} style={styles.background}>
+                <View style={styles.wrapper}>
+                    <Text style={styles.header}>Linx</Text>
+                    <TextInput
                         placeholder='Email'
                         value={email}
                         onChangeText={(email) => setEmail(email)}
+                        style={styles.input}
                     />
-                    <Input
+                    <TextInput
                         placeholder='Password'
                         value={password}
                         onChangeText={(password) => setPassword(password)}
                         secureTextEntry={true}
+                        style={styles.input}
                     />
                     <TouchableWithoutFeedback onPress={onSignIn}>
-                        <Button colored={true}>
-                            <ButtonText>Sign in</ButtonText>
-                        </Button>
+                        <View style={StyleSheet.compose(styles.button, styles.buttonColored)}>
+                            <Text style={StyleSheet.compose(styles.buttonText, styles.whiteText)}>Sign in</Text>
+                        </View>
                     </TouchableWithoutFeedback>
                     <TouchableWithoutFeedback onPress={onSignUp}>
-                        <Button>
-                            <ButtonText colored={true}>Sign up</ButtonText>
-                        </Button>
+                        <View style={StyleSheet.compose(styles.button, styles.buttonTransparent)}>
+                            <Text style={StyleSheet.compose(styles.buttonText, styles.coloredText)}>Sign up</Text>
+                        </View>
                     </TouchableWithoutFeedback>
-                </Wrapper>
-            </Background>
-        </Container>
+                </View>
+            </ImageBackground>
+        </View>
     );
 }
 
-const GREEN = '#439E73';
+const BACKGROUND_IMAGE = { uri: 'https://linx-images.s3-us-west-2.amazonaws.com/reference/main_pic.png' };
+const colors = {
+    green: '#439E73',
+    white: '#FFF',
+};
 
-const Container = styled.View`
-    flex: 1;
-    flex-direction: column;
-`;
-
-const Wrapper = styled.View`
-    align-items: center;
-`;
-
-const Background = styled.ImageBackground`
-    flex: 1;
-    resize-mode: cover;
-`;
-
-const Header = styled.Text`
-    color: white;
-    font-size: 80px;
-    margin-bottom: 36px;
-    margin-top: 20%;
-`
-
-const Input = styled.TextInput`
-    background: rgba(255, 255, 255, 0.75);
-    border-radius: 10px;
-    margin-bottom: 16px;
-    padding: 14px;
-    height: 48px;
-    width: 268px;
-`;
-
-const Button = styled.View`
-    align-items: center;
-    justify-content: center;
-    background: ${props => props.colored ? GREEN : 'transparent'};
-    border-radius: 10px;
-    margin-top: 16px;
-    height: 41px;
-    width: 164px;
-`;
-
-const ButtonText = styled.Text`
-    color: ${props => props.colored ? GREEN : 'white'};
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 27px;
-`;
+const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        resizeMode: 'cover',
+    },
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+    },
+    wrapper: {
+        alignItems: 'center',
+    },
+    header: {
+        color: 'white',
+        fontSize: 80,
+        marginBottom: 36,
+        marginTop: '20%',
+    },
+    input: {
+        backgroundColor: 'rgba(255, 255, 255, 0.75)',
+        borderRadius: 10,
+        marginBottom: 16,
+        padding: 14,
+        height: 48,
+        width: 268,
+    },
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 10,
+        marginTop: 16,
+        height: 41,
+        width: 164,
+    },
+    buttonColored: {
+        backgroundColor: colors.green,
+        color: colors.white,
+    },
+    buttonTransparent: {
+        backgroundColor: 'transparent',
+        color: colors.green,
+    },
+    buttonText: {
+        fontSize: 20,
+        fontWeight: '600',
+        lineHeight: 27,
+    },
+    coloredText: {
+        color: colors.green,
+    },
+    whiteText: {
+        color: colors.white,
+    },
+});
