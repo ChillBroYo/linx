@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
     ImageBackground,
+    SafeAreaView,
     StyleSheet,
     Text,
     TextInput,
@@ -11,6 +12,10 @@ import {
 export default function SignIn({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    function onForgotPassword() {
+        navigation.navigate('ForgotPassword');
+    }
 
     async function onSignIn() {
         try {
@@ -34,38 +39,46 @@ export default function SignIn({ navigation }) {
     return (
         <View style={styles.container}>
             <ImageBackground source={BACKGROUND_IMAGE} style={styles.background}>
-                <View style={styles.wrapper}>
-                    <Text style={styles.header}>Linx</Text>
-                    <TextInput
-                        placeholder='Email'
-                        value={email}
-                        onChangeText={(email) => setEmail(email)}
-                        style={styles.input}
-                    />
-                    <TextInput
-                        placeholder='Password'
-                        value={password}
-                        onChangeText={(password) => setPassword(password)}
-                        secureTextEntry={true}
-                        style={styles.input}
-                    />
-                    <TouchableWithoutFeedback onPress={onSignIn}>
-                        <View style={{...styles.button, ...styles.buttonColored}}>
-                            <Text style={{...styles.buttonText, ...styles.whiteText}}>Sign in</Text>
+                <SafeAreaView style={styles.wrapper}>
+                    <View style={styles.column}>
+                        <Text style={styles.header}>Linx</Text>
+                        <TextInput
+                            placeholder='Email'
+                            value={email}
+                            onChangeText={(email) => setEmail(email)}
+                            style={styles.input}
+                        />
+                        <TextInput
+                            placeholder='Password'
+                            value={password}
+                            onChangeText={(password) => setPassword(password)}
+                            secureTextEntry={true}
+                            style={styles.input}
+                        />
+                        <TouchableWithoutFeedback onPress={onSignIn}>
+                            <View style={{...styles.button, ...styles.buttonColored}}>
+                                <Text style={{...styles.buttonText, ...styles.whiteText}}>Sign in</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={onSignUp}>
+                            <View style={{...styles.button, ...styles.buttonTransparent}}>
+                                <Text style={{...styles.buttonText, ...styles.coloredText}}>Sign up</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
+                    <TouchableWithoutFeedback onPress={onForgotPassword}>
+                        <View style={styles.forgotPassword}>
+                            <Text style={{...styles.buttonText, color: colors.white}}>Forgot password</Text>
                         </View>
                     </TouchableWithoutFeedback>
-                    <TouchableWithoutFeedback onPress={onSignUp}>
-                        <View style={{...styles.button, ...styles.buttonTransparent}}>
-                            <Text style={{...styles.buttonText, ...styles.coloredText}}>Sign up</Text>
-                        </View>
-                    </TouchableWithoutFeedback>
-                </View>
+                </SafeAreaView>
             </ImageBackground>
         </View>
     );
 }
 
-const BACKGROUND_IMAGE = { uri: 'https://linx-images.s3-us-west-2.amazonaws.com/reference/main_pic.png' };
+// const BACKGROUND_IMAGE = { uri: 'https://linx-images.s3-us-west-2.amazonaws.com/reference/main_pic.png' };
+const BACKGROUND_IMAGE = require('../assets/images/image.png');
 const colors = {
     green: '#439E73',
     white: '#FFF',
@@ -75,27 +88,6 @@ const styles = StyleSheet.create({
     background: {
         flex: 1,
         resizeMode: 'cover',
-    },
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-    },
-    wrapper: {
-        alignItems: 'center',
-    },
-    header: {
-        color: 'white',
-        fontSize: 80,
-        marginBottom: 36,
-        marginTop: '20%',
-    },
-    input: {
-        backgroundColor: 'rgba(255, 255, 255, 0.75)',
-        borderRadius: 10,
-        marginBottom: 16,
-        padding: 14,
-        height: 48,
-        width: 268,
     },
     button: {
         alignItems: 'center',
@@ -107,11 +99,9 @@ const styles = StyleSheet.create({
     },
     buttonColored: {
         backgroundColor: colors.green,
-        color: colors.white,
     },
     buttonTransparent: {
         backgroundColor: 'transparent',
-        color: colors.green,
     },
     buttonText: {
         fontSize: 20,
@@ -121,7 +111,32 @@ const styles = StyleSheet.create({
     coloredText: {
         color: colors.green,
     },
+    column: {
+        alignItems: 'center',
+    },
+    container: {
+        flex: 1,
+    },
+    header: {
+        color: 'white',
+        fontSize: 80,
+        marginBottom: 36,
+        marginTop: 60,
+    },
+    input: {
+        backgroundColor: 'rgba(255, 255, 255, 0.75)',
+        borderRadius: 10,
+        marginBottom: 16,
+        padding: 14,
+        height: 48,
+        width: 268,
+    },
     whiteText: {
         color: colors.white,
+    },
+    wrapper: {
+        alignItems: 'center',
+        flex: 1,
+        justifyContent: 'space-between',
     },
 });

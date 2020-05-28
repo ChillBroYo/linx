@@ -126,7 +126,7 @@ export default function SignUp({ navigation }) {
             city: city.trim(),
             state: state.trim(),
             distance,
-            birthday: birthday.trim(),
+            birthday: birthday.trim().replace(' ', ''),
             ageRange,
             gender,
             sameGender,
@@ -216,30 +216,23 @@ export default function SignUp({ navigation }) {
     }
 
     return (
-        // SafeAreaView automatically adjusts for the notch on iOS
-        <View style={styles.container}>
-            <LinearGradient colors={['rgba(254, 241, 2, 0)', 'rgba(254, 241, 2, 0.1)']} style={styles.container}>
-                <KeyboardAvoidingView behavior='height' style={styles.container}>
-                    <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView behavior='height' style={styles.container}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <LinearGradient colors={['rgba(254, 241, 2, 0)', 'rgba(254, 241, 2, 0.1)']} style={styles.container}>
+                        <View style={styles.topPadder} />
                         <ProgressBar page={page} totalPages={6} />
                         <View style={{flex: 1}}>
                             <Text onPress={onBack} style={styles.backArrow}>&#10094;</Text>
                             {view}
                             <TouchableWithoutFeedback onPress={page < 6 ? onContinue : onSubmit}>
-                                <View
-                                    style={{
-                                        ...styles.continue,
-                                        backgroundColor: page < 6 ? colors.green : colors.grey
-                                    }}
-                                >
-                                    <Text style={styles.continueText}>Continue</Text>
+                                <View style={styles.continue}>
+                                    <Text style={styles.continueText}>{page < 6 ? 'Continue' : 'Done'}</Text>
                                 </View>
                             </TouchableWithoutFeedback>
                         </View>
-                    </SafeAreaView>
-                </KeyboardAvoidingView>
-            </LinearGradient>
-        </View>
+                </LinearGradient>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -365,11 +358,11 @@ function SignUpFour({ birthday, ageRange, setBirthday, setAgeRange }) {
                 <TextInputMask
                     keyboardType='number-pad'
                     type='datetime'
-                    options={{ format:'MM/DD/YYYY' }}
-                    placeholder='MM/DD/YYYY'
+                    options={{ format:'MM / DD / YYYY' }}
+                    placeholder='MM / DD / YYYY'
                     value={birthday}
                     onChangeText={setBirthday}
-                    style={{...styles.signUpInput, textAlign: 'center'}}
+                    style={{...styles.signUpInput, borderBottomWidth: 0, textAlign: 'center'}}
                 />
                 <Text style={styles.signUpText}>
                     Connect with people who are between <Text style={styles.signUpTextValue}>{ageRange[0]}</Text> and <Text style={styles.signUpTextValue}>{ageRange[1]}</Text> years old
@@ -514,8 +507,9 @@ const styles = StyleSheet.create({
     },
     continue: {
         alignItems: 'center',
+        backgroundColor: colors.green,
         justifyContent: 'center',
-        height: 56,
+        height: 66,
         marginTop: 16,
     },
     continueText: {
@@ -533,11 +527,13 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         borderWidth: 1,
         height: 42,
-        width: 141,
+        width: 140,
         marginBottom: 23,
         marginTop: 0,
         marginLeft: 11,
         marginRight: 11,
+        paddingLeft: 5,
+        paddingRight: 5,
     },
     pillButtonSelected: {
         backgroundColor: colors.purple,
@@ -566,8 +562,8 @@ const styles = StyleSheet.create({
         marginRight: 60,
     },
     signUpFormWide: {
-        marginLeft: 40,
-        marginRight: 40,
+        marginLeft: 20,
+        marginRight: 20,
     },
     signUpHeader: {
         color: colors.purple,
@@ -602,5 +598,9 @@ const styles = StyleSheet.create({
         marginTop: 16,
         height: 36,
         width: 80,
+    },
+    topPadder: {
+        backgroundColor: colors.grey,
+        height: 50,
     },
 });
