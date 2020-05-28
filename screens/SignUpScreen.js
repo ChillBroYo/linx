@@ -15,7 +15,6 @@ import {
 import { TextInputMask } from 'react-native-masked-text';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { LinearGradient} from 'expo-linear-gradient';
-import styled from '@emotion/native'
 
 export default function SignUp({ navigation }) {
     const [page, setPage] = useState(1);

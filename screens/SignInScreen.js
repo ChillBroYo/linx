@@ -7,7 +7,6 @@ import {
     TouchableWithoutFeedback,
     View
 } from 'react-native';
-import styled from '@emotion/native'
 
 export default function SignIn({ navigation }) {
     const [email, setEmail] = useState('');
