@@ -51,13 +51,13 @@ export default function SignIn({ navigation }) {
                         style={styles.input}
                     />
                     <TouchableWithoutFeedback onPress={onSignIn}>
-                        <View style={StyleSheet.compose(styles.button, styles.buttonColored)}>
-                            <Text style={StyleSheet.compose(styles.buttonText, styles.whiteText)}>Sign in</Text>
+                        <View style={{...styles.button, ...styles.buttonColored}}>
+                            <Text style={{...styles.buttonText, ...styles.whiteText}}>Sign in</Text>
                         </View>
                     </TouchableWithoutFeedback>
                     <TouchableWithoutFeedback onPress={onSignUp}>
-                        <View style={StyleSheet.compose(styles.button, styles.buttonTransparent)}>
-                            <Text style={StyleSheet.compose(styles.buttonText, styles.coloredText)}>Sign up</Text>
+                        <View style={{...styles.button, ...styles.buttonTransparent}}>
+                            <Text style={{...styles.buttonText, ...styles.coloredText}}>Sign up</Text>
                         </View>
                     </TouchableWithoutFeedback>
                 </View>

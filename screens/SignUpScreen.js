@@ -105,7 +105,7 @@ export default function SignUp({ navigation }) {
 
     function validateEmail() {
         // TODO: check if email is already in DB
-        const emailRegex = /^(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/;
+        const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         return emailRegex.test(email);
     }
 
@@ -218,24 +218,29 @@ export default function SignUp({ navigation }) {
 
     return (
         // SafeAreaView automatically adjusts for the notch on iOS
-        <Container>
-            <LinearGradient colors={['rgba(254, 241, 2, 0)', 'rgba(254, 241, 2, 0.1)']} style={{flex: 1}}>
-                <KeyboardAvoidingView behavior='height' style={{flex: 1}}>
-                    <SafeAreaView style={{flex: 1}}>
-                        <ProgressBar page={page} />
+        <View style={styles.container}>
+            <LinearGradient colors={['rgba(254, 241, 2, 0)', 'rgba(254, 241, 2, 0.1)']} style={styles.container}>
+                <KeyboardAvoidingView behavior='height' style={styles.container}>
+                    <SafeAreaView style={styles.container}>
+                        <ProgressBar page={page} totalPages={6} />
                         <View style={{flex: 1}}>
-                            <Back onPress={onBack}>&#10094;</Back>
+                            <Text onPress={onBack} style={styles.backArrow}>&#10094;</Text>
                             {view}
                             <TouchableWithoutFeedback onPress={page < 6 ? onContinue : onSubmit}>
-                                <Continue>
-                                    <Text style={{color: 'white', fontSize: 20, fontWeight: '600', lineHeight: 27}}>Continue</Text>
-                                </Continue>
+                                <View
+                                    style={{
+                                        ...styles.continue,
+                                        backgroundColor: page < 6 ? colors.green : colors.grey
+                                    }}
+                                >
+                                    <Text style={styles.continueText}>Continue</Text>
+                                </View>
                             </TouchableWithoutFeedback>
                         </View>
                     </SafeAreaView>
                 </KeyboardAvoidingView>
             </LinearGradient>
-        </Container>
+        </View>
     );
 }
 
@@ -250,66 +255,66 @@ function SignUpOne({
     setPasswordRetype
 }) {
     return (
-        <SignUpWrapper>
-            <SignUpHeader>Sign up</SignUpHeader>
-            <SignUpFormWrapper>
-                <SignUpTextInput
+        <View style={styles.container}>
+            <Text style={styles.signUpHeader}>Sign up</Text>
+            <View style={styles.signUpForm}>
+                <TextInput
                     name='username'
                     placeholder='Username'
                     value={username}
                     onChangeText={username => setUsername(username)}
-                    style={styles.input}
+                    style={styles.signUpInput}
                 />
-                <SignUpTextInput
+                <TextInput
                     keyboardType='email-address'
                     name='email'
                     placeholder='Email'
                     value={email}
                     onChangeText={email => setEmail(email)}
-                    style={styles.input}
+                    style={styles.signUpInput}
                 />
-                <SignUpTextInput
+                <TextInput
                     secureTextEntry
                     name='password'
                     placeholder='Password'
                     value={password}
                     onChangeText={password => setPassword(password)}
-                    style={styles.input}
+                    style={styles.signUpInput}
                 />
-                <SignUpTextInput
+                <TextInput
                     secureTextEntry
                     name='passwordRetype'
                     placeholder='Retype Password'
                     value={passwordRetype}
                     onChangeText={password => setPasswordRetype(password)}
-                    style={styles.input}
+                    style={styles.signUpInput}
                 />
-            </SignUpFormWrapper>
-        </SignUpWrapper>
+            </View>
+        </View>
     );
 }
 
 function SignUpTwo({ fname, lname, setFname, setLname }) {
     return (
-        <SignUpWrapper>
-            <SignUpHeader>My name is</SignUpHeader>
-            <SignUpFormWrapper>
-                <SignUpTextInput
+        <View style={styles.container}>
+            <Text style={styles.signUpHeader}>My name is</Text>
+            <View style={styles.signUpForm}>
+                <TextInput
                     name='fname'
                     placeholder='First Name'
                     value={fname}
                     onChangeText={fname => setFname(fname)}
-                    style={styles.input}
+                    style={styles.signUpInput}
                 />
-                <SignUpTextInput
+                <TextInput
                     name='lname'
                     placeholder='Last Name'
                     value={lname}
                     onChangeText={lname => setLname(lname)}
-                    style={styles.input}
+                    style={styles.signUpInput}
                 />
-            </SignUpFormWrapper>
-        </SignUpWrapper>
+            </View>
+        </View>
     );
 }
 
@@ -322,42 +327,42 @@ function SignUpThree({
     setDistance
 }) {
     return (
-        <SignUpWrapper>
-            <SignUpHeader>I live in</SignUpHeader>
-            <SignUpFormWrapper>
-                <SignUpTextInput
+        <View style={styles.container}>
+            <Text style={styles.signUpHeader}>I live in</Text>
+            <View style={styles.signUpForm}>
+                <TextInput
                     placeholder='City'
                     value={city}
                     onChangeText={city => setCity(city)}
-                    style={styles.input}
+                    style={styles.signUpInput}
                 />
-                <SignUpTextInput
+                <TextInput
                     placeholder='State'
                     value={state}
                     onChangeText={state => setState(state)}
-                    style={styles.input}
+                    style={styles.signUpInput}
                 />
-                <SignUpText>
-                    Connect with people who are less than <SignUpTextValue>{distance}</SignUpTextValue> miles away
-                </SignUpText>
+                <Text style={styles.signUpText}>
+                    Connect with people who are less than <Text style={styles.signUpTextValue}>{distance}</Text> miles away
+                </Text>
                 <MultiSlider
                     min={5}
                     max={50}
                     values={[distance]}
                     onValuesChange={distance => setDistance(parseInt(distance))}
-                    selectedStyle={{backgroundColor: PURPLE}}
-                    trackStyle={{backgroundColor: PURPLE}}
+                    selectedStyle={{backgroundColor: colors.purple}}
+                    trackStyle={{backgroundColor: colors.purple}}
                 />
-            </SignUpFormWrapper>
-        </SignUpWrapper>
+            </View>
+        </View>
     );
 }
 
 function SignUpFour({ birthday, ageRange, setBirthday, setAgeRange }) {
     return (
-        <SignUpWrapper>
-            <SignUpHeader>My birthday is</SignUpHeader>
-            <SignUpFormWrapper>
+        <View style={styles.container}>
+            <Text style={styles.signUpHeader}>My birthday is</Text>
+            <View style={styles.signUpForm}>
                 <TextInputMask
                     keyboardType='number-pad'
                     type='datetime'
@@ -365,20 +370,21 @@ function SignUpFour({ birthday, ageRange, setBirthday, setAgeRange }) {
                     placeholder='MM/DD/YYYY'
                     value={birthday}
                     onChangeText={setBirthday}
+                    style={{...styles.signUpInput, textAlign: 'center'}}
                 />
-                <SignUpText>
-                    Connect with people who are between <SignUpTextValue>{ageRange[0]}</SignUpTextValue> and <SignUpTextValue>{ageRange[1]}</SignUpTextValue> years old
-                </SignUpText>
+                <Text style={styles.signUpText}>
+                    Connect with people who are between <Text style={styles.signUpTextValue}>{ageRange[0]}</Text> and <Text style={styles.signUpTextValue}>{ageRange[1]}</Text> years old
+                </Text>
                 <MultiSlider
                     min={18}
                     max={99}
                     values={ageRange}
                     onValuesChange={ageRange => setAgeRange(ageRange.map(age => parseInt(age)))}
-                    selectedStyle={{backgroundColor: PURPLE}}
-                    trackStyle={{backgroundColor: PURPLE}}
+                    selectedStyle={{backgroundColor: colors.purple}}
+                    trackStyle={{backgroundColor: colors.purple}}
                 />
-            </SignUpFormWrapper>
-        </SignUpWrapper>
+            </View>
+        </View>
     );
 }
 
@@ -388,36 +394,31 @@ function SignUpFive({
     setGender,
     setSameGender
 }) {
+    const options = ['woman', 'man', 'other'];
+
     return (
-        <SignUpWrapper>
-            <SignUpHeader>I'm a</SignUpHeader>
-            <SignUpFormWrapper>
-                <TouchableWithoutFeedback onPress={() => setGender('woman')}>
-                    <PillButton selected={gender == 'woman'}>
-                        <PillText selected={gender == 'woman'}>Woman</PillText>
-                    </PillButton>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={() => setGender('man')}>
-                    <PillButton selected={gender == 'man'}>
-                        <PillText selected={gender == 'man'}>Man</PillText>
-                    </PillButton>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={() => setGender('other')}>
-                    <PillButton selected={gender == 'other'}>
-                        <PillText selected={gender == 'other'}>Other</PillText>
-                    </PillButton>
-                </TouchableWithoutFeedback>
-                <SignUpText>Connect only with the same gender as me</SignUpText>
-                <Toggle
+        <View style={styles.container}>
+            <Text style={styles.signUpHeader}>I'm a</Text>
+            <View style={styles.signUpForm}>
+                { options.map(optGender => (
+                    <PillButton
+                        key={optGender}
+                        selected={gender == optGender}
+                        text={optGender}
+                        onPress={() => setGender(optGender)}
+                    />
+                )) }
+                <Text style={styles.signUpText}>
+                    Connect only with the same gender as me
+                </Text>
+                <Switch
                     value={sameGender}
                     onValueChange={sameGender => setSameGender(sameGender)}
-                    trackColor={{
-                        false: '#8D99AE',
-                        true: PURPLE
-                    }}
+                    trackColor={{ false: colors.grey, true: colors.purple }}
+                    style={styles.toggle}
                 />
-            </SignUpFormWrapper>
-        </SignUpWrapper>
+            </View>
+        </View>
     );
 }
 
@@ -433,11 +434,11 @@ function SignUpSix({
         let isSelected = selectedInterests.has(interest);
 
         return (
-            <TouchableWithoutFeedback onPress={() => toggleInterest(interest)}>
-                <PillButton selected={isSelected}>
-                    <PillText selected={isSelected}>{interest}</PillText>
-                </PillButton>
-            </TouchableWithoutFeedback>
+            <PillButton
+                selected={isSelected}
+                text={interest}
+                onPress={() => toggleInterest(interest)}
+            />
         );
     }
 
@@ -448,9 +449,9 @@ function SignUpSix({
     }
 
     return (
-        <SignUpWrapper>
-            <SignUpHeader>I like</SignUpHeader>
-            <SignUpFormWrapper wide={true}>
+        <View style={styles.container}>
+            <Text style={styles.signUpHeader}>I like</Text>
+            <View style={{...styles.signUpForm, ...styles.signUpFormWide}} wide={true}>
                 <FlatList
                     data={interests}
                     extraData={selectedInterests}
@@ -458,125 +459,149 @@ function SignUpSix({
                     numColumns={2}
                     renderItem={renderInterest}
                 />
-                <SignUpText>Connect only with people that like the same things as me</SignUpText>
-                <Toggle
+                <Text style={styles.signUpText}>
+                    Connect only with people that like the same things as me
+                </Text>
+                <Switch
                     value={sameInterests}
                     onValueChange={sameInterests => setSameInterests(sameInterests)}
-                    trackColor={{
-                        false: '#8D99AE',
-                        true: PURPLE
-                    }}
+                    trackColor={{ false: colors.grey, true: colors.purple }}
+                    style={styles.toggle}
                 />
-            </SignUpFormWrapper>
-        </SignUpWrapper>
+            </View>
+        </View>
     );
 }
 
+function PillButton({ selected, text, onPress }) {
+    return (
+        <TouchableWithoutFeedback onPress={onPress}>
+            <View style={{...styles.pillButton, ...(selected ? styles.pillButtonSelected : {})}}>
+                <Text style={{...styles.pillButtonText, ...(selected ? styles.pillButtonTextSelected : {})}}>
+                    {text}
+                </Text>
+            </View>
+        </TouchableWithoutFeedback>
+    );
+}
 
-// constant css values
-const PURPLE = '#8002FE'
-const INPUT_HEIGHT = '44px';
-const INPUT_WIDTH = '252px';
+function ProgressBar({ page, totalPages }) {
+    return (
+        <View style={{...styles.progressBar, width: `${(page / totalPages) * 100}%`}} />
+    );
+}
 
-const Container = styled.View`
-    flex: 1;
-`;
+// STYLES
+const colors = {
+    black: '#1B1B1B',
+    green: '#439E73',
+    grey: '#8D99AE',
+    purple: '#8002FE',
+    white: '#FFF',
+};
 
-const Column = styled.View`
-    display: flex;
-    flex-direction: column;
-`;
-
-const Row = styled.View`
-    display: flex;
-`;
-
-const Back = styled.Text`
-    color: #1B1B1B;
-    font-size: 36;
-    font-weight: 900;
-    margin: 12px 30px 0;
-`;
-
-const Continue = styled.View`
-    background: ${props => props.page < 6 ? '#8D99AE' : '#439E73'};
-    align-items: center;
-    justify-content: center;
-    height: 56px;
-    margin-top: 16px;
-`;
-
-const PillButton = styled.View`
-    align-items: center;
-    justify-content: center;
-    background: ${props => props.selected ? PURPLE : 'transparent'};
-    border-color: ${props => props.selected ? PURPLE : '#1B1B1B'};
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 100px;
-    height: 42px;
-    width: 141px;
-    margin: 0 11px 23px;
-`;
-
-const PillText = styled.Text(({ selected }) => ({
-    color: selected ? 'white' : '#1B1B1B',
-    fontWeight: selected ? '700' : '400'
-}));
-
-const ProgressBar = styled.View(({ page }) => ({
-    backgroundColor: PURPLE,
-    height: 11,
-    width: `${(page / 6) * 100}%`,
-}));
-
-const SignUpWrapper = styled.View`
-    flex: 1;
-`;
-
-const SignUpHeader = styled.Text`
-    color: ${PURPLE};
-    fontSize: 30px;
-    lineHeight: 41px;
-    margin: 16px 60px 32px;
-`;
-
-const SignUpFormWrapper = styled.View`
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: ${props => props.wide ? '0 40px' : '0 60px'};
-`;
-
-const SignUpTextInput = styled.TextInput`
-    border-color: #1B1B1B;
-    border-style: solid;
-    border-bottom-width: 1px;
-    font-size: 20px;
-    font-style: ${props => props.value ? 'normal' : 'italic'};
-    margin-bottom: 10px;
-    padding: 10px;
-    height: ${INPUT_HEIGHT};
-    width: 100%;
-`;
-
-const SignUpText = styled.Text`
-    color: black;
-    font-size: 20px;
-    line-height: 25px;
-    margin-top: 20px;
-    width: 252px;
-`;
-
-const SignUpTextValue = styled.Text`
-    color: ${PURPLE};
-    font-weight: 700;
-`;
-
-const Toggle = styled.Switch`
-    margin-top: 16px;
-    height: 36px;
-    width: 80px;
-`;
-
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    backArrow: {
+        color: colors.black,
+        fontSize: 36,
+        fontWeight: '900',
+        marginBottom: 0,
+        marginTop: 12,
+        marginLeft: 30,
+        marginRight: 30,
+    },
+    container: {
+        flex: 1,
+    },
+    continue: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 56,
+        marginTop: 16,
+    },
+    continueText: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: '600',
+        lineHeight: 27,
+    },
+    pillButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'transparent',
+        borderColor: colors.black,
+        borderRadius: 100,
+        borderStyle: 'solid',
+        borderWidth: 1,
+        height: 42,
+        width: 141,
+        marginBottom: 23,
+        marginTop: 0,
+        marginLeft: 11,
+        marginRight: 11,
+    },
+    pillButtonSelected: {
+        backgroundColor: colors.purple,
+        borderColor: colors.purple,
+    },
+    pillButtonText: {
+        color: colors.black,
+        fontSize: 20,
+        fontWeight: '400',
+    },
+    pillButtonTextSelected: {
+        color: colors.white,
+        fontWeight: '700',
+    },
+    progressBar: {
+        backgroundColor: colors.purple,
+        height: 11,
+    },
+    signUpForm: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 0,
+        marginTop: 0,
+        marginLeft: 60,
+        marginRight: 60,
+    },
+    signUpFormWide: {
+        marginLeft: 40,
+        marginRight: 40,
+    },
+    signUpHeader: {
+        color: colors.purple,
+        fontSize: 30,
+        lineHeight: 41,
+        marginBottom: 32,
+        marginTop: 16,
+        marginLeft: 60,
+        marginRight: 60,
+    },
+    signUpInput: {
+        borderBottomColor: colors.black,
+        borderBottomWidth: 1,
+        fontSize: 20,
+        marginBottom: 10,
+        padding: 10,
+        height: 44,
+        width: '100%',
+    },
+    signUpText: {
+        color: 'black',
+        fontSize: 20,
+        lineHeight: 25,
+        marginTop: 20,
+        width: 252,
+    },
+    signUpTextValue: {
+        color: colors.purple,
+        fontWeight: '700',
+    },
+    toggle: {
+        marginTop: 16,
+        height: 36,
+        width: 80,
+    },
+});
