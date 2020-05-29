@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
     },
     continue: {
         alignItems: 'center',
-        backgroundColor: colors.green,
+        backgroundColor: colors.grey,
         justifyContent: 'center',
         height: 66,
         marginTop: 16,

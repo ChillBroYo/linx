@@ -14,7 +14,7 @@ export default function SignIn({ navigation }) {
     const [password, setPassword] = useState('');
 
     function onForgotPassword() {
-        navigation.navigate('ForgotPassword');
+        navigation.navigate('ResetPassword');
     }
 
     async function onSignIn() {
@@ -25,6 +25,7 @@ export default function SignIn({ navigation }) {
             console.log('RESPONSE:', res);
             console.log('JSON:', json);
 
+            // TODO: add handler to handle successful response
             navigation.navigate('Home');
         }
         catch(error) {
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
     header: {
         color: 'white',
         fontSize: 80,
-        marginBottom: 36,
+        marginBottom: 32,
         marginTop: 60,
     },
     input: {
