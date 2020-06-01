@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 export default function SignIn({ navigation }) {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     function onForgotPassword() {
@@ -19,13 +19,15 @@ export default function SignIn({ navigation }) {
 
     async function onSignIn() {
         try {
-            let res = await fetch(`http://192.168.1.15:8080/sign_in/?username=${email}&password=${password}`);
+            let res = await fetch(`http://192.168.1.15:8080/sign_in/?username=${username}&password=${password}`);
             let json = await res.json();
 
             console.log('RESPONSE:', res);
             console.log('JSON:', json);
 
-            // TODO: add handler to handle successful response
+            // TODO: store user info to global store
+            const userInfo = json.info;
+
             navigation.navigate('Home');
         }
         catch(error) {
@@ -44,9 +46,9 @@ export default function SignIn({ navigation }) {
                     <View style={styles.column}>
                         <Text style={styles.header}>Linx</Text>
                         <TextInput
-                            placeholder='Email'
-                            value={email}
-                            onChangeText={(email) => setEmail(email)}
+                            placeholder='Username'
+                            value={username}
+                            onChangeText={(username) => setUsername(username)}
                             style={styles.input}
                         />
                         <TextInput
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 80,
         marginBottom: 32,
-        marginTop: 60,
+        marginTop: 50,
     },
     input: {
         backgroundColor: 'rgba(255, 255, 255, 0.75)',
