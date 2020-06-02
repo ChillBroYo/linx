@@ -7,14 +7,19 @@ import Settings from '../screens/SettingsScreen';
 import SignIn from '../screens/SignInScreen';
 import SignUp from '../screens/SignUpScreen';
 
-export default createAppContainer(
-    createSwitchNavigator({
-        // You could add another route here for authentication.
-        // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-        Settings,
-        SignIn,
-        SignUp,
-        ResetPassword,
-        Main: MainTabNavigator,
-    })
-);
+const RouteConfig = {
+    // You could add another route here for authentication.
+    // Read more at https://reactnavigation.org/docs/en/auth-flow.html
+    Main: MainTabNavigator,
+    // Onboarding,
+    ResetPassword,
+    Settings,
+    SignIn,
+    SignUp,
+};
+
+const NavigatorConfig = {
+    initialRouteName: 'SignIn',
+};
+
+export default createAppContainer(createSwitchNavigator(RouteConfig, NavigatorConfig));
