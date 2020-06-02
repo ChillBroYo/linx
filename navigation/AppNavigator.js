@@ -19,7 +19,7 @@ const RouteConfig = {
 };
 
 const NavigatorConfig = {
-    initialRouteName: 'SignIn',
+    initialRouteName: 'Main',
 };
 
 export default createAppContainer(createSwitchNavigator(RouteConfig, NavigatorConfig));

@@ -28,7 +28,7 @@ export default function SignIn({ navigation }) {
             // TODO: store user info to global store
             const userInfo = json.info;
 
-            navigation.navigate('Home');
+            navigation.navigate('Cards');
         }
         catch(error) {
             console.log('Sign In error:', error);
