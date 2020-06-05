@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
+import * as Permissions from 'expo-permissions';
 
 export default function TakeProfileScreen({ navigation }) {
     //Variables to determine if permission is granted by user to access camera
     const [hasPermission, setHasPermission] = useState(null);
-console.log('CAMERA', Camera);
+
     //Variables to determine if front camera or back camera is being used
     const [type, setType] = useState(Camera.Constants.Type.back);
 
     //Hook to update status of camera permission based on user input
     useEffect(() => {
         (async () => {
-            const { status } = await Camera.requestPermissionsAsync();
+            const { status } = await Permissions.askAsync(Permissions.CAMERA);
             setHasPermission(status == 'granted');
         })();
     }, []);

@@ -22,10 +22,7 @@ const CardsStack = createStackNavigator(
         ConfirmDenial: OnboardConfirmDenialScreen,
         DenyProfile: OnboardDenyProfileScreen,
         Profile: OnboardProfileScreen,
-        TakeProfile: {
-            screen: OnboardTakeProfileScreen,
-            tabBarVisible: false,
-        },
+        TakeProfile: OnboardTakeProfileScreen,
         Welcome: OnboardWelcomeScreen,
     },
     {
