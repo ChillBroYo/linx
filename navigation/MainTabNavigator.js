@@ -2,92 +2,101 @@ import React from 'react';
 import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
-import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/newHomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import OnboardWelcomeScreen from '../screens/onboarding/Welcome';
+import OnboardProfileScreen from '../screens/onboarding/Profile';
+import OnboardTakeProfileScreen from '../screens/onboarding/TakeProfile';
+import OnboardDenyProfileScreen from '../screens/onboarding/DenyProfile';
+import OnboardConfirmDenialScreen from '../screens/onboarding/ConfirmDenial';
 import SettingsScreen from '../screens/SettingsScreen';
-import MessagesScreen from '../screens/SettingsScreen';
+import TabBarIcon from '../components/TabBarIcon';
 
 const config = Platform.select({
-  web: { headerMode: 'screen' },
-  default: {},
+    web: { headerMode: 'screen' },
+    default: { headerMode: 'none' },
 });
 
-const HomeStack = createStackNavigator(
-  {
-    Home: HomeScreen,
-  },
-  config
+// CARDS TAB
+const CardsStack = createStackNavigator(
+    {
+        ConfirmDenial: OnboardConfirmDenialScreen,
+        DenyProfile: OnboardDenyProfileScreen,
+        Profile: OnboardProfileScreen,
+        TakeProfile: OnboardTakeProfileScreen,
+        Welcome: OnboardWelcomeScreen,
+    },
+    {
+        initialRouteName: 'Welcome',
+        ...config,
+    },
 );
 
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
-  ),
+CardsStack.navigationOptions = {
+    tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name='cards' />
 };
 
-HomeStack.path = '';
+CardsStack.path = '';
 
-const LinksStack = createStackNavigator(
-  {
-    Links: LinksScreen,
-  },
-  config
+
+// FRIENDS TAB
+const FriendsStack = createStackNavigator(
+    {
+        Messages: HomeScreen,
+    },
+    config,
 );
 
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Events',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'} />
-  ),
+FriendsStack.navigationOptions = {
+    tabBarLabel: 'Friends',
+    tabBarIcon: ({ focused }) => (
+        <TabBarIcon focused={focused} name='friends' />
+    ),
 };
 
-LinksStack.path = '';
+FriendsStack.path = '';
 
-const MessagesStack = createStackNavigator(
-  {
-    Messages: MessagesScreen,
-  },
-  config
-);
 
-MessagesStack.navigationOptions = {
-  tabBarLabel: 'Messages',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'} />
-  ),
-};
-
+// SETTINGS TAB
 const SettingsStack = createStackNavigator(
-  {
-    Settings: SettingsScreen,
-  },
-  config
+    {
+        Settings: SettingsScreen
+    },
+    config
 );
 
 SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'} />
-  ),
+    tabBarLabel: 'Settings',
+    tabBarIcon: ({ focused }) => (
+        <TabBarIcon focused={focused} name='settings' />
+    ),
 };
 
 SettingsStack.path = '';
 
-const tabNavigator = createBottomTabNavigator({
-  HomeStack,
-  LinksStack,
-  SettingsStack,
-  MessagesStack,
-});
+
+// BOTTOM TAB
+const BottomTabRouteConfig = {
+    Friends: FriendsStack,
+    Cards: CardsStack,
+    Settings: SettingsStack,
+};
+
+const BottomTabNavigatorConfig = {
+    initialRouteName: 'Cards',
+    defaultNavigationOptions: ({ navigation }) => ({
+        tabBarIcon: ({ focused }) => {
+            // routeName corresponds to keys in BottomTabRouteConfig
+            const { routeName } = navigation.state;
+            return <TabBarIcon focused={focused} name={routeName} />;
+        }
+    }),
+    tabBarOptions: {
+        showLabel: false,
+        style: { height: 100 },
+    },
+};
+
+const tabNavigator = createBottomTabNavigator(BottomTabRouteConfig, BottomTabNavigatorConfig);
 
 tabNavigator.path = '';
 
