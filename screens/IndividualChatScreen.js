@@ -59,8 +59,10 @@ export default class App extends Component {
         
         <Text>please show up</Text>
         {this.state.messages ? this.state.messages.map(message => 
-          <Text key={message.message_id}>{message.message}</Text>
-
+        <View key={message.message_id}>
+          <Text>{message.message}</Text>
+          <Text>bsh</Text> 
+        </View>
         ) : null}
       </View>
     );
