@@ -601,6 +601,6 @@ const styles = StyleSheet.create({
     },
     topPadder: {
         backgroundColor: colors.grey,
-        height: 50,
+        height: 40,
     },
 });

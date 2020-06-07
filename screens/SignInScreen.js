@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+    Image,
     ImageBackground,
     SafeAreaView,
     StyleSheet,
@@ -44,7 +45,7 @@ export default function SignIn({ navigation }) {
             <ImageBackground source={BACKGROUND_IMAGE} style={styles.background}>
                 <SafeAreaView style={styles.wrapper}>
                     <View style={styles.column}>
-                        <Text style={styles.header}>Linx</Text>
+                        <Image source={LINX_LOGO} style={styles.header} />
                         <TextInput
                             placeholder='Username'
                             value={username}
@@ -69,19 +70,19 @@ export default function SignIn({ navigation }) {
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
-                    <TouchableWithoutFeedback onPress={onForgotPassword}>
-                        <View style={styles.forgotPassword}>
-                            <Text style={{...styles.buttonText, color: colors.white}}>Forgot password</Text>
-                        </View>
-                    </TouchableWithoutFeedback>
                 </SafeAreaView>
+                <TouchableWithoutFeedback onPress={onForgotPassword}>
+                    <View style={styles.forgotPassword}>
+                        <Text style={{...styles.buttonText, color: colors.white}}>Forgot password</Text>
+                    </View>
+                </TouchableWithoutFeedback>
             </ImageBackground>
         </View>
     );
 }
 
-// const BACKGROUND_IMAGE = { uri: 'https://linx-images.s3-us-west-2.amazonaws.com/reference/main_pic.png' };
-const BACKGROUND_IMAGE = require('../assets/images/image.png');
+const BACKGROUND_IMAGE = require('../assets/images/cover_image.png');
+const LINX_LOGO = require('../assets/images/linx_logo.png');
 const colors = {
     green: '#439E73',
     white: '#FFF',
@@ -120,11 +121,17 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    forgotPassword: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 28,
+    },
     header: {
-        color: 'white',
-        fontSize: 80,
         marginBottom: 32,
         marginTop: 50,
+        maxHeight: 72,
+        maxWidth: 157,
+        resizeMode: 'contain',
     },
     input: {
         backgroundColor: 'rgba(255, 255, 255, 0.75)',
