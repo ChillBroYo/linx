@@ -35,6 +35,15 @@ CardsStack.navigationOptions = {
     tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name='cards' />
 };
 
+CardsStack.navigationOptions = ({ navigation }) => {
+    const routes = navigation.state.routes;
+    const currentRoute = routes[routes.length - 1];
+    return {
+        tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name='cards' />,
+        tabBarVisible: currentRoute.routeName != 'TakeProfile',
+    };
+}
+
 CardsStack.path = '';
 
 
