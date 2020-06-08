@@ -26,10 +26,8 @@ export default function SignIn({ navigation }) {
             console.log('RESPONSE:', res);
             console.log('JSON:', json);
 
-            // TODO: store user info to global store
             const userInfo = json.info;
-
-            navigation.navigate('Cards');
+            navigation.navigate('Cards', { user: userInfo });
         }
         catch(error) {
             console.log('Sign In error:', error);
@@ -47,12 +45,14 @@ export default function SignIn({ navigation }) {
                     <View style={styles.column}>
                         <Image source={LINX_LOGO} style={styles.header} />
                         <TextInput
+                            clearButtonMode='while-editing'
                             placeholder='Username'
                             value={username}
                             onChangeText={(username) => setUsername(username)}
                             style={styles.input}
                         />
                         <TextInput
+                            clearButtonMode='while-editing'
                             placeholder='Password'
                             value={password}
                             onChangeText={(password) => setPassword(password)}
@@ -61,12 +61,12 @@ export default function SignIn({ navigation }) {
                         />
                         <TouchableWithoutFeedback onPress={onSignIn}>
                             <View style={{...styles.button, ...styles.buttonColored}}>
-                                <Text style={{...styles.buttonText, ...styles.whiteText}}>Sign in</Text>
+                                <Text style={{...styles.buttonText, color: colors.white}}>Sign in</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <TouchableWithoutFeedback onPress={onSignUp}>
                             <View style={{...styles.button, ...styles.buttonTransparent}}>
-                                <Text style={{...styles.buttonText, ...styles.coloredText}}>Sign up</Text>
+                                <Text style={{...styles.buttonText, color: colors.green}}>Sign up</Text>
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
@@ -112,9 +112,6 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         lineHeight: 27,
     },
-    coloredText: {
-        color: colors.green,
-    },
     column: {
         alignItems: 'center',
     },
@@ -140,9 +137,6 @@ const styles = StyleSheet.create({
         padding: 14,
         height: 48,
         width: 268,
-    },
-    whiteText: {
-        color: colors.white,
     },
     wrapper: {
         alignItems: 'center',

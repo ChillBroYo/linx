@@ -251,6 +251,7 @@ function SignUpOne({
             <Text style={styles.signUpHeader}>Sign up</Text>
             <View style={styles.signUpForm}>
                 <TextInput
+                    clearButtonMode='while-editing'
                     name='username'
                     placeholder='Username'
                     value={username}
@@ -258,6 +259,7 @@ function SignUpOne({
                     style={styles.signUpInput}
                 />
                 <TextInput
+                    clearButtonMode='while-editing'
                     keyboardType='email-address'
                     name='email'
                     placeholder='Email'
@@ -266,6 +268,7 @@ function SignUpOne({
                     style={styles.signUpInput}
                 />
                 <TextInput
+                    clearButtonMode='while-editing'
                     secureTextEntry
                     name='password'
                     placeholder='Password'
@@ -274,6 +277,7 @@ function SignUpOne({
                     style={styles.signUpInput}
                 />
                 <TextInput
+                    clearButtonMode='while-editing'
                     secureTextEntry
                     name='passwordRetype'
                     placeholder='Retype Password'
@@ -292,6 +296,7 @@ function SignUpTwo({ fname, lname, setFname, setLname }) {
             <Text style={styles.signUpHeader}>My name is</Text>
             <View style={styles.signUpForm}>
                 <TextInput
+                    clearButtonMode='while-editing'
                     name='fname'
                     placeholder='First Name'
                     value={fname}
@@ -299,6 +304,7 @@ function SignUpTwo({ fname, lname, setFname, setLname }) {
                     style={styles.signUpInput}
                 />
                 <TextInput
+                    clearButtonMode='while-editing'
                     name='lname'
                     placeholder='Last Name'
                     value={lname}
@@ -323,12 +329,14 @@ function SignUpThree({
             <Text style={styles.signUpHeader}>I live in</Text>
             <View style={styles.signUpForm}>
                 <TextInput
+                    clearButtonMode='while-editing'
                     placeholder='City'
                     value={city}
                     onChangeText={city => setCity(city)}
                     style={styles.signUpInput}
                 />
                 <TextInput
+                    clearButtonMode='while-editing'
                     placeholder='State'
                     value={state}
                     onChangeText={state => setState(state)}
