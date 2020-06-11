@@ -7,7 +7,7 @@ import Emoji from 'react-native-emoji';
 import { globalStyles } from '../../styles/global';
 
 export default function WelcomeScreen({ navigation }) {
-    return(
+    return (
         <View style={globalStyles.outerContainer}>
             <LinearGradient colors={['#439E73', 'rgba(254, 241, 2, 0)']} style={{height: '100%'}}>
                 <View style={globalStyles.innerContainer}>

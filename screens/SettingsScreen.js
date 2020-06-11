@@ -22,7 +22,7 @@ export default function Settings({ navigation }) {
                                     <Text style={styles.settingHeader}>My name is</Text>
                                     <Text>NAME</Text>
                                 </View>
-                                <Text>&#10095;</Text>
+                                <Text style={styles.arrow}>&#10095;</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
@@ -33,7 +33,7 @@ export default function Settings({ navigation }) {
                                     <Text>LOCATION</Text>
                                     <Text>MAX DISTANCE TO CONNECT</Text>
                                 </View>
-                                <Text>&#10095;</Text>
+                                <Text style={styles.arrow}>&#10095;</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
@@ -44,7 +44,7 @@ export default function Settings({ navigation }) {
                                     <Text>LOCATION</Text>
                                     <Text>MAX DISTANCE TO CONNECT</Text>
                                 </View>
-                                <Text>&#10095;</Text>
+                                <Text style={styles.arrow}>&#10095;</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
@@ -55,7 +55,7 @@ export default function Settings({ navigation }) {
                                     <Text>GENDER</Text>
                                     <Text>GENDER TO CONNECT WITH</Text>
                                 </View>
-                                <Text>&#10095;</Text>
+                                <Text style={styles.arrow}>&#10095;</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
@@ -66,7 +66,7 @@ export default function Settings({ navigation }) {
                                     <Text>NUMBER OF INTERESTS</Text>
                                     <Text>CONNECT WITH INTERESTS</Text>
                                 </View>
-                                <Text>&#10095;</Text>
+                                <Text style={styles.arrow}>&#10095;</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
@@ -76,7 +76,7 @@ export default function Settings({ navigation }) {
                                     <Text style={styles.settingHeader}>Account email</Text>
                                     <Text>EMAIL</Text>
                                 </View>
-                                <Text>&#10095;</Text>
+                                <Text style={styles.arrow}>&#10095;</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
@@ -85,15 +85,15 @@ export default function Settings({ navigation }) {
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>Change password</Text>
                                 </View>
-                                <Text>&#10095;</Text>
+                                <Text style={styles.arrow}>&#10095;</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
                         <TouchableWithoutFeedback>
-                            <Text>Sign out</Text>
+                            <Text style={styles.boldText}>Sign out</Text>
                         </TouchableWithoutFeedback>
                         <TouchableWithoutFeedback>
-                            <Text>Delete account</Text>
+                            <Text style={styles.italicText}>Delete account</Text>
                         </TouchableWithoutFeedback>
                     </ScrollView>
                 </SafeAreaView>
@@ -110,6 +110,18 @@ const colors = {
 };
 
 const styles = StyleSheet.create({
+    arrow: {
+        fontSize: 20,
+        fontWeight: '900',
+    },
+    boldText: {
+        color: colors.black,
+        fontSize: 20,
+        fontWeight: '600',
+        lineHeight: 27,
+        marginTop: 20,
+        textAlign: 'center',
+    },
     column: {
         flex: 1,
     },
@@ -123,11 +135,21 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         marginTop: 15,
     },
+    italicText: {
+        color: colors.grey,
+        fontSize: 20,
+        fontStyle: 'italic',
+        lineHeight: 27,
+        marginBottom: 32,
+        marginTop: 24,
+        textAlign: 'center',
+    },
     mainWrapper: {
         marginLeft: 37,
         marginRight: 37,
     },
     row: {
+        alignItems: 'center',
         flexDirection: 'row',
     },
     screenHeader: {
