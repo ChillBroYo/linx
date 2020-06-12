@@ -1,15 +1,15 @@
 import { createStackNavigator } from 'react-navigation';
-import LoginCredentials from '../screens/signup/LoginCredentials';
-import UserName from '../screens/signup/UserName';
-import UserLocation from '../screens/signup/UserLocation';
-import UserBirthday from '../screens/signup/UserBirthday';
-import UserGender from '../screens/signup/UserGender';
-import UserInterests from '../screens/signup/UserInterests';
+import UserCredentials from '../screens/user/Credentials';
+import UserName from '../screens/user/Name';
+import UserLocation from '../screens/user/Location';
+import UserBirthday from '../screens/user/Birthday';
+import UserGender from '../screens/user/Gender';
+import UserInterests from '../screens/user/Interests';
 
 const SignUpStack = createStackNavigator(
     {
-        LoginCredentials,
         UserBirthday,
+        UserCredentials,
         UserGender,
         UserInterests,
         UserLocation,
@@ -17,7 +17,7 @@ const SignUpStack = createStackNavigator(
     },
     {
         headerMode: 'none',
-        initialRouteName: 'LoginCredentials',
+        initialRouteName: 'UserCredentials',
     },
 );
 

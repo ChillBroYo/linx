@@ -21,7 +21,7 @@ import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient } from '../../constants/Colors';
 
-export default function LoginCredentials({ navigation }) {
+export default function UserCredentials({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordRetype, setPasswordRetype] = useState('');
