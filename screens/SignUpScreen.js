@@ -456,6 +456,7 @@ function SignUpSix({
                     data={interests}
                     extraData={selectedInterests}
                     horizontal={false}
+                    keyExtractor={item => item}
                     numColumns={2}
                     renderItem={renderInterest}
                 />
