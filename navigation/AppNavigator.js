@@ -3,7 +3,6 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
 import ResetPassword from '../screens/ResetPassword';
-import Settings from '../screens/SettingsScreen';
 import SignIn from '../screens/SignInScreen';
 import SignUp from './SignUpNavigator';
 
@@ -13,7 +12,6 @@ const RouteConfig = {
     Main: MainTabNavigator,
     // Onboarding,
     ResetPassword,
-    Settings,
     SignIn,
     SignUp,
 };

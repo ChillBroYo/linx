@@ -8,13 +8,14 @@ import {
     View,
 } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
+import { lightGradient } from '../constants/Colors';
 
 export default function Settings({ navigation }) {
     return (
         <View style={styles.container}>
-            <LinearGradient colors={['rgba(254, 241, 2, 0)', 'rgba(254, 241, 2, 0.1)']} style={styles.container}>
+            <LinearGradient colors={lightGradient} style={styles.container}>
                 <SafeAreaView style={styles.mainWrapper}>
-                    <ScrollView>
+                    <ScrollView showsVerticalScrollIndicator={false}>
                         <Text style={styles.screenHeader}>Settings</Text>
                         <TouchableWithoutFeedback>
                             <View style={styles.row}>
