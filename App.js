@@ -31,6 +31,8 @@ export default function App(props) {
 async function loadResourcesAsync() {
   await Promise.all([
     Asset.loadAsync([
+      require('./assets/images/cover_image.png'),
+      require('./assets/images/linx_logo.png'),
       require('./assets/images/robot-dev.png'),
       require('./assets/images/robot-prod.png'),
     ]),
