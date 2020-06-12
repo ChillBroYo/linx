@@ -38,7 +38,7 @@ export default function UserName({ navigation }) {
             first: fname.trim(),
             last: lname.trim(),
         };
-        navigation.navigate('UserLocation', { user });
+        navigation.navigate('SignUpLocation', { user });
     }
 
     function validateForm() {

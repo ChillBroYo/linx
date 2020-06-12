@@ -41,7 +41,7 @@ export default function UserLocation({ navigation }) {
             state: state.trim(),
         };
         user.info.connectWith = { distance };
-        navigation.navigate('UserBirthday', { user });
+        navigation.navigate('SignUpBirthday', { user });
     }
 
     function validateForm() {

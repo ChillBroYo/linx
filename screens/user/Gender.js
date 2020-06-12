@@ -35,7 +35,7 @@ export default function UserGender({ navigation }) {
         let user = navigation.getParam('user');
         user.info.gender = gender;
         user.info.connectWith.sameGender = sameGender;
-        navigation.navigate('UserInterests', { user });
+        navigation.navigate('SignUpInterests', { user });
     }
 
     return (

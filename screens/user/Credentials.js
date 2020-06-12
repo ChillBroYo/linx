@@ -40,7 +40,7 @@ export default function UserCredentials({ navigation }) {
             username: username.trim(),
             security_level: 'user',
         };
-        navigation.navigate('UserName', { user });
+        navigation.navigate('SignUpName', { user });
     }
 
     function validateForm() {

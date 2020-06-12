@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
@@ -27,6 +27,14 @@ export default function UserBirthday({ navigation }) {
     const [birthday, setBirthday] = useState('');
     const [ageRange, setAgeRange] = useState([23, 29]);
 
+    useEffect(() => {
+        const user = navigation.getParam('user');
+        if (user) {
+            setBirthday(user.birthday);
+            setAgeRange(user.connectWith.ageRange);
+        }
+    }, []);
+
     function doBack() {
         navigation.goBack();
     }
@@ -37,7 +45,7 @@ export default function UserBirthday({ navigation }) {
         let user = navigation.getParam('user');
         user.info.birthday = birthday.trim();
         user.info.connectWith.ageRange = ageRange;
-        navigation.navigate('UserGender', { user });
+        navigation.navigate('SignUpGender', { user });
     }
 
     function validateForm() {

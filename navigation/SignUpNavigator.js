@@ -1,23 +1,23 @@
 import { createStackNavigator } from 'react-navigation';
-import UserCredentials from '../screens/user/Credentials';
-import UserName from '../screens/user/Name';
-import UserLocation from '../screens/user/Location';
-import UserBirthday from '../screens/user/Birthday';
-import UserGender from '../screens/user/Gender';
-import UserInterests from '../screens/user/Interests';
+import SignUpCredentials from '../screens/user/Credentials';
+import SignUpName from '../screens/user/Name';
+import SignUpLocation from '../screens/user/Location';
+import SignUpBirthday from '../screens/user/Birthday';
+import SignUpGender from '../screens/user/Gender';
+import SignUpInterests from '../screens/user/Interests';
 
 const SignUpStack = createStackNavigator(
     {
-        UserBirthday,
-        UserCredentials,
-        UserGender,
-        UserInterests,
-        UserLocation,
-        UserName,
+        SignUpBirthday,
+        SignUpCredentials,
+        SignUpGender,
+        SignUpInterests,
+        SignUpLocation,
+        SignUpName,
     },
     {
         headerMode: 'none',
-        initialRouteName: 'UserCredentials',
+        initialRouteName: 'SignUpCredentials',
     },
 );
 
