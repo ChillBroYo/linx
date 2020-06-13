@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
     SafeAreaView,
     ScrollView,
+    StatusBar,
     TextInput,
     TouchableWithoutFeedback,
     View,
@@ -22,10 +23,14 @@ import { UserContext } from '../../contexts/UserContext';
 
 export default function UserEmail({ navigation }) {
     const {
-        email: currentEmail,
-        setEmail: updateEmail,
+        email: contextEmail,
+        setEmail: setContextEmail,
     } = useContext(UserContext);
-    const [email, setEmail] = useState(currentEmail || '');
+    const [email, setEmail] = useState(contextEmail);
+
+    useEffect(() => {
+        StatusBar.setBarStyle('dark-content');
+    }, []);
 
     function doBack() {
         navigation.goBack();
@@ -33,7 +38,7 @@ export default function UserEmail({ navigation }) {
 
     function doSave() {
         if (!validateEmail()) return;
-        updateEmail(email);
+        setContextEmail(email);
         Alert.alert('Your email has been updated');
     }
 

@@ -1,9 +1,12 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
     SafeAreaView,
     ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
     TextInput,
     TouchableWithoutFeedback,
     View,
@@ -14,36 +17,48 @@ import {
     formStyles,
     PageHeader,
     pageStyles,
+    ProgressBar,
+    TOTAL_STEPS,
+    TopBar,
 } from './common';
+import { isSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
-import { lightGradient } from '../../constants/Colors';
+import { lightGradient, purple, white } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
 
 export default function UserName({ navigation }) {
+    const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        firstName, setFirstName,
-        lastName, setLastName,
+        firstName: contextFirstName,
+        setFirstName: setContextFirstName,
+        lastName: contextLastName,
+        setLastName: setContextLastName,
     } = useContext(UserContext);
-    const [fname, setFname] = useState(firstName || '');
-    const [lname, setLname] = useState(lastName || '');
+    const [firstName, setFirstName] = useState(contextFirstName);
+    const [lastName, setLastName] = useState(contextLastName);
+
+    useEffect(() => {
+        StatusBar.setBarStyle(isSignUpScreen ? 'light-content' : 'dark-content');
+    }, []);
 
     function doBack() {
         navigation.goBack();
     }
 
-    function doSave() {
-        if (!validateForm) return;
-        setFirstName(fname);
-        setLname(lname);
-        Alert.alert('Your profile has been updated');
+    function doSubmit() {
+        if (!validateForm()) return;
+        setContextFirstName(firstName);
+        setContextLastName(lastName);
+        // TODO: ADD PROFILE IMAGE
+        isSignUpScreen ? navigation.navigate('SignUpLocation') : doBack();
     }
 
     function validateForm() {
-        if (!fname) {
+        if (!firstName) {
             return Alert.alert('First name is empty');
         }
-        else if (!lname) {
+        else if (!lastName) {
             return Alert.alert('Last name is empty');
         }
 
@@ -53,34 +68,80 @@ export default function UserName({ navigation }) {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={pageStyles.container}>
+                {isSignUpScreen && <TopBar />}
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
+                    {isSignUpScreen && <ProgressBar step={2} totalSteps={TOTAL_STEPS} />}
                     <SafeAreaView>
                         <BackArrow doPress={doBack} />
                     </SafeAreaView>
                     <ScrollView style={pageStyles.container}>
-                        <PageHeader value='Profile' />
+                        <PageHeader value={isSignUpScreen ? 'My name is' : 'Profile'} />
                         <Form>
+                            {!isSignUpScreen && (
+                                <TouchableWithoutFeedback>
+                                    <View style={styles.profileImage}>
+                                        <Text style={styles.profileInitials}>{firstName[0] || 'A'}{lastName[0] || 'N'}</Text>
+                                        <View style={styles.cameraButton}>
+                                            <Text>&#128247;</Text>
+                                        </View>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            )}
                             <TextInput
                                 name='firstName'
-                                placeholder='First name'
-                                value={fname}
-                                onChangeText={fname => setFname(fname)}
+                                placeholder='First Name'
+                                value={firstName}
+                                onChangeText={firstName => setFirstName(firstName)}
                                 clearButtonMode='while-editing'
                                 style={formStyles.input}
                             />
                             <TextInput
                                 name='lastName'
-                                placeholder='Last name'
-                                value={lname}
-                                onChangeText={lname => setLname(lname)}
+                                placeholder='Last Name'
+                                value={lastName}
+                                onChangeText={lastName => setLastName(lastName)}
                                 clearButtonMode='while-editing'
                                 style={formStyles.input}
                             />
                         </Form>
                     </ScrollView>
                 </LinearGradient>
-                <BarButton value='Save' doPress={doSave} />
+                <BarButton value={isSignUpScreen ? 'Continue' : 'Save'} doPress={doSubmit} />
             </View>
         </TouchableWithoutFeedback>
     );
 }
+
+const styles = StyleSheet.create({
+    cameraButton: {
+        position: 'absolute',
+        alignItems: 'center',
+        justifyContent: 'center',
+        bottom: 0,
+        right: 0,
+        backgroundColor: purple,
+        borderRadius: 20,
+        height: 40,
+        width: 40,
+        shadowColor: 'black',
+        shadowOffset: { height: 1, width: 1 },
+        shadowOpacity: 0.5,
+        shadowRadius: 7,
+    },
+    profileImage: {
+        position: 'relative',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: purple,
+        borderRadius: 60,
+        height: 120,
+        width: 120,
+        marginBottom: 40,
+    },
+    profileInitials: {
+        color: white,
+        fontSize: 40,
+        lineHeight: 54,
+        textTransform: 'capitalize',
+    },
+});

@@ -6,7 +6,6 @@ import SettingsEmail from '../screens/user/Email';
 import SettingsGender from '../screens/user/Gender';
 import SettingsInterests from '../screens/user/Interests';
 import SettingsLocation from '../screens/user/Location';
-import SettingsName from '../screens/user/Name';
 import SettingsPassword from '../screens/user/Password';
 import SettingsProfile from '../screens/user/Profile';
 import TabBarIcon from '../components/TabBarIcon';
@@ -19,19 +18,20 @@ const SettingsStack = createStackNavigator(
         SettingsHome,
         SettingsInterests,
         SettingsLocation,
-        SettingsName,
         SettingsPassword,
         SettingsProfile,
     },
     {
         headerMode: 'none',
         initialRouteName: 'SettingsHome',
-        navigationOptions: {
-            tabBarLabel: 'Settings',
-            tabBarIcon: ({ focused }) => (
-                <TabBarIcon focused={focused} name='settings' />
-            ),
-        }
+        navigationOptions: ({ navigation }) => {
+            const routes = navigation.state.routes;
+            const currentRoute = routes[routes.length - 1];
+            return {
+                tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name='settings' />,
+                tabBarVisible: currentRoute.routeName == 'SettingsHome',
+            };
+        },
     },
 );
 

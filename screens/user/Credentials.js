@@ -1,8 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
     Alert,
     Keyboard,
+    SafeAreaView,
     ScrollView,
+    StatusBar,
     TextInput,
     TouchableWithoutFeedback,
     View,
@@ -20,7 +22,7 @@ import {
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient } from '../../constants/Colors';
-import { SignUpContext } from '../../contexts/SignUpContext';
+import { UserContext } from '../../contexts/UserContext';
 
 export default function UserCredentials({ navigation }) {
     const {
@@ -28,8 +30,11 @@ export default function UserCredentials({ navigation }) {
         password, setPassword,
         passwordRetype, setPasswordRetype,
         username, setUsername,
-    } = useContext(SignUpContext);
+    } = useContext(UserContext);
 
+    useEffect(() => {
+        StatusBar.setBarStyle('light-content');
+    }, []);
 
     function doBack() {
         navigation.navigate('SignIn');
@@ -37,34 +42,28 @@ export default function UserCredentials({ navigation }) {
 
     function doContinue() {
         if (!validateForm()) return;
-        navigation.navigate('SignUpName');
+        navigation.navigate('SignUpProfile');
     }
 
     function validateForm() {
         if (!username) {
-            Alert.alert('Username is empty');
-            return;
+            return Alert.alert('Username is empty');
         }
         else if (!email) {
-            Alert.alert('Email is empty');
-            return;
+            return Alert.alert('Email is empty');
         }
         else if (!password || !passwordRetype) {
-            Alert.alert('Password is empty');
-            return;
+            return Alert.alert('Password is empty');
         }
         else if (password !== passwordRetype) {
-            Alert.alert("Passwords do not match");
-            return;
+            return Alert.alert("Passwords do not match");
         }
         else {
             if (!validateUsername()) {
-                Alert.alert('Username is already taken');
-                return;
+                return Alert.alert('Username is already taken');
             }
             if (!validateEmail()) {
-                Alert.alert('Email is not valid');
-                return;
+                return Alert.alert('Email is not valid');
             }
         }
 
@@ -88,7 +87,9 @@ export default function UserCredentials({ navigation }) {
                 <TopBar />
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
                     <ProgressBar step={1} totalSteps={TOTAL_STEPS} />
-                    <BackArrow doPress={doBack} />
+                    <SafeAreaView>
+                        <BackArrow doPress={doBack} />
+                    </SafeAreaView>
                     <ScrollView style={pageStyles.container}>
                         <PageHeader value='Sign up' />
                         <Form>

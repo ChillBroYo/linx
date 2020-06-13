@@ -1,9 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
     FlatList,
     Keyboard,
+    SafeAreaView,
     ScrollView,
+    StatusBar,
     StyleSheet,
     Switch,
     Text,
@@ -20,37 +22,46 @@ import {
     TOTAL_STEPS,
     TopBar,
 } from './common';
+import { isSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import PillButton from '../../components/PillButton';
 import { grey, lightGradient, purple } from '../../constants/Colors';
-import { SignUpContext } from '../../contexts/SignUpContext';
+import { UserContext } from '../../contexts/UserContext';
 
 export default function UserGender({ navigation }) {
+    const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        selectedInterests, setSelectedInterests,
-        sameInterests, setSameInterests,
-        formatUserInfo,
-    } = useContext(SignUpContext);
-    const interests = ['art', 'food', 'nature', 'sports'];
+        interests: contextInterests,
+        setInterests: setContextInterests,
+        sameInterests: contextSameInterests,
+        setSameInterests: setContextSameInterests,
+        formatUserInfoForSignUp,
+    } = useContext(UserContext);
+    const [interests, setInterests] = useState(contextInterests);
+    const [sameInterests, setSameInterests] = useState(contextSameInterests);
+    const interestsList = ['art', 'food', 'nature', 'sports'];
+
+    useEffect(() => {
+        StatusBar.setBarStyle(isSignUpScreen ? 'light-content' : 'dark-content');
+    });
 
     function doBack() {
         navigation.goBack();
     }
 
-    async function doSubmit() {
+    async function doSignUp() {
         try {
             const API_BASE = 'http://192.168.1.15:8080/sign_up';
-            const user = formatUserInfo();
-            const res = await axios.get(API_BASE, { params: user });
+            const params = formatUserInfoForSignUp();
+            console.log('USER INFO PARAM:', params);
+            const res = await axios.get(API_BASE, { params });
             const data = res.data;
             if (res.status != 200) {
-                Alert.alert('Sign up failed. Please try again');
-                return;
+                return Alert.alert('Sign up failed. Please try again');
             }
             if (!data.success || data.success == 'false') {
-                Alert.alert(data.errmsg);
-                return;
+                return Alert.alert(data.errmsg);
             }
 
             navigation.navigate('SignIn');
@@ -59,12 +70,18 @@ export default function UserGender({ navigation }) {
         }
     }
 
+    async function doSubmit() {
+        await setContextInterests(interests);
+        await setContextSameInterests(sameInterests);
+        isSignUpScreen ? doSignUp() : doBack();
+    }
+
     // FlatList renderItem passes { index: <i>, item: <data[i]> }
     function renderInterest({ item: interest }) {
         return (
             <View style={styles.buttonWrapper}>
                 <PillButton
-                    selected={selectedInterests.has(interest)}
+                    selected={interests.has(interest)}
                     value={interest}
                     text={interest}
                     doPress={() => toggleInterest(interest)}
@@ -74,24 +91,26 @@ export default function UserGender({ navigation }) {
     }
 
     function toggleInterest(interest) {
-        let nextInterests = new Set([...selectedInterests]);
-        selectedInterests.has(interest) ? nextInterests.delete(interest) : nextInterests.add(interest);
-        setSelectedInterests(nextInterests);
+        let nextInterests = new Set([...interests]);
+        interests.has(interest) ? nextInterests.delete(interest) : nextInterests.add(interest);
+        setInterests(nextInterests);
     }
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={pageStyles.container}>
-                <TopBar />
+                {isSignUpScreen && <TopBar />}
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
-                    <ProgressBar step={6} totalSteps={TOTAL_STEPS} />
-                    <BackArrow doPress={doBack} />
+                    {isSignUpScreen && <ProgressBar step={6} totalSteps={TOTAL_STEPS} />}
+                    <SafeAreaView>
+                        <BackArrow doPress={doBack} />
+                    </SafeAreaView>
                     <ScrollView style={pageStyles.container}>
                         <PageHeader value='I like' />
                         <View style={styles.form}>
                             <FlatList
-                                data={interests}
-                                extraData={selectedInterests}
+                                data={interestsList}
+                                extraData={interests}
                                 keyExtractor={interest => interest}
                                 horizontal={false}
                                 numColumns={2}
@@ -111,7 +130,7 @@ export default function UserGender({ navigation }) {
                         </View>
                     </ScrollView>
                 </LinearGradient>
-                <BarButton value='Done' doPress={doSubmit} />
+                <BarButton value={isSignUpScreen ? 'Done' : 'Save'} doPress={doSubmit} />
             </View>
         </TouchableWithoutFeedback>
     );

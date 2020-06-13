@@ -1,8 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
+    SafeAreaView,
     ScrollView,
+    StatusBar,
     Text,
     TextInput,
     TouchableWithoutFeedback,
@@ -19,35 +21,50 @@ import {
     TOTAL_STEPS,
     TopBar,
 } from './common';
+import { isSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple } from '../../constants/Colors';
-import { SignUpContext } from '../../contexts/SignUpContext';
+import { UserContext } from '../../contexts/UserContext';
 
 export default function UserLocation({ navigation }) {
+    const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        city, setCity,
-        state, setState,
-        distance, setDistance,
-    } = useContext(SignUpContext);
+        city: contextCity,
+        setCity: setContextCity,
+        state: contextState,
+        setState: setContextState,
+        distance: contextDistance,
+        setDistance: setContextDistance,
+    } = useContext(UserContext);
+    const [city, setCity] = useState(contextCity);
+    const [state, setState] = useState(contextState);
+    const [distance, setDistance] = useState(contextDistance);
+
+    useEffect(() => {
+        StatusBar.setBarStyle(isSignUpScreen ? 'light-content' : 'dark-content');
+    }, []);
 
     function doBack() {
         navigation.goBack();
     }
 
-    function doContinue() {
+    function doSubmit() {
         if (!validateForm()) return;
-        navigation.navigate('SignUpBirthday');
+
+        setContextCity(city);
+        setContextState(state);
+        setContextDistance(distance);
+
+        isSignUpScreen ? navigation.navigate('SignUpBirthday') : doBack();
     }
 
     function validateForm() {
-        if (!city || !state) {
-            Alert.alert('Missing City or State');
-            return;
+        if (!city) {
+            return Alert.alert('City is empty');
         }
         else if (!state) {
-            Alert.alert('State is empty');
-            return;
+            return Alert.alert('State is empty');
         }
 
         return true;
@@ -56,10 +73,12 @@ export default function UserLocation({ navigation }) {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={pageStyles.container}>
-                <TopBar />
+                {isSignUpScreen && <TopBar />}
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
-                    <ProgressBar step={3} totalSteps={TOTAL_STEPS} />
-                    <BackArrow doPress={doBack} />
+                    {isSignUpScreen && <ProgressBar step={3} totalSteps={TOTAL_STEPS} />}
+                    <SafeAreaView>
+                        <BackArrow doPress={doBack} />
+                    </SafeAreaView>
                     <ScrollView style={pageStyles.container}>
                         <PageHeader value='I live in' />
                         <Form>
@@ -91,7 +110,7 @@ export default function UserLocation({ navigation }) {
                         </Form>
                     </ScrollView>
                 </LinearGradient>
-                <BarButton value='Continue' doPress={doContinue} />
+                <BarButton value={isSignUpScreen ? 'Continue' : 'Save'} doPress={doSubmit} />
             </View>
         </TouchableWithoutFeedback>
     );

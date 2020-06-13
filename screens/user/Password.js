@@ -1,9 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
     SafeAreaView,
     ScrollView,
+    StatusBar,
     TextInput,
     TouchableWithoutFeedback,
     View,
@@ -25,13 +26,18 @@ export default function UserName({ navigation }) {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
 
+    useEffect(() => {
+        StatusBar.setBarStyle('dark-content');
+    }, []);
+
     function doBack() {
         navigation.goBack();
     }
 
     function doSave() {
         if (!verifyPassword()) return;
-        Alert.alert('Your password has been updated');
+        setPassword(newPassword);
+        doBack();
     }
 
     function verifyPassword() {

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
     SafeAreaView,
     ScrollView,
+    StatusBar,
     StyleSheet,
     Text,
     TouchableWithoutFeedback,
@@ -14,79 +15,128 @@ import {
     lightGradient,
     purple,
 } from '../constants/Colors';
+import { UserContext } from '../contexts/UserContext';
 
 export default function Settings({ navigation }) {
+    const {
+        email,
+        city,
+        state,
+        distance,
+        birthday,
+        ageRange,
+        gender,
+        sameGender,
+        interests,
+        sameInterests,
+    } = useContext(UserContext);
+
+    useEffect(() => {
+        StatusBar.setBarStyle('dark-content');
+    }, []);
+
+    function doBirthday() {
+        navigation.navigate('SettingsBirthday');
+    }
+
+    function doEmail() {
+        navigation.navigate('SettingsEmail');
+    }
+
+    function doGender() {
+        navigation.navigate('SettingsGender');
+    }
+
+    function doInterests() {
+        navigation.navigate('SettingsInterests');
+    }
+
+    function doLocation() {
+        navigation.navigate('SettingsLocation');
+    }
+
+    function doLogout() {
+        navigation.navigate('SignIn');
+    }
+
+    function doPassword() {
+        navigation.navigate('SettingsPassword');
+    }
+
+    function doProfile() {
+        navigation.navigate('SettingsProfile');
+    }
+
     return (
         <View style={styles.container}>
             <LinearGradient colors={lightGradient} style={styles.container}>
                 <SafeAreaView style={styles.mainWrapper}>
                     <ScrollView showsVerticalScrollIndicator={false}>
                         <Text style={styles.screenHeader}>Settings</Text>
-                        <TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={doProfile}>
                             <View style={styles.row}>
                                 <View style={styles.column}>
-                                    <Text style={styles.settingHeader}>My name is</Text>
-                                    <Text>NAME</Text>
+                                    <Text style={styles.settingHeader}>Profile</Text>
                                 </View>
                                 <Text style={styles.arrow}>&#10095;</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
-                        <TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={doLocation}>
                             <View style={styles.row}>
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>I live in</Text>
-                                    <Text>LOCATION</Text>
-                                    <Text>MAX DISTANCE TO CONNECT</Text>
+                                    <Text>{city}, {state}</Text>
+                                    <Text>Max distance: {distance} miles</Text>
                                 </View>
                                 <Text style={styles.arrow}>&#10095;</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
-                        <TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={doBirthday}>
                             <View style={styles.row}>
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>My birthday is</Text>
-                                    <Text>LOCATION</Text>
-                                    <Text>MAX DISTANCE TO CONNECT</Text>
+                                    <Text>{birthday}</Text>
+                                    <Text>Age range:  {ageRange.join('-')} years old</Text>
                                 </View>
                                 <Text style={styles.arrow}>&#10095;</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
-                        <TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={doGender}>
                             <View style={styles.row}>
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>I'm a</Text>
-                                    <Text>GENDER</Text>
-                                    <Text>GENDER TO CONNECT WITH</Text>
+                                    <Text style={styles.settingsText}>{gender}</Text>
+                                    <Text>Connect with {sameGender ? 'people like me' : 'everyone'}</Text>
                                 </View>
                                 <Text style={styles.arrow}>&#10095;</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
-                        <TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={doInterests}>
                             <View style={styles.row}>
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>I like</Text>
-                                    <Text>NUMBER OF INTERESTS</Text>
-                                    <Text>CONNECT WITH INTERESTS</Text>
+                                    <Text>{interests.size} {interests.size == 1 ? 'thing' : 'things'}</Text>
+                                    <Text>Connect with {sameInterests ? 'people with similar interests' : 'everyone'}</Text>
                                 </View>
                                 <Text style={styles.arrow}>&#10095;</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
-                        <TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={doEmail}>
                             <View style={styles.row}>
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>Account email</Text>
-                                    <Text>EMAIL</Text>
+                                    <Text>{email}</Text>
                                 </View>
                                 <Text style={styles.arrow}>&#10095;</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
-                        <TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={doPassword}>
                             <View style={styles.row}>
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>Change password</Text>
@@ -95,7 +145,7 @@ export default function Settings({ navigation }) {
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
-                        <TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={doLogout}>
                             <Text style={styles.boldText}>Sign out</Text>
                         </TouchableWithoutFeedback>
                         <TouchableWithoutFeedback>
@@ -166,5 +216,8 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         lineHeight: 22,
         marginBottom: 5,
+    },
+    settingsText: {
+        textTransform: 'capitalize',
     },
 });

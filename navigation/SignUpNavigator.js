@@ -1,10 +1,10 @@
 import { createStackNavigator } from 'react-navigation';
-import SignUpCredentials from '../screens/user/Credentials';
-import SignUpName from '../screens/user/Name';
-import SignUpLocation from '../screens/user/Location';
 import SignUpBirthday from '../screens/user/Birthday';
+import SignUpCredentials from '../screens/user/Credentials';
 import SignUpGender from '../screens/user/Gender';
 import SignUpInterests from '../screens/user/Interests';
+import SignUpLocation from '../screens/user/Location';
+import SignUpProfile from '../screens/user/Profile';
 
 const SignUpStack = createStackNavigator(
     {
@@ -13,7 +13,7 @@ const SignUpStack = createStackNavigator(
         SignUpGender,
         SignUpInterests,
         SignUpLocation,
-        SignUpName,
+        SignUpProfile,
     },
     {
         headerMode: 'none',

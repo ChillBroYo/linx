@@ -1,7 +1,6 @@
 // common components and styles for all sign up screens
 import React from 'react';
 import {
-    StatusBar,
     StyleSheet,
     Text,
     View,
@@ -87,10 +86,7 @@ const progressBarStyles = StyleSheet.create({
 
 export function TopBar() {
     return (
-        <>
-            <StatusBar barStyle='light-content' />
-            <SafeAreaView style={topBarStyles.topBar} />
-        </>
+        <SafeAreaView style={topBarStyles.topBar} />
     );
 }
 

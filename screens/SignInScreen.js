@@ -9,11 +9,15 @@ import {
     TouchableWithoutFeedback,
     View
 } from 'react-native';
-import { SignUpContext } from '../contexts/SignUpContext';
+import axios from 'axios';
+import { UserContext } from '../contexts/UserContext';
 import { green, white } from '../constants/Colors';
 
 export default function SignIn({ navigation }) {
-    const signUpContext = useContext(SignUpContext);
+    const {
+        resetState: resetUserContextState,
+        setUserFromResponse: setUserContextFromResponse,
+    } = useContext(UserContext);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -21,7 +25,7 @@ export default function SignIn({ navigation }) {
         // reset sign up state on screen load
         // going back to sign in screen from sign up
         // going back to sign in screen after sign up completion
-        signUpContext.resetState();
+        resetUserContextState();
     }, []);
 
     function onForgotPassword() {
@@ -30,14 +34,19 @@ export default function SignIn({ navigation }) {
 
     async function onSignIn() {
         try {
-            let res = await fetch(`http://192.168.1.15:8080/sign_in/?username=${username}&password=${password}`);
-            let json = await res.json();
+            const API_BASE = 'http://192.168.1.15:8080/sign_in';
+            const params = { username, password };
+            const res = await axios.get(API_BASE, { params });
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Sign in failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
 
-            console.log('RESPONSE:', res);
-            console.log('JSON:', json);
-
-            const userInfo = json.info;
-            navigation.navigate('Cards', { user: userInfo });
+            setUserContextFromResponse(data);
+            navigation.navigate('Cards');
         }
         catch(error) {
             console.log('Sign In error:', error);

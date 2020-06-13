@@ -8,7 +8,7 @@ export function UserContextProvider({ children }) {
     // default values
     const defaultDistance = 25;
     const defaultAgeRange = [23, 29];
-    const defaultSelectedInterests = new Set();
+    const defaultInterests = new Set();
 
     const [token, setToken] = useState('');
     const [email, setEmail] = useState('');
@@ -24,10 +24,44 @@ export function UserContextProvider({ children }) {
     const [ageRange, setAgeRange] = useState(defaultAgeRange);
     const [gender, setGender] = useState('');
     const [sameGender, setSameGender] = useState(false);
-    const [selectedInterests, setSelectedInterests] = useState(defaultSelectedInterests);
+    const [interests, setInterests] = useState(defaultInterests);
     const [sameInterests, setSameInterests] = useState(false);
 
-    function formatUserInfo() {
+    function setUserFromResponse(res) {
+        const { token, email, username, info } = res;
+        const {
+            birthday,
+            gender,
+            interests,
+            connectWith,
+            location,
+            name,
+        } = JSON.parse(info);
+        const {
+            ageRange,
+            distance,
+            sameGender,
+            sameInterests,
+        } = connectWith;
+        const { city, state } = location;
+
+        setToken(token);
+        setEmail(email);
+        setUsername(username);
+        setFirstName(name.first);
+        setLastName(name.last);
+        setBirthday(birthday);
+        setAgeRange(ageRange);
+        setCity(city);
+        setState(state);
+        setDistance(distance);
+        setGender(gender);
+        setSameGender(sameGender);
+        setInterests(new Set(interests));
+        setSameInterests(sameInterests);
+    }
+
+    function formatUserInfoForSignUp() {
         return {
             email: email.trim(),
             password: password,
@@ -42,7 +76,7 @@ export function UserContextProvider({ children }) {
                     sameInterests,
                 },
                 gender,
-                interests: [...selectedInterests],
+                interests: [...interests],
                 location: {
                     city: city.trim(),
                     state: state.trim(),
@@ -70,7 +104,7 @@ export function UserContextProvider({ children }) {
         setAgeRange(defaultAgeRange);
         setGender('');
         setSameGender(false);
-        setSelectedInterests(defaultSelectedInterests);
+        setInterests(defaultInterests);
         setSameInterests(false);
     }
 
@@ -90,9 +124,10 @@ export function UserContextProvider({ children }) {
             ageRange, setAgeRange,
             gender, setGender,
             sameGender, setSameGender,
-            selectedInterests, setSelectedInterests,
+            interests, setInterests,
             sameInterests, setSameInterests,
-            formatUserInfo,
+            setUserFromResponse,
+            formatUserInfoForSignUp,
             resetState,
         }}>
             {children}

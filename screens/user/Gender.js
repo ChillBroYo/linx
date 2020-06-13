@@ -1,7 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     Keyboard,
+    SafeAreaView,
     ScrollView,
+    StatusBar,
     StyleSheet,
     Switch,
     Text,
@@ -18,34 +20,48 @@ import {
     TOTAL_STEPS,
     TopBar,
 } from './common';
+import { isSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import PillButton from '../../components/PillButton';
 import { grey, lightGradient, purple } from '../../constants/Colors';
-import { SignUpContext } from '../../contexts/SignUpContext';
+import { UserContext } from '../../contexts/UserContext';
 
 export default function UserGender({ navigation }) {
+    const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        gender, setGender,
-        sameGender, setSameGender,
-    } = useContext(SignUpContext);
+        gender: contextGender,
+        setGender: setContextGender,
+        sameGender: contextSameGender,
+        setSameGender: setContextSameGender,
+    } = useContext(UserContext);
+    const [gender, setGender] = useState(contextGender);
+    const [sameGender, setSameGender] = useState(contextSameGender);
     const genderOptions = ['woman', 'man', 'other'];
+
+    useEffect(() => {
+        StatusBar.setBarStyle(isSignUpScreen ? 'light-content' : 'dark-content');
+    }, []);
 
     function doBack() {
         navigation.goBack();
     }
 
-    function doContinue() {
-        navigation.navigate('SignUpInterests');
+    function doSubmit() {
+        setContextGender(gender);
+        setContextSameGender(sameGender);
+        isSignUpScreen ? navigation.navigate('SignUpInterests') : doBack();
     }
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={pageStyles.container}>
-                <TopBar />
+                {isSignUpScreen && <TopBar />}
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
-                    <ProgressBar step={5} totalSteps={TOTAL_STEPS} />
-                    <BackArrow doPress={doBack} />
+                    {isSignUpScreen && <ProgressBar step={5} totalSteps={TOTAL_STEPS} />}
+                    <SafeAreaView>
+                        <BackArrow doPress={doBack} />
+                    </SafeAreaView>
                     <ScrollView style={pageStyles.container}>
                         <PageHeader value="I'm a" />
                         <Form>
@@ -74,7 +90,7 @@ export default function UserGender({ navigation }) {
                         </Form>
                     </ScrollView>
                 </LinearGradient>
-                <BarButton value='Continue' doPress={doContinue} />
+                <BarButton value={isSignUpScreen ? 'Continue' : 'Save'} doPress={doSubmit} />
             </View>
         </TouchableWithoutFeedback>
     );
