@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Image, Text, Alert, Button, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 
 export default class App extends Component {
@@ -46,36 +47,38 @@ export default class App extends Component {
     // console.log('yo', this.state.messages)
     return (
       <View style={{...styles.container, ...iOSPlatformStyle}}>
-        
+        <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
         {/*<Text>Fantasia {this.state.messages[0].message}</Text>*/}
-        <TouchableOpacity style={styles.topBanner} onPress={() => alert('info')}>
-          <TouchableOpacity style={styles.backArrowContainer} onPress={goBackToContacts}>
-            <Icon name='keyboard-arrow-left' color='#1B1B1B' size={50} />
+          <TouchableOpacity style={styles.topBanner} onPress={() => alert('info')}>
+            <TouchableOpacity style={styles.backArrowContainer} onPress={goBackToContacts}>
+              <Icon name='keyboard-arrow-left' color='#1B1B1B' size={50} />
+            </TouchableOpacity>
+            <Text style={styles.contactName}>Placeholder {navigation.getParam('contactName')}</Text>
+            <View style={styles.contactInfoBtn}><Text style={styles.infoLetter}>i</Text></View>
           </TouchableOpacity>
-          <Text style={styles.contactName}>Placeholder {navigation.getParam('contactName')}</Text>
-          <View style={styles.contactInfoBtn}><Text style={styles.infoLetter}>i</Text></View>
-        </TouchableOpacity>
+        
+          <View style={styles.conversationContainer}>
+            <View style={styles.otherMessageContainer}>
+              <Image style={styles.userIcon} source={{uri: navigation.getParam('profilePicURL')}}></Image>
+              <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>please show ups Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, nobis.</Text></View>
+            </View>
 
-        <View style={styles.conversationContainer}>
-          <View style={styles.otherMessageContainer}>
-            <Image style={styles.userIcon} source={{uri: navigation.getParam('profilePicURL')}}></Image>
-            <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>please show ups Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, nobis.</Text></View>
+            <View style={styles.dateContainer}><Text style={styles.dateText}>Wed, Feb 26, 9:05am</Text></View>
+            <View style={{...styles.message, ...styles.ownMessage}}><Text style={styles.messageText}>please show up</Text></View>
+
+            <View style={styles.otherMessageContainer}>
+              <Image style={styles.userIcon} source={{uri: navigation.getParam('profilePicURL')}}></Image>
+              <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>please show up</Text></View>
+            </View>
+
+            {this.state.messages ? this.state.messages.map(message => 
+            <View key={message.message_id}>
+              <Text>{message.message}</Text>
+              <Text>bsh</Text> 
+            </View>
+            ) : null}
           </View>
-
-          <View style={{...styles.message, ...styles.ownMessage}}><Text style={styles.messageText}>please show up</Text></View>
-
-          <View style={styles.otherMessageContainer}>
-            <Image style={styles.userIcon} source={{uri: navigation.getParam('profilePicURL')}}></Image>
-            <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>please show up</Text></View>
-          </View>
-
-          {this.state.messages ? this.state.messages.map(message => 
-          <View key={message.message_id}>
-            <Text>{message.message}</Text>
-            <Text>bsh</Text> 
-          </View>
-          ) : null}
-        </View>
+        </LinearGradient>
       </View>
     );
   }
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
   container: {
   },
   topBanner: {
-    height: '20%',
+    height: '10%',
     width: '100%',
     backgroundColor: 'white',
     shadowOffset: { height: 7 },
@@ -140,7 +143,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderColor: gray,
     borderWidth: 2,
-    marginRight: '7%'
+    marginRight: '5%'
   },
   conversationContainer: {
     // backgroundColor: 'pink',
@@ -150,12 +153,13 @@ const styles = StyleSheet.create({
   otherMessageContainer: {
     display: 'flex',
     flexDirection: 'row',
-    marginVertical: 10,
+    marginVertical: 7,
   },
   message: {
     borderRadius: 20,
     paddingVertical: 8,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
+    justifyContent: 'center'
   },
   otherMessage: {
     backgroundColor: '#2B2D42',
@@ -165,12 +169,22 @@ const styles = StyleSheet.create({
   ownMessage: {
     borderTopRightRadius: 0,
     backgroundColor: '#439E73',
-    marginVertical: 10,
+    marginVertical: 7,
     alignSelf: 'flex-end',
-    maxWidth: '90%'
+    maxWidth: '90%',
+    minHeight: 50
   },
   messageText: {
     color: 'white',
     fontSize: 20,
+  },
+  dateContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginVertical: 10
+  },
+  dateText: {
+    color: gray,
+    fontSize: 18
   }
 });
