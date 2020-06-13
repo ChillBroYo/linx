@@ -3,7 +3,6 @@ import {
     Alert,
     Keyboard,
     ScrollView,
-    StyleSheet,
     Text,
     TouchableWithoutFeedback,
     View,
@@ -15,6 +14,7 @@ import {
     Form,
     formStyles,
     PageHeader,
+    pageStyles,
     ProgressBar,
     TOTAL_STEPS,
     TopBar,
@@ -73,12 +73,12 @@ export default function UserBirthday({ navigation }) {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.container}>
+            <View style={pageStyles.container}>
                 <TopBar />
-                <LinearGradient colors={lightGradient} style={styles.container}>
+                <LinearGradient colors={lightGradient} style={pageStyles.container}>
                     <ProgressBar step={4} totalSteps={TOTAL_STEPS} />
                     <BackArrow doPress={doBack} />
-                    <ScrollView style={styles.container}>
+                    <ScrollView style={pageStyles.container}>
                         <PageHeader value='My birthday is' />
                         <Form>
                             <TextInputMask
@@ -113,9 +113,3 @@ export default function UserBirthday({ navigation }) {
         </TouchableWithoutFeedback>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-});

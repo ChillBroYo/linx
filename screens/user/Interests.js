@@ -15,6 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import {
     formStyles,
     PageHeader,
+    pageStyles,
     ProgressBar,
     TOTAL_STEPS,
     TopBar,
@@ -80,12 +81,12 @@ export default function UserGender({ navigation }) {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.container}>
+            <View style={pageStyles.container}>
                 <TopBar />
-                <LinearGradient colors={lightGradient} style={styles.container}>
+                <LinearGradient colors={lightGradient} style={pageStyles.container}>
                     <ProgressBar step={6} totalSteps={TOTAL_STEPS} />
                     <BackArrow doPress={doBack} />
-                    <ScrollView style={styles.container}>
+                    <ScrollView style={pageStyles.container}>
                         <PageHeader value='I like' />
                         <View style={styles.form}>
                             <FlatList
@@ -123,9 +124,6 @@ const styles = StyleSheet.create({
         marginHorizontal: 11,
         height: 42,
         width: 140,
-    },
-    container: {
-        flex: 1,
     },
     form: {
         flexDirection: 'column',

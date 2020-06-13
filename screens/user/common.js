@@ -46,6 +46,12 @@ export const formStyles = StyleSheet.create({
     },
 });
 
+export const pageStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+});
+
 export function PageHeader({ value }) {
     return <Text style={pageHeaderStyles.text}>{value}</Text>;
 }

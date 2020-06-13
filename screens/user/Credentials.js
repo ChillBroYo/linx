@@ -3,7 +3,6 @@ import {
     Alert,
     Keyboard,
     ScrollView,
-    StyleSheet,
     TextInput,
     TouchableWithoutFeedback,
     View,
@@ -13,6 +12,7 @@ import {
     Form,
     formStyles,
     PageHeader,
+    pageStyles,
     ProgressBar,
     TOTAL_STEPS,
     TopBar,
@@ -84,12 +84,12 @@ export default function UserCredentials({ navigation }) {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.container}>
+            <View style={pageStyles.container}>
                 <TopBar />
-                <LinearGradient colors={lightGradient} style={styles.container}>
+                <LinearGradient colors={lightGradient} style={pageStyles.container}>
                     <ProgressBar step={1} totalSteps={TOTAL_STEPS} />
                     <BackArrow doPress={doBack} />
-                    <ScrollView style={styles.container}>
+                    <ScrollView style={pageStyles.container}>
                         <PageHeader value='Sign up' />
                         <Form>
                             <TextInput
@@ -135,9 +135,3 @@ export default function UserCredentials({ navigation }) {
         </TouchableWithoutFeedback>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-});
