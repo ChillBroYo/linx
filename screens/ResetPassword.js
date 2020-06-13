@@ -8,6 +8,7 @@ import {
     View,
 } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
+import BackArrow from '../components/BackArrow';
 import {
     black,
     green,
@@ -31,7 +32,7 @@ export default function ResetPassword({ navigation }) {
             <LinearGradient colors={['rgba(254, 241, 2, 0)', 'rgba(254, 241, 2, 0.1)']} style={styles.container}>
                 <SafeAreaView style={styles.container}>
                     <View style={styles.wrapper}>
-                        <Text onPress={onBack} style={styles.backArrow}>&#10094;</Text>
+                        <BackArrow doPress={onBack} />
                         <View style={styles.column}>
                             <Text style={styles.header}>Forgot password?</Text>
                             <View style={styles.formWrapper}>
@@ -60,15 +61,6 @@ export default function ResetPassword({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    backArrow: {
-        color: black,
-        fontSize: 36,
-        fontWeight: '900',
-        marginBottom: 0,
-        marginTop: 12,
-        marginLeft: 30,
-        marginRight: 30,
-    },
     button: {
         alignItems: 'center',
         backgroundColor: grey,

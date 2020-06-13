@@ -8,6 +8,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient} from 'expo-linear-gradient';
 import {
     black,
@@ -78,7 +79,7 @@ export default function Settings({ navigation }) {
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>Profile</Text>
                                 </View>
-                                <Text style={styles.arrow}>&#10095;</Text>
+                                <Ionicons name="ios-arrow-forward" size={20} />
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
@@ -89,7 +90,7 @@ export default function Settings({ navigation }) {
                                     <Text>{city}, {state}</Text>
                                     <Text>Max distance: {distance} miles</Text>
                                 </View>
-                                <Text style={styles.arrow}>&#10095;</Text>
+                                <Ionicons name="ios-arrow-forward" size={20} />
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
@@ -100,7 +101,7 @@ export default function Settings({ navigation }) {
                                     <Text>{birthday}</Text>
                                     <Text>Age range:  {ageRange.join('-')} years old</Text>
                                 </View>
-                                <Text style={styles.arrow}>&#10095;</Text>
+                                <Ionicons name="ios-arrow-forward" size={20} />
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
@@ -111,7 +112,7 @@ export default function Settings({ navigation }) {
                                     <Text style={styles.settingsText}>{gender}</Text>
                                     <Text>Connect with {sameGender ? 'people like me' : 'everyone'}</Text>
                                 </View>
-                                <Text style={styles.arrow}>&#10095;</Text>
+                                <Ionicons name="ios-arrow-forward" size={20} />
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
@@ -122,7 +123,7 @@ export default function Settings({ navigation }) {
                                     <Text>{interests.size} {interests.size == 1 ? 'thing' : 'things'}</Text>
                                     <Text>Connect with {sameInterests ? 'people with similar interests' : 'everyone'}</Text>
                                 </View>
-                                <Text style={styles.arrow}>&#10095;</Text>
+                                <Ionicons name="ios-arrow-forward" size={20} />
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
@@ -132,7 +133,7 @@ export default function Settings({ navigation }) {
                                     <Text style={styles.settingHeader}>Account email</Text>
                                     <Text>{email}</Text>
                                 </View>
-                                <Text style={styles.arrow}>&#10095;</Text>
+                                <Ionicons name="ios-arrow-forward" size={20} />
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
@@ -141,7 +142,7 @@ export default function Settings({ navigation }) {
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>Change password</Text>
                                 </View>
-                                <Text style={styles.arrow}>&#10095;</Text>
+                                <Ionicons name="ios-arrow-forward" size={20} />
                             </View>
                         </TouchableWithoutFeedback>
                         <View style={styles.divider} />
@@ -160,10 +161,6 @@ export default function Settings({ navigation }) {
 
 // STYLES
 const styles = StyleSheet.create({
-    arrow: {
-        fontSize: 20,
-        fontWeight: '900',
-    },
     boldText: {
         color: black,
         fontSize: 20,
