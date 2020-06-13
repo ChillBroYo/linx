@@ -33,12 +33,12 @@ export function SignUpContextProvider({ children }) {
 
     function formatUserInfo() {
         return {
-            email,
-            password,
-            username,
+            email: email.trim(),
+            password: password,
+            username: username.trim(),
             security_level: 'user',
             info: {
-                birthday,
+                birthday: birthday.trim(),
                 connectWith: {
                     ageRange,
                     distance,
@@ -46,14 +46,14 @@ export function SignUpContextProvider({ children }) {
                     sameInterests,
                 },
                 gender,
-                interests: selectedInterests,
+                interests: [...selectedInterests],
                 location: {
-                    city,
-                    state,
+                    city: city.trim(),
+                    state: state.trim(),
                 },
                 name: {
-                    first,
-                    last,
+                    first: fname.trim(),
+                    last: lname.trim(),
                 },
             },
         };
