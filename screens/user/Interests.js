@@ -54,7 +54,10 @@ export default function UserGender({ navigation }) {
         try {
             const API_BASE = 'http://192.168.1.15:8080/sign_up';
             const params = formatUserInfoForSignUp();
-            console.log('USER INFO PARAM:', params);
+            // TODO: figure out how to update context after state changes
+            // context passes a frozen version of the context to the page
+            params.info.interests = [...interests];
+            params.info.connectWith.sameInterests = sameInterests;
             const res = await axios.get(API_BASE, { params });
             const data = res.data;
             if (res.status != 200) {
