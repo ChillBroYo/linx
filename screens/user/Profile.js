@@ -11,6 +11,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
     Form,
@@ -80,9 +81,9 @@ export default function UserName({ navigation }) {
                             {!isSignUpScreen && (
                                 <TouchableWithoutFeedback>
                                     <View style={styles.profileImage}>
-                                        <Text style={styles.profileInitials}>{firstName[0] || 'A'}{lastName[0] || 'N'}</Text>
+                                        <Text style={styles.profileInitials}>{firstName[0]}{lastName[0]}</Text>
                                         <View style={styles.cameraButton}>
-                                            <Text>&#128247;</Text>
+                                            <Ionicons name="ios-camera" size={24} color={white} />
                                         </View>
                                     </View>
                                 </TouchableWithoutFeedback>
