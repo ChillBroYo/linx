@@ -24,17 +24,17 @@ export default class App extends Component {
 
   async componentDidMount() {
     try {
-      const responseContacts = await axios(`https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/messages/?uid=${this.currentUserID}&token=${this.tokens[this.currentUserID]}&ts=`);
+      const responseContacts = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/messages/?uid=${this.currentUserID}&token=${this.tokens[this.currentUserID]}&ts=`);
       const contacts = responseContacts.data.users;
 
       const conversations = {}
       
       for (const contact in contacts) {
 
-        const responseMessages = await axios(`https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/get-convo/?uid=${this.currentUserID}&oid=${contact}&token=${this.tokens[this.currentUserID]}&ts=`);
+        const responseMessages = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-convo/?uid=${this.currentUserID}&oid=${contact}&token=${this.tokens[this.currentUserID]}&ts=`);
         const mostRecentMessage = responseMessages.data.messages[0].message;
 
-        const responseContactProfile = await axios(`http://ec2-35-172-118-51.compute-1.amazonaws.com:8080/get_profile/?uid=${contact}&token=${this.tokens[contact]}`);
+        const responseContactProfile = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-profile/?uid=${contact}&token=${this.tokens[contact]}`);
         const contactName = responseContactProfile.data.username;
 
         const contactInfoStr = responseContactProfile.data.info;
@@ -46,7 +46,7 @@ export default class App extends Component {
 
         conversations[contact] = {contactName: contactName, mostRecentMessage: mostRecentMessage, profilePicURL: profilePicURL};
       }
-      this.setState({conversations: conversations});
+      this.setState({conversations});
     }
     catch(error) {
       alert(`An error occurred: ${error}`);
