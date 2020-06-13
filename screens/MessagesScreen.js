@@ -8,12 +8,7 @@ export default class App extends Component {
     super(props);
     this.currentUserID = 2;
     this.tokens = {
-      1 : '58db4abf-fd9c-451f-ab5d-199f04118335',
       2 : '43985ece-e49d-477f-b843-3a5501799ef7',
-      3 : '12b2d376-d566-42a8-8109-11586e205698',
-      4 : '410735d6-1ac9-4e16-b0db-88282c77858f',
-      5 : '289f72a7-3cdf-401f-b589-5366f5ccb9a1',
-      7 : 'b617cc9f-3c0b-4506-ab10-e2941ba4dfd5',
     };
     this.state = {
       conversations : {},
@@ -37,7 +32,8 @@ export default class App extends Component {
         const contactInfoStr = responseContact.data.user_info.info;
         const contactInfoObj = JSON.parse(contactInfoStr);
         const contactName = `${contactInfoObj.name.first} ${contactInfoObj.name.last}`;
-        const profilePicURL = contactInfoObj.profile_picture;
+        const profilePicURL = responseContact.data.user_info.profile_picture;
+        // console.log('show', contactName, profilePicURL)
         
         conversations[contact] = {contactName, mostRecentMessage, profilePicURL};
       }
@@ -75,7 +71,6 @@ export default class App extends Component {
   
   
   render() {
-    // console.log('show', this.state.conversations)
     return (
       <View>
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
@@ -127,7 +122,6 @@ const styles = StyleSheet.create({
   },
   convoText: {
     justifyContent: 'space-around',
-    // backgroundColor: 'yellow',
     flex: 1,
     height: '100%',
   },
