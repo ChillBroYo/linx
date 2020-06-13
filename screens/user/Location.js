@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import {
     Alert,
     Keyboard,
@@ -22,11 +22,14 @@ import {
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple } from '../../constants/Colors';
+import { SignUpContext } from '../../contexts/SignUpContext';
 
 export default function UserLocation({ navigation }) {
-    const [city, setCity] = useState('');
-    const [state, setState] = useState('');
-    const [distance, setDistance] = useState(25);
+    const {
+        city, setCity,
+        state, setState,
+        distance, setDistance,
+    } = useContext(SignUpContext);
 
     function doBack() {
         navigation.goBack();
@@ -34,14 +37,7 @@ export default function UserLocation({ navigation }) {
 
     function doContinue() {
         if (!validateForm()) return;
-
-        let user = navigation.getParam('user');
-        user.info.location = {
-            city: city.trim(),
-            state: state.trim(),
-        };
-        user.info.connectWith = { distance };
-        navigation.navigate('SignUpBirthday', { user });
+        navigation.navigate('SignUpBirthday');
     }
 
     function validateForm() {

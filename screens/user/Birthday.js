@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import {
     Alert,
     Keyboard,
@@ -22,18 +22,14 @@ import {
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple } from '../../constants/Colors';
+import { SignUpContext } from '../../contexts/SignUpContext';
 
 export default function UserBirthday({ navigation }) {
-    const [birthday, setBirthday] = useState('');
-    const [ageRange, setAgeRange] = useState([23, 29]);
-
-    useEffect(() => {
-        const user = navigation.getParam('user');
-        if (user) {
-            setBirthday(user.birthday);
-            setAgeRange(user.connectWith.ageRange);
-        }
-    }, []);
+    // TODO: load correct text
+    const {
+        birthday, setBirthday,
+        ageRange, setAgeRange,
+    } = useContext(SignUpContext);
 
     function doBack() {
         navigation.goBack();
@@ -41,11 +37,7 @@ export default function UserBirthday({ navigation }) {
 
     function doContinue() {
         if (!validateForm()) return;
-
-        let user = navigation.getParam('user');
-        user.info.birthday = birthday.trim();
-        user.info.connectWith.ageRange = ageRange;
-        navigation.navigate('SignUpGender', { user });
+        navigation.navigate('SignUpGender');
     }
 
     function validateForm() {

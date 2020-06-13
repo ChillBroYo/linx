@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import {
     Alert,
     FlatList,
@@ -23,10 +23,14 @@ import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import PillButton from '../../components/PillButton';
 import { grey, lightGradient, purple } from '../../constants/Colors';
+import { SignUpContext } from '../../contexts/SignUpContext';
 
 export default function UserGender({ navigation }) {
-    const [selectedInterests, setSelectedInterests] = useState(new Set());
-    const [sameInterests, setSameInterests] = useState(false);
+    const {
+        selectedInterests, setSelectedInterests,
+        sameInterests, setSameInterests,
+        formatUserInfo,
+    } = useContext(SignUpContext);
     const interests = ['art', 'food', 'nature', 'sports'];
 
     function doBack() {
@@ -36,9 +40,7 @@ export default function UserGender({ navigation }) {
     async function doSubmit() {
         try {
             const API_BASE = 'http://192.168.1.15:8080/sign_up';
-            const user = navigation.getParam('user');
-            user.info.interests = [...selectedInterests];
-            user.info.connectWith.sameInterests = false;
+            const user = formatUserInfo();
             const res = await axios.get(API_BASE, { params: user });
             const data = res.data;
             if (res.status != 200) {

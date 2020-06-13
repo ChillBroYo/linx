@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import {
     Keyboard,
     ScrollView,
@@ -21,10 +21,13 @@ import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import PillButton from '../../components/PillButton';
 import { grey, lightGradient, purple } from '../../constants/Colors';
+import { SignUpContext } from '../../contexts/SignUpContext';
 
 export default function UserGender({ navigation }) {
-    const [gender, setGender] = useState('');
-    const [sameGender, setSameGender] = useState(false);
+    const {
+        gender, setGender,
+        sameGender, setSameGender,
+    } = useContext(SignUpContext);
     const genderOptions = ['woman', 'man', 'other'];
 
     function doBack() {
@@ -32,10 +35,7 @@ export default function UserGender({ navigation }) {
     }
 
     function doContinue() {
-        let user = navigation.getParam('user');
-        user.info.gender = gender;
-        user.info.connectWith.sameGender = sameGender;
-        navigation.navigate('SignUpInterests', { user });
+        navigation.navigate('SignUpInterests');
     }
 
     return (

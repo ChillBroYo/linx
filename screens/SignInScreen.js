@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     Image,
     ImageBackground,
@@ -9,10 +9,19 @@ import {
     TouchableWithoutFeedback,
     View
 } from 'react-native';
+import { SignUpContext } from '../contexts/SignUpContext';
 
 export default function SignIn({ navigation }) {
+    const signUpContext = useContext(SignUpContext);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
+    useEffect(() => {
+        // reset sign up state on screen load
+        // going back to sign in screen from sign up
+        // going back to sign in screen after sign up completion
+        signUpContext.resetState();
+    }, []);
 
     function onForgotPassword() {
         navigation.navigate('ResetPassword');
@@ -45,17 +54,17 @@ export default function SignIn({ navigation }) {
                     <View style={styles.column}>
                         <Image source={LINX_LOGO} style={styles.header} />
                         <TextInput
-                            clearButtonMode='while-editing'
                             placeholder='Username'
                             value={username}
                             onChangeText={(username) => setUsername(username)}
+                            clearButtonMode='while-editing'
                             style={styles.input}
                         />
                         <TextInput
-                            clearButtonMode='while-editing'
                             placeholder='Password'
                             value={password}
                             onChangeText={(password) => setPassword(password)}
+                            clearButtonMode='while-editing'
                             secureTextEntry={true}
                             style={styles.input}
                         />

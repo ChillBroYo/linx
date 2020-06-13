@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import {
     Alert,
     Keyboard,
@@ -20,12 +20,16 @@ import {
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient } from '../../constants/Colors';
+import { SignUpContext } from '../../contexts/SignUpContext';
 
 export default function UserCredentials({ navigation }) {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordRetype, setPasswordRetype] = useState('');
-    const [username, setUsername] = useState('');
+    const {
+        email, setEmail,
+        password, setPassword,
+        passwordRetype, setPasswordRetype,
+        username, setUsername,
+    } = useContext(SignUpContext);
+
 
     function doBack() {
         navigation.navigate('SignIn');
@@ -33,14 +37,7 @@ export default function UserCredentials({ navigation }) {
 
     function doContinue() {
         if (!validateForm()) return;
-
-        const user = {
-            email: email.trim(),
-            password,
-            username: username.trim(),
-            security_level: 'user',
-        };
-        navigation.navigate('SignUpName', { user });
+        navigation.navigate('SignUpName');
     }
 
     function validateForm() {

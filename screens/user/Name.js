@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import {
     Alert,
     Keyboard,
@@ -20,10 +20,13 @@ import {
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient } from '../../constants/Colors';
+import { SignUpContext } from '../../contexts/SignUpContext';
 
 export default function UserName({ navigation }) {
-    const [fname, setFname] = useState('');
-    const [lname, setLname] = useState('');
+    const {
+        fname, setFname,
+        lname, setLname,
+    } = useContext(SignUpContext);
 
     function doBack() {
         navigation.goBack();
@@ -31,14 +34,7 @@ export default function UserName({ navigation }) {
 
     function doContinue() {
         if (!validateForm()) return;
-
-        let user = navigation.getParam('user');
-        user.info = {};
-        user.info.name = {
-            first: fname.trim(),
-            last: lname.trim(),
-        };
-        navigation.navigate('SignUpLocation', { user });
+        navigation.navigate('SignUpLocation');
     }
 
     function validateForm() {
