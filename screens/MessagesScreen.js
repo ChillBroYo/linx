@@ -6,10 +6,10 @@ import axios from 'axios';
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.currentUserID = 1;
+    this.currentUserID = 2;
     this.tokens = {
       1 : '58db4abf-fd9c-451f-ab5d-199f04118335',
-      2 : 'beacde9c-d02f-40ea-a987-fac7b8b1b019',
+      2 : '43985ece-e49d-477f-b843-3a5501799ef7',
       3 : '12b2d376-d566-42a8-8109-11586e205698',
       4 : '410735d6-1ac9-4e16-b0db-88282c77858f',
       5 : '289f72a7-3cdf-401f-b589-5366f5ccb9a1',
@@ -17,34 +17,29 @@ export default class App extends Component {
     };
     this.state = {
       conversations : {},
-      // convosInfo: [],
       isRead : false,
     };
   }
 
   async componentDidMount() {
     try {
-      const responseContacts = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/messages/?uid=${this.currentUserID}&token=${this.tokens[this.currentUserID]}&ts=`);
+      const responseContacts = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation-list/?uid=${this.currentUserID}&token=${this.tokens[this.currentUserID]}&limit=1000`);
       const contacts = responseContacts.data.users;
 
       const conversations = {}
       
       for (const contact in contacts) {
 
-        const responseMessages = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-convo/?uid=${this.currentUserID}&oid=${contact}&token=${this.tokens[this.currentUserID]}&ts=`);
+        const responseMessages = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${this.currentUserID}&oid=${contact}&token=${this.tokens[this.currentUserID]}&limit=1000&ts=`);
         const mostRecentMessage = responseMessages.data.messages[0].message;
 
-        const responseContactProfile = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-profile/?uid=${contact}&token=${this.tokens[contact]}`);
-        const contactName = responseContactProfile.data.username;
-
-        const contactInfoStr = responseContactProfile.data.info;
-
-        if (contactInfoStr.includes('=')) {
-          contactInfoStr = contactInfoStr.replace("=", ":");// replace the "=" with ":", b/c the str isn't configured correctly -_-
-        }
-        const profilePicURL = JSON.parse(contactInfoStr).profile_pic;
-
-        conversations[contact] = {contactName: contactName, mostRecentMessage: mostRecentMessage, profilePicURL: profilePicURL};
+        const responseContact = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-profile/?key=123&uid=${contact}`);
+        const contactInfoStr = responseContact.data.user_info.info;
+        const contactInfoObj = JSON.parse(contactInfoStr);
+        const contactName = `${contactInfoObj.name.first} ${contactInfoObj.name.last}`;
+        const profilePicURL = contactInfoObj.profile_picture;
+        
+        conversations[contact] = {contactName, mostRecentMessage, profilePicURL};
       }
       this.setState({conversations});
     }
