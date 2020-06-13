@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
+    Alert,
     Image,
     ImageBackground,
     SafeAreaView,
@@ -33,6 +34,10 @@ export default function SignIn({ navigation }) {
     }
 
     async function onSignIn() {
+        if (!username || !password) {
+            return Alert.alert('Please enter a username and password');
+        }
+
         try {
             const API_ENDPOINT = 'https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/sign_in';
             const params = { username, password };
