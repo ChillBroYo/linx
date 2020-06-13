@@ -8,6 +8,12 @@ import {
     View,
 } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
+import {
+    black,
+    green,
+    grey,
+    purple,
+} from '../constants/Colors';
 
 export default function ResetPassword({ navigation }) {
     const [email, setEmail] = useState('');
@@ -53,17 +59,9 @@ export default function ResetPassword({ navigation }) {
     );
 }
 
-
-const colors = {
-    black: '#1B1B1B',
-    green: '#439E73',
-    grey: '#8D99AE',
-    purple: '#8002FE',
-};
-
 const styles = StyleSheet.create({
     backArrow: {
-        color: colors.black,
+        color: black,
         fontSize: 36,
         fontWeight: '900',
         marginBottom: 0,
@@ -73,7 +71,7 @@ const styles = StyleSheet.create({
     },
     button: {
         alignItems: 'center',
-        backgroundColor: colors.grey,
+        backgroundColor: grey,
         justifyContent: 'center',
         height: 66,
         marginTop: 16,
@@ -94,13 +92,13 @@ const styles = StyleSheet.create({
         width: 252,
     },
     header: {
-        color: colors.purple,
+        color: purple,
         fontSize: 30,
         lineHeight: 41,
         marginTop: 30,
     },
     input: {
-        borderBottomColor: colors.black,
+        borderBottomColor: black,
         borderBottomWidth: 1,
         fontSize: 20,
         marginBottom: 10,

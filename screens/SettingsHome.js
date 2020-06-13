@@ -8,7 +8,12 @@ import {
     View,
 } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
-import { lightGradient } from '../constants/Colors';
+import {
+    black,
+    grey,
+    lightGradient,
+    purple,
+} from '../constants/Colors';
 
 export default function Settings({ navigation }) {
     return (
@@ -104,19 +109,13 @@ export default function Settings({ navigation }) {
 }
 
 // STYLES
-const colors = {
-    black: '#1B1B1B',
-    grey: '#8D99AE',
-    purple: '#8002FE',
-};
-
 const styles = StyleSheet.create({
     arrow: {
         fontSize: 20,
         fontWeight: '900',
     },
     boldText: {
-        color: colors.black,
+        color: black,
         fontSize: 20,
         fontWeight: '600',
         lineHeight: 27,
@@ -130,14 +129,14 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     divider: {
-        borderBottomColor: colors.black,
+        borderBottomColor: black,
         borderBottomWidth: 1,
         height: 1,
         marginBottom: 15,
         marginTop: 15,
     },
     italicText: {
-        color: colors.grey,
+        color: grey,
         fontSize: 20,
         fontStyle: 'italic',
         lineHeight: 27,
@@ -162,7 +161,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     settingHeader: {
-        color: colors.purple,
+        color: purple,
         fontSize: 16,
         fontWeight: '600',
         lineHeight: 22,

@@ -10,6 +10,7 @@ import {
     View
 } from 'react-native';
 import { SignUpContext } from '../contexts/SignUpContext';
+import { green, white } from '../constants/Colors';
 
 export default function SignIn({ navigation }) {
     const signUpContext = useContext(SignUpContext);
@@ -70,19 +71,19 @@ export default function SignIn({ navigation }) {
                         />
                         <TouchableWithoutFeedback onPress={onSignIn}>
                             <View style={{...styles.button, ...styles.buttonColored}}>
-                                <Text style={{...styles.buttonText, color: colors.white}}>Sign in</Text>
+                                <Text style={{...styles.buttonText, color: white}}>Sign in</Text>
                             </View>
                         </TouchableWithoutFeedback>
                         <TouchableWithoutFeedback onPress={onSignUp}>
                             <View style={{...styles.button, ...styles.buttonTransparent}}>
-                                <Text style={{...styles.buttonText, color: colors.green}}>Sign up</Text>
+                                <Text style={{...styles.buttonText, color: green}}>Sign up</Text>
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
                 </SafeAreaView>
                 <TouchableWithoutFeedback onPress={onForgotPassword}>
                     <View style={styles.forgotPassword}>
-                        <Text style={{...styles.buttonText, color: colors.white}}>Forgot password</Text>
+                        <Text style={{...styles.buttonText, color: white}}>Forgot password</Text>
                     </View>
                 </TouchableWithoutFeedback>
             </ImageBackground>
@@ -92,10 +93,6 @@ export default function SignIn({ navigation }) {
 
 const BACKGROUND_IMAGE = require('../assets/images/cover_image.png');
 const LINX_LOGO = require('../assets/images/linx_logo.png');
-const colors = {
-    green: '#439E73',
-    white: '#FFF',
-};
 
 const styles = StyleSheet.create({
     background: {
@@ -111,7 +108,7 @@ const styles = StyleSheet.create({
         width: 164,
     },
     buttonColored: {
-        backgroundColor: colors.green,
+        backgroundColor: green,
     },
     buttonTransparent: {
         backgroundColor: 'transparent',
