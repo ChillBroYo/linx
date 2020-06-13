@@ -6,7 +6,7 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import AppNavigator from './navigation/AppNavigator';
-import { SignUpContextProvider } from './contexts/SignUpContext';
+import { UserContextProvider } from './contexts/UserContext';
 
 export default function App(props) {
     const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -21,12 +21,12 @@ export default function App(props) {
         );
     } else {
         return (
-            <SignUpContextProvider>
+            <UserContextProvider>
                 <View style={styles.container}>
                     {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
                     <AppNavigator />
                 </View>
-            </SignUpContextProvider>
+            </UserContextProvider>
         );
     }
 }
