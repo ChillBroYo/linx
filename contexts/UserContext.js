@@ -1,33 +1,29 @@
 import React, { useState } from 'react';
 
-export const SignUpContext = React.createContext();
+export const UserContext = React.createContext();
 
-export const SignUpContextConsumer = SignUpContext.Consumer;
+export const UserContextConsumer = UserContext.Consumer;
 
-export function SignUpContextProvider({ children }) {
+export function UserContextProvider({ children }) {
     // default values
     const defaultDistance = 25;
     const defaultAgeRange = [23, 29];
     const defaultSelectedInterests = new Set();
-    // screen 1
+
+    const [token, setToken] = userState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordRetype, setPasswordRetype] = useState('');
     const [username, setUsername] = useState('');
-    // screen 2
-    const [fname, setFname] = useState('');
-    const [lname, setLname] = useState('');
-    // screen 3
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
     const [distance, setDistance] = useState(defaultDistance);
-    // screen 4
     const [birthday, setBirthday] = useState('');
     const [ageRange, setAgeRange] = useState(defaultAgeRange);
-    // screen 5
     const [gender, setGender] = useState('');
     const [sameGender, setSameGender] = useState(false);
-    // screen 6
     const [selectedInterests, setSelectedInterests] = useState(defaultSelectedInterests);
     const [sameInterests, setSameInterests] = useState(false);
 
@@ -52,45 +48,40 @@ export function SignUpContextProvider({ children }) {
                     state: state.trim(),
                 },
                 name: {
-                    first: fname.trim(),
-                    last: lname.trim(),
+                    first: firstName.trim(),
+                    last: lastName.trim(),
                 },
             },
         };
     }
 
     function resetState() {
-        // screen 1
         setEmail('');
         setPassword('');
         setPasswordRetype('');
         setUsername('');
-        // screen 2
-        setFname('');
-        setLname('');
-        // screen 3
+        setFirstName('');
+        setLastName('');
         setCity('');
         setState('');
         setDistance(defaultDistance);
-        // screen 4
         setBirthday('');
         setAgeRange(defaultAgeRange);
-        // screen 5
         setGender('');
         setSameGender(false);
-        // screen 6
         setSelectedInterests(defaultSelectedInterests);
         setSameInterests(false);
     }
 
     return (
-        <SignUpContext.Provider value={{
+        <UserContext.Provider value={{
+            token, setToken,
             email, setEmail,
             password, setPassword,
             passwordRetype, setPasswordRetype,
             username, setUsername,
-            fname, setFname,
-            lname, setLname,
+            firstName, setFirstName,
+            lastName, setLastName,
             city, setCity,
             state, setState,
             distance, setDistance,
@@ -104,33 +95,7 @@ export function SignUpContextProvider({ children }) {
             resetState,
         }}>
             {children}
-        </SignUpContext.Provider>
+        </UserContext.Provider>
     )
 }
 
-
-const defaultUser = {
-    email: '',
-    password: '',
-    username: '',
-    security_level: 'user',
-    info: {
-        birthday: '',
-        connectWith: {
-            ageRange: null,
-            distance: null,
-            sameGender: false,
-            sameInterests: false,
-        },
-        gender: '',
-        interests: null,
-        location: {
-            city: '',
-            state: '',
-        },
-        name: {
-            first: '',
-            last: '',
-        },
-    },
-};
