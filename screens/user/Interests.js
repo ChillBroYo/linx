@@ -52,7 +52,7 @@ export default function UserGender({ navigation }) {
 
     async function doSignUp() {
         try {
-            const API_ENDPOINT = 'https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/sign_up';
+            const API_ENDPOINT = 'https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/sign-up';
             const params = formatUserInfoForSignUp();
             // TODO: figure out how to update context after state changes
             // context passes a frozen version of the context to the page
