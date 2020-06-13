@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text,  Alert, Button, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Image, Text, Alert, Button, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 import axios from 'axios';
 
@@ -14,7 +14,7 @@ export default class App extends Component {
 
   async componentDidMount() {
     try {
-      const response = await axios('https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-convo/?uid=1&oid=2&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=');
+      const response = await axios('https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get_conversation/?uid=1&oid=2&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=');
       this.messages = response.data.messages;
       this.setState({messages: this.messages})
     }
@@ -34,6 +34,7 @@ export default class App extends Component {
       )
     }
   }
+
   render() {
     
     const {navigation} = this.props;
@@ -55,14 +56,26 @@ export default class App extends Component {
           <View style={styles.contactInfoBtn}><Text style={styles.infoLetter}>i</Text></View>
         </TouchableOpacity>
 
-        
-        <Text>please show up</Text>
-        {this.state.messages ? this.state.messages.map(message => 
-        <View key={message.message_id}>
-          <Text>{message.message}</Text>
-          <Text>bsh</Text> 
+        <View style={styles.conversationContainer}>
+          <View style={styles.otherMessageContainer}>
+            <Image style={styles.userIcon} source={{uri: navigation.getParam('profilePicURL')}}></Image>
+            <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>please show ups Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, nobis.</Text></View>
+          </View>
+
+          <View style={{...styles.message, ...styles.ownMessage}}><Text style={styles.messageText}>please show up</Text></View>
+
+          <View style={styles.otherMessageContainer}>
+            <Image style={styles.userIcon} source={{uri: navigation.getParam('profilePicURL')}}></Image>
+            <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>please show up</Text></View>
+          </View>
+
+          {this.state.messages ? this.state.messages.map(message => 
+          <View key={message.message_id}>
+            <Text>{message.message}</Text>
+            <Text>bsh</Text> 
+          </View>
+          ) : null}
         </View>
-        ) : null}
       </View>
     );
   }
@@ -73,13 +86,13 @@ let iOSPlatformStyle = {};
 if (platform === 'ios') iOSPlatformStyle = {paddingTop: 40};
 
 const contactPurple = '#7F06FE';
+const gray = '#8D99AE';
 
 const styles = StyleSheet.create({
   container: {
-    padding: '0 5%',
   },
   topBanner: {
-    height: '30%',
+    height: '20%',
     width: '100%',
     backgroundColor: 'white',
     shadowOffset: { height: 7 },
@@ -119,5 +132,45 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontWeight: '600'
+  },
+  userIcon: {
+    width: 50,
+    height: 50,
+    backgroundColor:'#f0f0f0',
+    borderRadius: 25,
+    borderColor: gray,
+    borderWidth: 2,
+    marginRight: '7%'
+  },
+  conversationContainer: {
+    // backgroundColor: 'pink',
+    paddingLeft: '5%',
+    paddingRight: '5%',
+  },
+  otherMessageContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginVertical: 10,
+  },
+  message: {
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 20
+  },
+  otherMessage: {
+    backgroundColor: '#2B2D42',
+    borderTopLeftRadius: 0,
+    maxWidth: '80%'
+  },
+  ownMessage: {
+    borderTopRightRadius: 0,
+    backgroundColor: '#439E73',
+    marginVertical: 10,
+    alignSelf: 'flex-end',
+    maxWidth: '90%'
+  },
+  messageText: {
+    color: 'white',
+    fontSize: 20,
   }
 });
