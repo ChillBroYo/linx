@@ -23,7 +23,7 @@ export default function App(props) {
         return (
             <UserContextProvider>
                 <View style={styles.container}>
-                    {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+                    <StatusBar barStyle="light-content" />
                     <AppNavigator />
                 </View>
             </UserContextProvider>
