@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 
@@ -17,13 +22,6 @@ export default function TakeProfileScreen({ navigation }) {
             setHasPermission(status == 'granted');
         })();
     }, []);
-
-	//Hook to hide bottom tab navigation while taking profile
-	// useEffect(() => {
-	// 	const parent = navigation.dangerouslyGetParent();
-	// 	parent.setOptions({ tabBarVisible: false });
-	// 	return () => parent.setOptions({ tabBarVisible: true });
-	// }, []);
 
     //Case when permission has neither been approved nor denied
     if (hasPermission == null) {
