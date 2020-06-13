@@ -14,7 +14,7 @@ export default class App extends Component {
 
   async componentDidMount() {
     try {
-      const response = await axios('https://fwbtngtv7j.execute-api.us-east-1.amazonaws.com/r2/get-convo/?uid=1&oid=2&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=');
+      const response = await axios('https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-convo/?uid=1&oid=2&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=');
       this.messages = response.data.messages;
       this.setState({messages: this.messages})
     }
@@ -34,7 +34,6 @@ export default class App extends Component {
       )
     }
   }
-  // {this.props.navigation.getParam('user')}
   render() {
     
     const {navigation} = this.props;
@@ -43,7 +42,7 @@ export default class App extends Component {
       navigation.navigate('MessagesScreen');
     }
     
-    console.log('yo', this.state.messages)
+    // console.log('yo', this.state.messages)
     return (
       <View style={{...styles.container, ...iOSPlatformStyle}}>
         
