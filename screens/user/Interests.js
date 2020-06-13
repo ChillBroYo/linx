@@ -52,13 +52,13 @@ export default function UserGender({ navigation }) {
 
     async function doSignUp() {
         try {
-            const API_BASE = 'http://192.168.1.15:8080/sign_up';
+            const API_ENDPOINT = 'https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/sign_up';
             const params = formatUserInfoForSignUp();
             // TODO: figure out how to update context after state changes
             // context passes a frozen version of the context to the page
             params.info.interests = [...interests];
             params.info.connectWith.sameInterests = sameInterests;
-            const res = await axios.get(API_BASE, { params });
+            const res = await axios.get(API_ENDPOINT, { params });
             const data = res.data;
             if (res.status != 200) {
                 return Alert.alert('Sign up failed. Please try again');

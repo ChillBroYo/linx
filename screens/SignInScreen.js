@@ -34,9 +34,9 @@ export default function SignIn({ navigation }) {
 
     async function onSignIn() {
         try {
-            const API_BASE = 'http://192.168.1.15:8080/sign_in';
+            const API_ENDPOINT = 'https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/sign_in';
             const params = { username, password };
-            const res = await axios.get(API_BASE, { params });
+            const res = await axios.get(API_ENDPOINT, { params });
             const data = res.data;
             if (res.status != 200) {
                 return Alert.alert('Sign in failed. Please try again');
