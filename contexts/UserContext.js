@@ -10,7 +10,7 @@ export function UserContextProvider({ children }) {
     const defaultAgeRange = [23, 29];
     const defaultSelectedInterests = new Set();
 
-    const [token, setToken] = userState('');
+    const [token, setToken] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordRetype, setPasswordRetype] = useState('');
@@ -56,6 +56,7 @@ export function UserContextProvider({ children }) {
     }
 
     function resetState() {
+        setToken('');
         setEmail('');
         setPassword('');
         setPasswordRetype('');
