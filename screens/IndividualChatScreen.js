@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Text, Alert, Button, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Image, Text, Alert, Button, FlatList, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
@@ -7,8 +7,8 @@ import axios from 'axios';
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.currentUserID = props.navigation.getParam('currentUserID')
-    this.currentUserToken = props.navigation.getParam('currentUserToken');
+    this.currentUserID = props.navigation.getParam('currentUserID') || 2;
+    this.currentUserToken = props.navigation.getParam('currentUserToken') || '43985ece-e49d-477f-b843-3a5501799ef7&limit=1000';
     this.state = {
       messages : null
     };
@@ -16,8 +16,8 @@ export default class App extends Component {
 
   async componentDidMount() {
     try {
-      // const response = await axios('https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=2&oid=1&token=43985ece-e49d-477f-b843-3a5501799ef7&limit=1000&ts=');
-      const response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${this.currentUserID}&oid=${this.props.navigation.getParam('contactID')}&token=${this.currentUserToken}&limit=1000&ts=`);
+      const response = await axios('https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=2&oid=1&token=43985ece-e49d-477f-b843-3a5501799ef7&limit=1000&ts=');
+      // const response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${this.currentUserID}&oid=${this.props.navigation.getParam('contactID')}&token=${this.currentUserToken}&limit=1000&ts=`);
       const messages = response.data.messages;
       this.setState({messages})
     }
@@ -92,7 +92,24 @@ export default class App extends Component {
               
             </View>
             ) : null}*/}
-            {this.state.messages ? this.mapMessages() : null}
+
+            {/*{this.state.messages ? this.mapMessages() : null}*/}
+            <FlatList
+              keyExtractor={(item) => item.message_id.toString()}
+              data={this.state.messages}
+              inverted
+              renderItem={({ item }) => 
+              item.user_id == this.currentUserID ?
+                  <View style={{...styles.message, ...styles.ownMessage}}>
+                    <Text style={styles.messageText}>{item.message}</Text>
+                  </View>
+                  :
+                  <View style={styles.otherMessageContainer}>
+                    <Image style={styles.userIcon} source={{uri: this.props.navigation.getParam('profilePicURL')}}></Image>
+                    <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{item.message}</Text></View>
+                  </View>
+              }
+            />
 
           </View>
         </LinearGradient>
