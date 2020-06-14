@@ -33,11 +33,20 @@ export default function TakeProfileScreen({ navigation }) {
         navigation.goBack();
     }
 
+    snap = async () => {
+        if (this.camera) {
+            let photo = await this.camera.takePictureAsync();
+        }
+    };
+
     //Case when permission has been approved
     return (
         <View style={styles.cameraContainer}>
-            <Camera style={styles.camera} type={type} flashMode={'auto'}>
+            <Camera style={styles.camera} type={type} flashMode={'auto'} ref={ref => { this.camera = ref; }} >
                 <View style={styles.cameraButtonContainer}>
+                    <TouchableOpacity style={styles.takePictureContainer}>
+                    </TouchableOpacity>
+                        <Text style={styles.takePicture}>Take Picture</Text>
                     <TouchableOpacity
                         style={styles.flipCameraContainer}
                         onPress={() => {
@@ -66,15 +75,23 @@ const styles = StyleSheet.create({
     cameraButtonContainer: {
         flex: 1,
         backgroundColor: 'transparent',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'flex-end'
+    },
+    takePictureContainer: {
+
+    },
+    takePicture: {
+        fontSize: 30,
+        marginBottom: 75,
+        color: 'white'
     },
     flipCameraContainer: {
-        alignSelf: 'flex-end',
-        alignItems: 'center'
     },
     flipCamera: {
         fontSize: 30,
-        marginBottom: 50,
-        color: 'white'
+        marginBottom: 75,
+        color: 'white',
     },
 });
