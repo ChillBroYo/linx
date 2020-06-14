@@ -77,6 +77,13 @@ export const globalStyles = StyleSheet.create({
 		elevation: 5,
 		zIndex: 1
 	},
+	noContainer: {
+		backgroundColor: 'transparent',
+		width: 280,
+		height: 40,
+		top: 65,
+		left: 50
+	},
 	verify: {
 		fontSize: 23,
 		color: '#FFF',

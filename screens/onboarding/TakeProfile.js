@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TakeProfileScreen({ navigation }) {
     //Variables to determine if permission is granted by user to access camera
@@ -36,6 +37,7 @@ export default function TakeProfileScreen({ navigation }) {
     snap = async () => {
         if (this.camera) {
             let photo = await this.camera.takePictureAsync();
+            navigation.navigate('ReviewProfile', {data: photo});
         }
     };
 
@@ -44,9 +46,9 @@ export default function TakeProfileScreen({ navigation }) {
         <View style={styles.cameraContainer}>
             <Camera style={styles.camera} type={type} flashMode={'auto'} ref={ref => { this.camera = ref; }} >
                 <View style={styles.cameraButtonContainer}>
-                    <TouchableOpacity style={styles.takePictureContainer}>
+                    <TouchableOpacity style={styles.takePictureContainer} onPress={this.snap}>
+                        <Ionicons name="ios-camera" style={styles.takePicture} />
                     </TouchableOpacity>
-                        <Text style={styles.takePicture}>Take Picture</Text>
                     <TouchableOpacity
                         style={styles.flipCameraContainer}
                         onPress={() => {
@@ -56,7 +58,7 @@ export default function TakeProfileScreen({ navigation }) {
                             )
                         }}
                     >
-                        <Text style={styles.flipCamera}>Flip</Text>
+                        <Ionicons name="ios-reverse-camera" style={styles.flipCamera} />
                     </TouchableOpacity>
                 </View>
             </Camera>
@@ -74,24 +76,25 @@ const styles = StyleSheet.create({
     },
     cameraButtonContainer: {
         flex: 1,
-        backgroundColor: 'transparent',
+        backgroundColor: 'black',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        alignItems: 'flex-end'
+        alignItems: 'flex-end',
+        marginTop: 565
     },
     takePictureContainer: {
-
+        marginLeft: 120
     },
     takePicture: {
-        fontSize: 30,
-        marginBottom: 75,
-        color: 'white'
+        fontSize: 100,
+        marginBottom: 0,
+        color: 'white',
     },
     flipCameraContainer: {
     },
     flipCamera: {
-        fontSize: 30,
-        marginBottom: 75,
+        fontSize: 50,
+        marginBottom: 10,
         color: 'white',
     },
 });
