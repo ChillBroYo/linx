@@ -35,13 +35,13 @@ export default class App extends Component {
       const currentMessage = messages[i];
       if (currentMessage.user_id == this.currentUserID) {
           messagesList.push(
-            <View style={{...styles.message, ...styles.ownMessage}}>
+            <View key={currentMessage.message_id} style={{...styles.message, ...styles.ownMessage}}>
               <Text style={styles.messageText}>{currentMessage.message}</Text>
             </View>)
       }
       else {
         messagesList.push(
-          <View style={styles.otherMessageContainer}>
+          <View key={currentMessage.message_id} style={styles.otherMessageContainer}>
             <Image style={styles.userIcon} source={{uri: this.props.navigation.getParam('profilePicURL')}}></Image>
             <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{currentMessage.message}</Text></View>
           </View>
@@ -63,7 +63,6 @@ export default class App extends Component {
     return (
       <View style={{...styles.container, ...iOSPlatformStyle}}>
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
-        {/*<Text>Fantasia {this.state.messages[0].message}</Text>*/}
           <TouchableOpacity style={styles.topBanner} onPress={() => alert('info')}>
             <TouchableOpacity style={styles.backArrowContainer} onPress={goBackToContacts}>
               <Icon name='keyboard-arrow-left' color='#1B1B1B' size={50} />
