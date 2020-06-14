@@ -29,7 +29,13 @@ export function UserContextProvider({ children }) {
     const [sameInterests, setSameInterests] = useState(false);
 
     function setUserFromResponse(res) {
-        const { token, email, username, info } = res;
+        const {
+            token,
+            email,
+            username,
+            profile_picture,
+            info,
+        } = res;
         const {
             birthday,
             gender,
@@ -49,6 +55,7 @@ export function UserContextProvider({ children }) {
         setToken(token);
         setEmail(email);
         setUsername(username);
+        setProfileImg(profile_picture);
         setFirstName(name.first);
         setLastName(name.last);
         setBirthday(birthday);
@@ -98,6 +105,7 @@ export function UserContextProvider({ children }) {
         setPassword('');
         setPasswordRetype('');
         setUsername('');
+        setProfileImg('');
         setFirstName('');
         setLastName('');
         setCity('');
