@@ -7,17 +7,19 @@ import axios from 'axios';
 export default class App extends Component {
   constructor(props) {
     super(props);
+    this.currentUserID = props.navigation.getParam('currentUserID')
+    this.currentUserToken = props.navigation.getParam('currentUserToken');
     this.state = {
       messages : null
     };
-    
   }
 
   async componentDidMount() {
     try {
-      const response = await axios('https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get_conversation/?uid=1&oid=2&token=58db4abf-fd9c-451f-ab5d-199f04118335&ts=');
-      this.messages = response.data.messages;
-      this.setState({messages: this.messages})
+      // const response = await axios('https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=2&oid=1&token=43985ece-e49d-477f-b843-3a5501799ef7&limit=1000&ts=');
+      const response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${this.currentUserID}&oid=${this.props.navigation.getParam('contactID')}&token=${this.currentUserToken}&limit=1000&ts=`);
+      const messages = response.data.messages;
+      this.setState({messages})
     }
     catch(error) {
       alert(`An error occurred : ${error}`);
@@ -25,15 +27,28 @@ export default class App extends Component {
   }
   
   mapMessages() {
-    const messages = this.state.messages.slice();
-    const displayedMessages = [];
+    const messages = this.state.messages.slice(0, 10);
+    const messagesList = [];
     let lastDisplayedDate = "";
-    for (const msgObj in this.state.messages) {
-      messagesList.push(
-        <Text></Text>
-        
-      )
+
+    for (let i = messages.length - 1; i >= 0; i--) {
+      const currentMessage = messages[i];
+      if (currentMessage.user_id == this.currentUserID) {
+          messagesList.push(
+            <View style={{...styles.message, ...styles.ownMessage}}>
+              <Text style={styles.messageText}>{currentMessage.message}</Text>
+            </View>)
+      }
+      else {
+        messagesList.push(
+          <View style={styles.otherMessageContainer}>
+            <Image style={styles.userIcon} source={{uri: this.props.navigation.getParam('profilePicURL')}}></Image>
+            <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{currentMessage.message}</Text></View>
+          </View>
+        )
+      }
     }
+    return messagesList;
   }
 
   render() {
@@ -53,12 +68,12 @@ export default class App extends Component {
             <TouchableOpacity style={styles.backArrowContainer} onPress={goBackToContacts}>
               <Icon name='keyboard-arrow-left' color='#1B1B1B' size={50} />
             </TouchableOpacity>
-            <Text style={styles.contactName}>Placeholder {navigation.getParam('contactName')}</Text>
+            <Text style={styles.contactName}>User {navigation.getParam('contactName')}</Text>
             <View style={styles.contactInfoBtn}><Text style={styles.infoLetter}>i</Text></View>
           </TouchableOpacity>
         
           <View style={styles.conversationContainer}>
-            <View style={styles.otherMessageContainer}>
+            {/*<View style={styles.otherMessageContainer}>
               <Image style={styles.userIcon} source={{uri: navigation.getParam('profilePicURL')}}></Image>
               <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>please show ups Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, nobis.</Text></View>
             </View>
@@ -69,14 +84,17 @@ export default class App extends Component {
             <View style={styles.otherMessageContainer}>
               <Image style={styles.userIcon} source={{uri: navigation.getParam('profilePicURL')}}></Image>
               <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>please show up</Text></View>
-            </View>
+            </View>*/}
 
-            {this.state.messages ? this.state.messages.map(message => 
+            {/*{this.state.messages ? this.state.messages.reverse().map(message => 
+            
             <View key={message.message_id}>
               <Text>{message.message}</Text>
-              <Text>bsh</Text> 
+              
             </View>
-            ) : null}
+            ) : null}*/}
+            {this.state.messages ? this.mapMessages() : null}
+
           </View>
         </LinearGradient>
       </View>
