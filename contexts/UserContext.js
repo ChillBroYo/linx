@@ -15,6 +15,7 @@ export function UserContextProvider({ children }) {
     const [password, setPassword] = useState('');
     const [passwordRetype, setPasswordRetype] = useState('');
     const [username, setUsername] = useState('');
+    const [profileImg, setProfileImg] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [city, setCity] = useState('');
@@ -66,6 +67,7 @@ export function UserContextProvider({ children }) {
             email: email.trim(),
             password: password,
             username: username.trim(),
+            profile_picture: profileImg,
             security_level: 'user',
             info: {
                 birthday: birthday.trim(),
@@ -76,6 +78,7 @@ export function UserContextProvider({ children }) {
                     sameInterests,
                 },
                 gender,
+                imgUrl: profileImg,
                 interests: [...interests],
                 location: {
                     city: city.trim(),
@@ -115,6 +118,7 @@ export function UserContextProvider({ children }) {
             password, setPassword,
             passwordRetype, setPasswordRetype,
             username, setUsername,
+            profileImg, setProfileImg,
             firstName, setFirstName,
             lastName, setLastName,
             city, setCity,
