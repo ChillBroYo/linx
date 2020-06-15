@@ -13,6 +13,8 @@ import {
 import axios from 'axios';
 import { UserContext } from '../contexts/UserContext';
 import { green, white } from '../constants/Colors';
+import { getEnvVars } from '../environment';
+const { apiUrl: API_ENDPOINT } = getEnvVars();
 
 export default function SignIn({ navigation }) {
     const {
@@ -39,9 +41,8 @@ export default function SignIn({ navigation }) {
         }
 
         try {
-            const API_ENDPOINT = 'https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/sign-in';
             const params = { username, password };
-            const res = await axios.get(API_ENDPOINT, { params });
+            const res = await axios.get(`${API_ENDPOINT}/${__DEV__ ? 'sign_in' : 'sign-in'}`, { params });
             const data = res.data;
             if (res.status != 200) {
                 return Alert.alert('Sign in failed. Please try again');
