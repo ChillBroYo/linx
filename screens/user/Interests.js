@@ -28,6 +28,8 @@ import BarButton from '../../components/BarButton';
 import PillButton from '../../components/PillButton';
 import { grey, lightGradient, purple } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
+import { getEnvVars } from '../../environment';
+const { apiUrl: API_ENDPOINT } = getEnvVars();
 
 export default function UserGender({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
@@ -55,13 +57,17 @@ export default function UserGender({ navigation }) {
 
     async function doSignUp() {
         try {
-            const API_ENDPOINT = 'https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/sign-up';
-            const params = formatUserInfoForSignUp();
             // TODO: figure out how to update context after state changes
             // context passes a frozen version of the context to the page
-            params.info.interests = [...interests];
-            params.info.connectWith.sameInterests = sameInterests;
-            const res = await axios.get(API_ENDPOINT, { params });
+            const user = formatUserInfoForSignUp();
+            user.info.interests = [...interests];
+            user.info.connectWith.sameInterests = sameInterests;
+
+            const params = new URLSearchParams();
+            for (let key in user) {
+                params.append(key, typeof user[key] == 'object' ? JSON.stringify(user[key]) : user[key]);
+            }
+            const res = await axios.post(`${API_ENDPOINT}/${__DEV__ ? 'sign_up' : 'sign-up'}/`, params);
             const data = res.data;
             if (res.status != 200) {
                 return Alert.alert('Sign up failed. Please try again');
