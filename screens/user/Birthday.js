@@ -43,16 +43,21 @@ export default function UserBirthday({ navigation }) {
     }, []);
 
     function doBack() {
+        if (isSignUpScreen) {
+            doUpdateContext();
+        }
         navigation.goBack();
     }
 
     function doSubmit() {
         if (!validateForm()) return;
+        doUpdateContext();
+        isSignUpScreen ? navigation.navigate('SignUpGender') : doBack();
+    }
 
+    function doUpdateContext() {
         setContextBirthday(birthday);
         setContextAgeRange(ageRange);
-
-        isSignUpScreen ? navigation.navigate('SignUpGender') : doBack();
     }
 
     function validateForm() {

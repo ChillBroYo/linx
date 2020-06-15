@@ -47,6 +47,9 @@ export default function UserGender({ navigation }) {
     });
 
     function doBack() {
+        if (isSignUpScreen) {
+            doUpdateContext();
+        }
         navigation.goBack();
     }
 
@@ -74,9 +77,13 @@ export default function UserGender({ navigation }) {
     }
 
     async function doSubmit() {
-        await setContextInterests(interests);
-        await setContextSameInterests(sameInterests);
+        await doUpdateContext();
         isSignUpScreen ? doSignUp() : doBack();
+    }
+
+    function doUpdateContext() {
+        setContextInterests(interests);
+        setContextSameInterests(sameInterests);
     }
 
     // FlatList renderItem passes { index: <i>, item: <data[i]> }

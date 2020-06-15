@@ -44,13 +44,20 @@ export default function UserGender({ navigation }) {
     }, []);
 
     function doBack() {
+        if (isSignUpScreen) {
+            doUpdateContext();
+        }
         navigation.goBack();
     }
 
     function doSubmit() {
+        doUpdateContext();
+        isSignUpScreen ? navigation.navigate('SignUpInterests') : doBack();
+    }
+
+    function doUpdateContext() {
         setContextGender(gender);
         setContextSameGender(sameGender);
-        isSignUpScreen ? navigation.navigate('SignUpInterests') : doBack();
     }
 
     return (

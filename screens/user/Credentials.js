@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
@@ -26,11 +26,14 @@ import { UserContext } from '../../contexts/UserContext';
 
 export default function UserCredentials({ navigation }) {
     const {
-        email, setEmail,
-        password, setPassword,
-        passwordRetype, setPasswordRetype,
-        username, setUsername,
+        setEmail: setContextEmail,
+        setPassword: setContextPassword,
+        setUsername: setContextUsername,
     } = useContext(UserContext);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordRetype, setPasswordRetype] = useState('');
+    const [username, setUsername] = useState('');
 
     useEffect(() => {
         StatusBar.setBarStyle('light-content');
@@ -42,7 +45,14 @@ export default function UserCredentials({ navigation }) {
 
     function doContinue() {
         if (!validateForm()) return;
+        doUpdateContext();
         navigation.navigate('SignUpProfile');
+    }
+
+    function doUpdateContext() {
+        setContextEmail(email);
+        setContextPassword(password);
+        setContextUsername(username);
     }
 
     function validateForm() {

@@ -35,24 +35,34 @@ export default function UserName({ navigation }) {
         setFirstName: setContextFirstName,
         lastName: contextLastName,
         setLastName: setContextLastName,
+        profileImg: contextProfileImage,
+        setProfileImg: setContextProfileImg,
     } = useContext(UserContext);
     const [firstName, setFirstName] = useState(contextFirstName);
     const [lastName, setLastName] = useState(contextLastName);
+    const [profileImg, setProfileImg] = useState(contextProfileImage);
 
     useEffect(() => {
         StatusBar.setBarStyle(isSignUpScreen ? 'light-content' : 'dark-content');
     }, []);
 
     function doBack() {
+        if (isSignUpScreen) {
+            doUpdateContext();
+        }
         navigation.goBack();
     }
 
     function doSubmit() {
         if (!validateForm()) return;
-        setContextFirstName(firstName);
-        setContextLastName(lastName);
+        doUpdateContext();
         // TODO: ADD PROFILE IMAGE
         isSignUpScreen ? navigation.navigate('SignUpLocation') : doBack();
+    }
+
+    function doUpdateContext() {
+        setContextFirstName(firstName);
+        setContextLastName(lastName);
     }
 
     function validateForm() {

@@ -13,7 +13,6 @@ export function UserContextProvider({ children }) {
     const [token, setToken] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [passwordRetype, setPasswordRetype] = useState('');
     const [username, setUsername] = useState('');
     const [profileImg, setProfileImg] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -103,7 +102,6 @@ export function UserContextProvider({ children }) {
         setToken('');
         setEmail('');
         setPassword('');
-        setPasswordRetype('');
         setUsername('');
         setProfileImg('');
         setFirstName('');
@@ -124,7 +122,6 @@ export function UserContextProvider({ children }) {
             token, setToken,
             email, setEmail,
             password, setPassword,
-            passwordRetype, setPasswordRetype,
             username, setUsername,
             profileImg, setProfileImg,
             firstName, setFirstName,

@@ -36,8 +36,12 @@ export default function UserName({ navigation }) {
 
     function doSave() {
         if (!verifyPassword()) return;
-        setPassword(newPassword);
+        doUpdateContext();
         doBack();
+    }
+
+    function doUpdateContext() {
+        setPassword(newPassword);
     }
 
     function verifyPassword() {

@@ -46,17 +46,22 @@ export default function UserLocation({ navigation }) {
     }, []);
 
     function doBack() {
+        if (isSignUpScreen) {
+            doUpdateContext();
+        }
         navigation.goBack();
     }
 
     function doSubmit() {
         if (!validateForm()) return;
+        doUpdateContext();
+        isSignUpScreen ? navigation.navigate('SignUpBirthday') : doBack();
+    }
 
+    function doUpdateContext() {
         setContextCity(city);
         setContextState(state);
         setContextDistance(distance);
-
-        isSignUpScreen ? navigation.navigate('SignUpBirthday') : doBack();
     }
 
     function validateForm() {

@@ -38,8 +38,12 @@ export default function UserEmail({ navigation }) {
 
     function doSave() {
         if (!validateEmail()) return;
-        setContextEmail(email);
+        doUpdateContext();
         Alert.alert('Your email has been updated');
+    }
+
+    function doUpdateContext() {
+        setContextEmail(email);
     }
 
     function validateEmail() {
