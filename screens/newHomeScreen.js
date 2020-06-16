@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
-import { Text,  Alert, Button, TextInput, View, StyleSheet } from 'react-native';
+import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       username: '',
       password: '',
     };
   }
-  
+
   onLogin() {
     const { username, password } = this.state;
 
-    //Alert.alert('Credentials', `${username} + ${password}`);
+    Alert.alert('Credentials', `${username} + ${password}`);
     this.props.navigation.navigate('SignIn')
   }
 

@@ -1,94 +1,52 @@
 import React from 'react';
-import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
-import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/newHomeScreen';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
-import MessagesScreen from '../screens/MessagesScreen';
+import CardsStack from './CardsNavigator';
+import SettingsStack from './SettingsNavigator';
+import TabBarIcon from '../components/TabBarIcon';
 
-const config = Platform.select({
-  web: { headerMode: 'screen' },
-  default: {},
-});
 
-const HomeStack = createStackNavigator(
-  {
-    Home: HomeScreen,
-  },
-  config
+// FRIENDS TAB
+const FriendsStack = createStackNavigator(
+    {
+        Messages: HomeScreen,
+    },
+    {
+        headerMode: 'none',
+    },
 );
 
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
-  ),
+FriendsStack.navigationOptions = {
+    tabBarLabel: 'Friends',
+    tabBarIcon: ({ focused }) => (
+        <TabBarIcon focused={focused} name='friends' />
+    ),
 };
 
-HomeStack.path = '';
 
-const LinksStack = createStackNavigator(
-  {
-    Links: LinksScreen,
-  },
-  config
-);
-
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Events',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'} />
-  ),
+// BOTTOM TAB
+const BottomTabRouteConfig = {
+    Friends: FriendsStack,
+    Cards: CardsStack,
+    Settings: SettingsStack,
 };
 
-LinksStack.path = '';
-
-const MessagesStack = createStackNavigator(
-  {
-    Messages: MessagesScreen,
-  },
-  config
-);
-
-MessagesStack.navigationOptions = {
-  tabBarLabel: 'Messages',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'} />
-  ),
+const BottomTabNavigatorConfig = {
+    initialRouteName: 'Cards',
+    defaultNavigationOptions: ({ navigation }) => ({
+        tabBarIcon: ({ focused }) => {
+            // routeName corresponds to keys in BottomTabRouteConfig
+            const { routeName } = navigation.state;
+            return <TabBarIcon focused={focused} name={routeName} />;
+        }
+    }),
+    tabBarOptions: {
+        showLabel: false,
+        style: { height: 100 },
+    },
 };
 
-const SettingsStack = createStackNavigator(
-  {
-    Settings: SettingsScreen,
-  },
-  config
-);
-
-SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'} />
-  ),
-};
-
-SettingsStack.path = '';
-
-const tabNavigator = createBottomTabNavigator({
-  HomeStack,
-  LinksStack,
-  SettingsStack,
-  MessagesStack,
-});
-
-tabNavigator.path = '';
+const tabNavigator = createBottomTabNavigator(BottomTabRouteConfig, BottomTabNavigatorConfig);
 
 export default tabNavigator;

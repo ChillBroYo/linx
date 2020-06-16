@@ -2,21 +2,28 @@ import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
-import SignIn from '../screens/LoginScreen';
-import SignUp from '../screens/SignUpScreen';
+import ResetPassword from '../screens/ResetPassword';
+import SignIn from '../screens/SignInScreen';
+import SignUp from './SignUpNavigator';
 import MessagesScreen from "../screens/MessagesScreen";
 import IndividualChatScreen from "../screens/IndividualChatScreen";
 import ContactProfileScreen from "../screens/ContactProfileScreen";
 
-export default createAppContainer(
-  createSwitchNavigator({
+const RouteConfig = {
     // You could add another route here for authentication.
     // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-    // ContactProfileScreen: ContactProfileScreen,
-    SignIn: SignIn,
-    SignUp: SignUp,
     Main: MainTabNavigator,
-    MessagesScreen: MessagesScreen, // put here to make bottom nav show
-    IndividualChatScreen: IndividualChatScreen,
-  })
-);
+    // Onboarding,
+    ResetPassword,
+    SignIn,
+    SignUp,
+    MessagesScreen,
+    IndividualChatScreen,
+    // ContactProfileScreen
+};
+
+const NavigatorConfig = {
+    initialRouteName: 'SignIn',
+};
+
+export default createAppContainer(createSwitchNavigator(RouteConfig, NavigatorConfig));
