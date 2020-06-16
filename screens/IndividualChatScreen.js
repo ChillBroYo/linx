@@ -10,7 +10,8 @@ export default class App extends Component {
     this.currentUserID = props.navigation.getParam('currentUserID') || 2;
     this.currentUserToken = props.navigation.getParam('currentUserToken') || '43985ece-e49d-477f-b843-3a5501799ef7&limit=1000';
     this.state = {
-      messages : null
+      messages : null,
+      lastShownMessageDate: null
     };
   }
 
@@ -19,7 +20,12 @@ export default class App extends Component {
       const response = await axios('https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=2&oid=1&token=43985ece-e49d-477f-b843-3a5501799ef7&limit=1000&ts=');
       // const response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${this.currentUserID}&oid=${this.props.navigation.getParam('contactID')}&token=${this.currentUserToken}&limit=1000&ts=`);
       const messages = response.data.messages;
-      this.setState({messages})
+      // console.log('asyncy', new Date(`${messages[messages.length - 1].created_at}Z`))
+      this.setState({
+        messages,
+      })
+      this.lastShownMessageDate = this.formatDate(messages[messages.length - 1].created_at);
+      console.log('async', this.lastShownMessageDate)
     }
     catch(error) {
       alert(`An error occurred : ${error}`);
@@ -29,7 +35,6 @@ export default class App extends Component {
   mapMessages() {
     const messages = this.state.messages.slice(0, 10);
     const messagesList = [];
-    let lastDisplayedDate = "";
 
     for (let i = messages.length - 1; i >= 0; i--) {
       const currentMessage = messages[i];
@@ -51,6 +56,43 @@ export default class App extends Component {
     return messagesList;
   }
 
+  formatDate(dateStr) {
+    return `${dateStr.substring(0, 10)}T${dateStr.substring(11, 19)}Z`;
+  }
+
+  renderMessage(item) {
+    // console.log('render', this.lastShownMessageDate, item.message)
+    // const currentMessageDate = this.formatDate(item.created_at);
+    // let showDate = true;
+
+    // if (new Date(currentMessageDate) - new Date(this.lastShownMessageDate) > 1000) {
+    //   console.log(new Date(currentMessageDate) - new Date(this.lastShownMessageDate))
+    //   showDate = true;
+    //   this.lastShownMessageDate = currentMessageDate;
+    // }
+    // else {
+    //   showDate = false;
+    // }
+    // console.log('show', showDate, item.message, currentMessageDate, this.lastShownMessageDate)
+    // console.log(new Date(currentMessageDate) - new Date(this.lastShownMessageDate))
+    return (
+      item.user_id == this.currentUserID ?
+        <View>
+          <View style={{...styles.message, ...styles.ownMessage}}>
+            <Text style={styles.messageText}>{item.message}</Text>
+          </View>
+        </View>
+        :
+        <View>
+          <View style={styles.otherMessageContainer}>
+            <Image style={styles.userIcon} source={{uri: this.props.navigation.getParam('profilePicURL')}}></Image>
+            <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{item.message}</Text></View>
+          </View>
+        </View>
+    )
+  }
+
+
   render() {
     
     const {navigation} = this.props;
@@ -58,8 +100,7 @@ export default class App extends Component {
     const goBackToContacts = () => {
       navigation.navigate('MessagesScreen');
     }
-    
-    // console.log('yo', this.state.messages)
+
     return (
       <View style={{...styles.container, ...iOSPlatformStyle}}>
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
@@ -85,30 +126,16 @@ export default class App extends Component {
               <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>please show up</Text></View>
             </View>*/}
 
-            {/*{this.state.messages ? this.state.messages.reverse().map(message => 
-            
-            <View key={message.message_id}>
-              <Text>{message.message}</Text>
-              
-            </View>
-            ) : null}*/}
-
             {/*{this.state.messages ? this.mapMessages() : null}*/}
             <FlatList
               keyExtractor={(item) => item.message_id.toString()}
               data={this.state.messages}
               inverted
+              initialScrollToIndex={this.state.messages ? this.state.messages.length - 1 : null}
               renderItem={({ item }) => 
-              item.user_id == this.currentUserID ?
-                  <View style={{...styles.message, ...styles.ownMessage}}>
-                    <Text style={styles.messageText}>{item.message}</Text>
-                  </View>
-                  :
-                  <View style={styles.otherMessageContainer}>
-                    <Image style={styles.userIcon} source={{uri: this.props.navigation.getParam('profilePicURL')}}></Image>
-                    <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{item.message}</Text></View>
-                  </View>
+                this.renderMessage(item)
               }
+              
             />
 
           </View>
@@ -116,6 +143,10 @@ export default class App extends Component {
       </View>
     );
   }
+}
+
+class ShownDate extends Component {
+
 }
 
 const platform = Platform.OS;
@@ -188,6 +219,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     marginVertical: 7,
+    flexWrap: 'wrap'
   },
   message: {
     borderRadius: 20,
@@ -213,6 +245,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   dateContainer: {
+    width: '100%',
     display: "flex",
     alignItems: "center",
     marginVertical: 10
