@@ -79,8 +79,6 @@ export default class App extends Component {
       showDate = false;
     }
 
-    console.log(typeof(currentMessageDate.toString()), this.lastShownMessageDate)
-
     return (
       item.user_id == this.currentUserID ?
         <View>
@@ -121,18 +119,6 @@ export default class App extends Component {
           </TouchableOpacity>
         
           <View style={styles.conversationContainer}>
-            {/*<View style={styles.otherMessageContainer}>
-              <Image style={styles.userIcon} source={{uri: navigation.getParam('profilePicURL')}}></Image>
-              <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>please show ups Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, nobis.</Text></View>
-            </View>
-
-            <View style={styles.dateContainer}><Text style={styles.dateText}>Wed, Feb 26, 9:05am</Text></View>
-            <View style={{...styles.message, ...styles.ownMessage}}><Text style={styles.messageText}>please show up</Text></View>
-
-            <View style={styles.otherMessageContainer}>
-              <Image style={styles.userIcon} source={{uri: navigation.getParam('profilePicURL')}}></Image>
-              <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>please show up</Text></View>
-            </View>*/}
 
             {/*{this.state.messages ? this.mapMessages() : null}*/}
             <FlatList
