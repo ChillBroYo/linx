@@ -19,7 +19,7 @@ const MessagesStack = createStackNavigator(
             const currentRoute = routes[routes.length - 1];
             return {
                 tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name='messages' />,
-                tabBarVisible: currentRouteName == 'MessagesHome',
+                tabBarVisible: currentRoute.routeName == 'MessagesHome',
             };
         },
     }
