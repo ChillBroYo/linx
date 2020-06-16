@@ -11,7 +11,6 @@ export default class App extends Component {
     this.currentUserToken = props.navigation.getParam('currentUserToken') || '43985ece-e49d-477f-b843-3a5501799ef7&limit=1000';
     this.state = {
       messages : null,
-      lastShownMessageDate: null
     };
   }
 
@@ -20,12 +19,10 @@ export default class App extends Component {
       const response = await axios('https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=2&oid=1&token=43985ece-e49d-477f-b843-3a5501799ef7&limit=1000&ts=');
       // const response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${this.currentUserID}&oid=${this.props.navigation.getParam('contactID')}&token=${this.currentUserToken}&limit=1000&ts=`);
       const messages = response.data.messages;
-      // console.log('asyncy', new Date(`${messages[messages.length - 1].created_at}Z`))
       this.setState({
         messages,
       })
-      this.lastShownMessageDate = this.formatDate(messages[messages.length - 1].created_at);
-      console.log('async', this.lastShownMessageDate)
+      this.lastShownMessageDate = new Date(this.formatDate(messages[0].created_at));
     }
     catch(error) {
       alert(`An error occurred : ${error}`);
@@ -35,23 +32,31 @@ export default class App extends Component {
   mapMessages() {
     const messages = this.state.messages.slice(0, 10);
     const messagesList = [];
+    let showDate = true;
 
     for (let i = messages.length - 1; i >= 0; i--) {
       const currentMessage = messages[i];
       if (currentMessage.user_id == this.currentUserID) {
           messagesList.push(
+            <View>
+            {showDate ? <Text>{currentMessage.created_at}</Text> : null}
             <View key={currentMessage.message_id} style={{...styles.message, ...styles.ownMessage}}>
               <Text style={styles.messageText}>{currentMessage.message}</Text>
+            </View>
             </View>)
       }
       else {
         messagesList.push(
-          <View key={currentMessage.message_id} style={styles.otherMessageContainer}>
-            <Image style={styles.userIcon} source={{uri: this.props.navigation.getParam('profilePicURL')}}></Image>
-            <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{currentMessage.message}</Text></View>
+          <View>
+            {showDate ? <Text>{currentMessage.created_at}</Text> : null}
+            <View key={currentMessage.message_id} style={styles.otherMessageContainer}>
+              <Image style={styles.userIcon} source={{uri: this.props.navigation.getParam('profilePicURL')}}></Image>
+              <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{currentMessage.message}</Text></View>
+            </View>
           </View>
         )
       }
+
     }
     return messagesList;
   }
@@ -60,30 +65,33 @@ export default class App extends Component {
     return `${dateStr.substring(0, 10)}T${dateStr.substring(11, 19)}Z`;
   }
 
-  renderMessage(item) {
-    // console.log('render', this.lastShownMessageDate, item.message)
-    // const currentMessageDate = this.formatDate(item.created_at);
-    // let showDate = true;
+  dateOptions = { weekday: 'short', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
 
-    // if (new Date(currentMessageDate) - new Date(this.lastShownMessageDate) > 1000) {
-    //   console.log(new Date(currentMessageDate) - new Date(this.lastShownMessageDate))
-    //   showDate = true;
-    //   this.lastShownMessageDate = currentMessageDate;
-    // }
-    // else {
-    //   showDate = false;
-    // }
-    // console.log('show', showDate, item.message, currentMessageDate, this.lastShownMessageDate)
-    // console.log(new Date(currentMessageDate) - new Date(this.lastShownMessageDate))
+  renderMessage(item) {
+    const currentMessageDate = new Date(this.formatDate(item.created_at));
+    let showDate = true;
+
+    if (currentMessageDate - this.lastShownMessageDate > 1000 || item.message_id === 1) {
+      showDate = true;
+      this.lastShownMessageDate = currentMessageDate;
+    }
+    else {
+      showDate = false;
+    }
+
+    console.log(typeof(currentMessageDate.toString()), this.lastShownMessageDate)
+
     return (
       item.user_id == this.currentUserID ?
         <View>
+          {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
           <View style={{...styles.message, ...styles.ownMessage}}>
             <Text style={styles.messageText}>{item.message}</Text>
           </View>
         </View>
         :
         <View>
+          {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
           <View style={styles.otherMessageContainer}>
             <Image style={styles.userIcon} source={{uri: this.props.navigation.getParam('profilePicURL')}}></Image>
             <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{item.message}</Text></View>
@@ -129,8 +137,7 @@ export default class App extends Component {
             {/*{this.state.messages ? this.mapMessages() : null}*/}
             <FlatList
               keyExtractor={(item) => item.message_id.toString()}
-              data={this.state.messages}
-              inverted
+              data={this.state.messages ? this.state.messages.reverse() : null}
               initialScrollToIndex={this.state.messages ? this.state.messages.length - 1 : null}
               renderItem={({ item }) => 
                 this.renderMessage(item)
