@@ -122,13 +122,13 @@ export default class App extends Component {
 
             {/*{this.state.messages ? this.mapMessages() : null}*/}
             <FlatList
+              style={styles.flatlist}
               keyExtractor={(item) => item.message_id.toString()}
               data={this.state.messages ? this.state.messages.reverse() : null}
               initialScrollToIndex={this.state.messages ? this.state.messages.length - 1 : null}
               renderItem={({ item }) => 
                 this.renderMessage(item)
               }
-              
             />
 
           </View>
@@ -151,6 +151,7 @@ const gray = '#8D99AE';
 
 const styles = StyleSheet.create({
   container: {
+    position: 'relative',
   },
   topBanner: {
     height: '10%',
@@ -163,6 +164,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 1000
   },
   backArrowContainer: {
     position: 'absolute',
@@ -171,7 +173,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     left: 0,
-    zIndex: 1,
+    zIndex: 1001,
   },
   contactName: {
     color: contactPurple,
@@ -204,9 +206,19 @@ const styles = StyleSheet.create({
     marginRight: '5%'
   },
   conversationContainer: {
-    // backgroundColor: 'pink',
-    paddingLeft: '5%',
-    paddingRight: '5%',
+    position: 'absolute',
+    top: '10%',
+    height: '90%',
+    width: '100%',
+    overflow: "scroll",
+  },
+  flatlist: {
+    paddingHorizontal: '5%',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flex: 2,
   },
   otherMessageContainer: {
     display: 'flex',
