@@ -23,7 +23,7 @@ export default class App extends Component {
       const contacts = responseContacts.data.users;
 
       const conversations = {}
-      
+
       for (const contact in contacts) {
 
         const responseMessages = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${currentUserID}&oid=${contact}&token=${this.tokens[currentUserID]}&limit=1000&ts=`);
@@ -36,14 +36,14 @@ export default class App extends Component {
         const contactInfo = responseContact.data.user_info;
         const contactID = contactInfo.user_id;
         const profilePicURL = contactInfo.profile_picture;
-        
+
         conversations[contact] = {currentUserID, currentUserToken: this.tokens[currentUserID], contactID, contactName, mostRecentMessage, profilePicURL};
       }
       this.setState({conversations});
     }
     catch(error) {
       alert(`An error occurred: ${error}`);
-    }    
+    }
   }
 
   mapConversations() {
@@ -54,9 +54,9 @@ export default class App extends Component {
     for (const contact in conversations) {
 
       const pressHandler = () => {
-        this.props.navigation.navigate('IndividualChatScreen', conversations[contact]);
+        this.props.navigation.navigate('MessagesConversation', conversations[contact]);
       }
-      
+
       convoList.push(
         <TouchableOpacity key={contact} style={[styles.convoItem, i === 0 ? null : styles.convoSeparator]} onPress={pressHandler}>
           <Image style={[styles.userIcon, this.state.isRead ? null : styles.unreadUserIcon]} source={{uri: conversations[contact].profilePicURL}}></Image>
@@ -70,8 +70,8 @@ export default class App extends Component {
     }
     return convoList;
   }
-  
-  
+
+
   render() {
     return (
       <View>

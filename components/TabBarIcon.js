@@ -14,7 +14,7 @@ export default function TabBarIcon({ focused, name }) {
                     style={styles.icon}
                 />
             );
-        case 'friends':
+        case 'messages':
             return (
                 <Image
                     source={( focused

@@ -3,31 +3,14 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 
 import HomeScreen from '../screens/newHomeScreen';
 import CardsStack from './CardsNavigator';
+import MessagesStack from './MessagesNavigator';
 import SettingsStack from './SettingsNavigator';
 import TabBarIcon from '../components/TabBarIcon';
 
 
-// FRIENDS TAB
-const FriendsStack = createStackNavigator(
-    {
-        Messages: HomeScreen,
-    },
-    {
-        headerMode: 'none',
-    },
-);
-
-FriendsStack.navigationOptions = {
-    tabBarLabel: 'Friends',
-    tabBarIcon: ({ focused }) => (
-        <TabBarIcon focused={focused} name='friends' />
-    ),
-};
-
-
 // BOTTOM TAB
 const BottomTabRouteConfig = {
-    Friends: FriendsStack,
+    Messages: MessagesStack,
     Cards: CardsStack,
     Settings: SettingsStack,
 };
@@ -47,6 +30,9 @@ const BottomTabNavigatorConfig = {
     },
 };
 
-const tabNavigator = createBottomTabNavigator(BottomTabRouteConfig, BottomTabNavigatorConfig);
+const bottomTabNavigator = createBottomTabNavigator(
+    BottomTabRouteConfig,
+    BottomTabNavigatorConfig
+);
 
-export default tabNavigator;
+export default bottomTabNavigator;
