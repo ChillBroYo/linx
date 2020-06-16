@@ -7,6 +7,7 @@ import ReviewProfileScreen from '../screens/onboarding/ReviewProfile';
 import ConfirmProfileScreen from '../screens/onboarding/ConfirmProfile';
 import DenyProfileScreen from '../screens/onboarding/DenyProfile';
 import ConfirmDenialScreen from '../screens/onboarding/ConfirmDenial';
+import MainCardsScreen from '../screens/cards/MainCards';
 import TabBarIcon from '../components/TabBarIcon';
 
 const CardsStack = createStackNavigator(
@@ -14,6 +15,7 @@ const CardsStack = createStackNavigator(
         ConfirmDenial: ConfirmDenialScreen,
         ConfirmProfile: ConfirmProfileScreen,
         DenyProfile: DenyProfileScreen,
+        MainCards: MainCardsScreen,
         Profile: ProfileScreen,
         ReviewProfile: ReviewProfileScreen,
         TakeProfile: TakeProfileScreen,
