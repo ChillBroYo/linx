@@ -22,7 +22,7 @@ export default class App extends Component {
       this.setState({
         messages,
       })
-      this.lastShownMessageDate = new Date(this.formatDate(messages[0].created_at));
+      this.lastShownMessageDate = new Date(this.formatDate(messages[messages.length - 1].created_at));
     }
     catch(error) {
       alert(`An error occurred : ${error}`);
