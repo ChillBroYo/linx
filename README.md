@@ -43,6 +43,23 @@ const { apiUrl } = getEnvVars();
 const { apiUrl: API_ENDPOINT } = getEnvVars();
 ```
 
+Steps to run application:
+-------------------------
+
+* to run the app in development mode: 
+
+```
+# __DEV__ will be false
+expo start
+```
+
+* to run the app in production mode:
+
+```
+# __DEV__ will be true
+expo start --no-dev
+```
+
 
 Using UserContext:
 ------------------
