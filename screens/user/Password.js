@@ -23,11 +23,9 @@ import { UserContext } from '../../contexts/UserContext';
 
 export default function UserName({ navigation }) {
     const {
-        password, setPassword,
         doUpdateUser,
         formatUserForRequest,
     } = useContext(UserContext);
-    const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
 
     useEffect(() => {
@@ -51,10 +49,6 @@ export default function UserName({ navigation }) {
 
     function verifyPassword() {
         // TODO: verify current password matches password on file
-        if (password !== currentPassword) {
-            return Alert.alert('Your password does not match');
-        }
-
         return true;
     }
 
@@ -68,15 +62,6 @@ export default function UserName({ navigation }) {
                     <ScrollView style={pageStyles.container}>
                         <PageHeader value='Change password' />
                         <Form>
-                            <TextInput
-                                name='currentPassword'
-                                placeholder='Current password'
-                                value={currentPassword}
-                                onChangeText={password => setCurrentPassword(password)}
-                                clearButtonMode='while-editing'
-                                secureTextEntry
-                                style={formStyles.input}
-                            />
                             <TextInput
                                 name='newPassword'
                                 placeholder='New password'
