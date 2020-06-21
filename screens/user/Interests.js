@@ -28,8 +28,6 @@ import BarButton from '../../components/BarButton';
 import PillButton from '../../components/PillButton';
 import { grey, lightGradient, purple } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
-import { getEnvVars } from '../../environment';
-const { apiUrl: API_ENDPOINT } = getEnvVars();
 
 export default function UserGender({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
@@ -38,7 +36,9 @@ export default function UserGender({ navigation }) {
         setInterests: setContextInterests,
         sameInterests: contextSameInterests,
         setSameInterests: setContextSameInterests,
-        formatUserInfoForSignUp,
+        doSignUpUser,
+        doUpdateUser,
+        formatUserForRequest,
     } = useContext(UserContext);
     const [interests, setInterests] = useState(contextInterests);
     const [sameInterests, setSameInterests] = useState(contextSameInterests);
@@ -48,48 +48,39 @@ export default function UserGender({ navigation }) {
         StatusBar.setBarStyle(isSignUpScreen ? 'light-content' : 'dark-content');
     });
 
-    function doBack() {
+    async function doBack() {
         if (isSignUpScreen) {
-            doUpdateContext();
+            await doUpdateContext();
         }
         navigation.goBack();
     }
 
+    function doSubmit() {
+        isSignUpScreen ? doSignUp() : doUpdate();
+    }
+
     async function doSignUp() {
-        try {
-            // TODO: figure out how to update context after state changes
-            // context passes a frozen version of the context to the page
-            const user = formatUserInfoForSignUp();
-            user.info.interests = [...interests];
-            user.info.connectWith.sameInterests = sameInterests;
-
-            const params = new URLSearchParams();
-            for (let key in user) {
-                params.append(key, typeof user[key] == 'object' ? JSON.stringify(user[key]) : user[key]);
-            }
-            const res = await axios.post(`${API_ENDPOINT}/${__DEV__ ? 'sign_up' : 'sign-up'}/`, params);
-            const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Sign up failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
-            }
-
-            navigation.navigate('SignIn');
-        } catch (error) {
-            Alert.alert('Sign up failed. Please try again');
-        }
+        const user = getUserForRequest(false);
+        const isSignedUp = await doSignUpUser(user);
+        if (!isSignedUp) return;
+        navigation.navigate('SignIn');
     }
 
-    async function doSubmit() {
-        await doUpdateContext();
-        isSignUpScreen ? doSignUp() : doBack();
+    function doUpdate() {
+        const user = getUserForRequest(true);
+        doUpdateUser(user, doUpdateContext);
     }
 
-    function doUpdateContext() {
-        setContextInterests(interests);
-        setContextSameInterests(sameInterests);
+    async function doUpdateContext() {
+        await setContextInterests(interests);
+        await setContextSameInterests(sameInterests);
+    }
+
+    function getUserForRequest(isUpdate) {
+        const user = formatUserForRequest(isUpdate);
+        user.info.interests = [...interests];
+        user.info.connectWith.sameInterests = sameInterests;
+        return user;
     }
 
     // FlatList renderItem passes { index: <i>, item: <data[i]> }

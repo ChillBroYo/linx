@@ -22,8 +22,10 @@ import { lightGradient } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
 
 export default function UserName({ navigation }) {
-    const { password, setPassword } = useContext(UserContext);
-    const [currentPassword, setCurrentPassword] = useState('');
+    const {
+        doUpdateUser,
+        formatUserForRequest,
+    } = useContext(UserContext);
     const [newPassword, setNewPassword] = useState('');
 
     useEffect(() => {
@@ -36,19 +38,17 @@ export default function UserName({ navigation }) {
 
     function doSave() {
         if (!verifyPassword()) return;
-        doUpdateContext();
-        doBack();
+        doUpdate();
     }
 
-    function doUpdateContext() {
-        setPassword(newPassword);
+    function doUpdate() {
+        const user = formatUserForRequest(true);
+        user.password = newPassword;
+        doUpdateUser(user);
     }
 
     function verifyPassword() {
-        if (password !== currentPassword) {
-            return Alert.alert('Your password does not match');
-        }
-
+        // TODO: verify current password matches password on file
         return true;
     }
 
@@ -62,15 +62,6 @@ export default function UserName({ navigation }) {
                     <ScrollView style={pageStyles.container}>
                         <PageHeader value='Change password' />
                         <Form>
-                            <TextInput
-                                name='currentPassword'
-                                placeholder='Current password'
-                                value={currentPassword}
-                                onChangeText={password => setCurrentPassword(password)}
-                                clearButtonMode='while-editing'
-                                secureTextEntry
-                                style={formStyles.input}
-                            />
                             <TextInput
                                 name='newPassword'
                                 placeholder='New password'
