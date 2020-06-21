@@ -28,8 +28,6 @@ import BarButton from '../../components/BarButton';
 import PillButton from '../../components/PillButton';
 import { grey, lightGradient, purple } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
-import { getEnvVars } from '../../environment';
-const { apiUrl } = getEnvVars();
 
 export default function UserGender({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
