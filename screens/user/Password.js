@@ -22,7 +22,11 @@ import { lightGradient } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
 
 export default function UserName({ navigation }) {
-    const { password, setPassword } = useContext(UserContext);
+    const {
+        password, setPassword,
+        doUpdateUser,
+        formatUserForRequest,
+    } = useContext(UserContext);
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
 
@@ -36,15 +40,17 @@ export default function UserName({ navigation }) {
 
     function doSave() {
         if (!verifyPassword()) return;
-        doUpdateContext();
-        doBack();
+        doUpdate();
     }
 
-    function doUpdateContext() {
-        setPassword(newPassword);
+    function doUpdate() {
+        const user = formatUserForRequest(true);
+        user.password = newPassword;
+        doUpdateUser(user);
     }
 
     function verifyPassword() {
+        // TODO: verify current password matches password on file
         if (password !== currentPassword) {
             return Alert.alert('Your password does not match');
         }

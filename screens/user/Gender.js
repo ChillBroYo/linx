@@ -34,6 +34,8 @@ export default function UserGender({ navigation }) {
         setGender: setContextGender,
         sameGender: contextSameGender,
         setSameGender: setContextSameGender,
+        doUpdateUser,
+        formatUserForRequest,
     } = useContext(UserContext);
     const [gender, setGender] = useState(contextGender);
     const [sameGender, setSameGender] = useState(contextSameGender);
@@ -43,21 +45,32 @@ export default function UserGender({ navigation }) {
         StatusBar.setBarStyle(isSignUpScreen ? 'light-content' : 'dark-content');
     }, []);
 
-    function doBack() {
+    async function doBack() {
         if (isSignUpScreen) {
-            doUpdateContext();
+            await doUpdateContext();
         }
         navigation.goBack();
     }
 
     function doSubmit() {
-        doUpdateContext();
-        isSignUpScreen ? navigation.navigate('SignUpInterests') : doBack();
+        isSignUpScreen ? doSignUp() : doUpdate();
     }
 
-    function doUpdateContext() {
-        setContextGender(gender);
-        setContextSameGender(sameGender);
+    async function doSignUp() {
+        await doUpdateContext();
+        navigation.navigate('SignUpInterests');
+    }
+
+    async function doUpdate() {
+        const user = formatUserForRequest(true);
+        user.info.gender = gender;
+        user.info.connectWith.sameGender = sameGender;
+        doUpdateUser(user, doUpdateContext);
+    }
+
+    async function doUpdateContext() {
+        await setContextGender(gender);
+        await setContextSameGender(sameGender);
     }
 
     return (

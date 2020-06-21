@@ -43,16 +43,16 @@ export default function UserCredentials({ navigation }) {
         navigation.navigate('SignIn');
     }
 
-    function doContinue() {
+    async function doContinue() {
         if (!validateForm()) return;
-        doUpdateContext();
+        await doUpdateContext();
         navigation.navigate('SignUpProfile');
     }
 
-    function doUpdateContext() {
-        setContextEmail(email);
-        setContextPassword(password);
-        setContextUsername(username);
+    async function doUpdateContext() {
+        await setContextEmail(email.trim());
+        await setContextPassword(password.trim());
+        await setContextUsername(username.trim());
     }
 
     function validateForm() {

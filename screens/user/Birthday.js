@@ -9,6 +9,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { TextInputMask } from 'react-native-masked-text';
@@ -26,6 +27,8 @@ import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
+import { getEnvVars } from '../../environment';
+const { apiUrl } = getEnvVars();
 
 export default function UserBirthday({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
@@ -34,6 +37,8 @@ export default function UserBirthday({ navigation }) {
         setBirthday: setContextBirthday,
         ageRange: contextAgeRange,
         setAgeRange: setContextAgeRange,
+        doUpdateUser,
+        formatUserForRequest,
     } = useContext(UserContext);
     const [birthday, setBirthday] = useState(contextBirthday);
     const [ageRange, setAgeRange] = useState(contextAgeRange);
@@ -42,22 +47,33 @@ export default function UserBirthday({ navigation }) {
         StatusBar.setBarStyle(isSignUpScreen ? 'light-content' : 'dark-content');
     }, []);
 
-    function doBack() {
+    async function doBack() {
         if (isSignUpScreen) {
-            doUpdateContext();
+            await doUpdateContext();
         }
         navigation.goBack();
     }
 
     function doSubmit() {
         if (!validateForm()) return;
-        doUpdateContext();
-        isSignUpScreen ? navigation.navigate('SignUpGender') : doBack();
+        isSignUpScreen ? doSignUp() : doUpdate();
     }
 
-    function doUpdateContext() {
-        setContextBirthday(birthday);
-        setContextAgeRange(ageRange);
+    async function doSignUp() {
+        await doUpdateContext();
+        navigation.navigate('SignUpGender');
+    }
+
+    function doUpdate() {
+        const user = formatUserForRequest(true);
+        user.info.birthday = birthday.trim();
+        user.info.connectWith.ageRange = ageRange;
+        doUpdateUser(user, doUpdateContext);
+    }
+
+    async function doUpdateContext() {
+        await setContextBirthday(birthday);
+        await setContextAgeRange(ageRange);
     }
 
     function validateForm() {
