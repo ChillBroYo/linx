@@ -193,6 +193,7 @@ export function UserContextProvider({ children }) {
             user.image_index = 0;
             user.images_visited = [];
             user.friends = [];
+            delete user.password;
         }
 
         return user;

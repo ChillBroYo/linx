@@ -125,6 +125,7 @@ export default function UserBirthday({ navigation }) {
                                 placeholder='MM/DD/YYYY'
                                 value={birthday}
                                 onChangeText={birthday => setBirthday(birthday)}
+                                clearButtonMode='while-editing'
                                 style={{
                                     ...formStyles.input,
                                     borderBottomWidth: 0,
