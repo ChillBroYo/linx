@@ -37,6 +37,8 @@ export default function UserName({ navigation }) {
         setLastName: setContextLastName,
         profileImg: contextProfileImage,
         setProfileImg: setContextProfileImg,
+        doUpdateUser,
+        formatUserForRequest,
     } = useContext(UserContext);
     const [firstName, setFirstName] = useState(contextFirstName);
     const [lastName, setLastName] = useState(contextLastName);
@@ -55,14 +57,24 @@ export default function UserName({ navigation }) {
 
     function doSubmit() {
         if (!validateForm()) return;
-        doUpdateContext();
-        // TODO: ADD PROFILE IMAGE
-        isSignUpScreen ? navigation.navigate('SignUpLocation') : doBack();
+        isSignUpScreen ? doSignUp() : doUpdate();
     }
 
-    function doUpdateContext() {
-        setContextFirstName(firstName);
-        setContextLastName(lastName);
+    async function doSignUp() {
+        await doUpdateContext();
+        navigation.navigate('SignUpLocation');
+    }
+
+    function doUpdate() {
+        const user = formatUserForRequest(true);
+        user.info.name.first = firstName.trim();
+        user.info.name.last = lastName.trim();
+        doUpdateUser(user, doUpdateContext);
+    }
+
+    async function doUpdateContext() {
+        await setContextFirstName(firstName.trim());
+        await setContextLastName(lastName.trim());
     }
 
     function validateForm() {

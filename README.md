@@ -9,16 +9,16 @@ Set up environment file:
 
 ```
 const ENV = {
-	dev: {
-		apiUrl: 'http://<YOUR IP>:8080',
-	},
-	prod: {
-		apiUrl: '<PRODUCTION ENDPOINT>',
-	},
+  dev: {
+    apiUrl: 'http://<YOUR IP>:8080',
+  },
+  prod: {
+	apiUrl: '<PRODUCTION ENDPOINT>',
+  },
 };
 
 export function getEnvVars() {
-	return __DEV__ ? ENV.dev : ENV.prod;
+  return __DEV__ ? ENV.dev : ENV.prod;
 }
 ```
 
@@ -73,18 +73,18 @@ import React, { useContext } from 'react';
 import { UserContext } from '<path to user context>/UserContext';
 
 function Component(props) {
-	// entire context object
-	const userContext = useContext(UserContext);
-	// preferred
-	const { username } = useContext(UserContext);
-	// rename context variables if necessary
-	const { username: contextUsername } = useContext(UserContext);
+  // entire context object
+  const userContext = useContext(UserContext);
+  // preferred
+  const { username } = useContext(UserContext);
+  // rename context variables if necessary
+  const { username: contextUsername } = useContext(UserContext);
 
-	render() {
-		<Text>{userContext.username}</Text>
-		<Text>{username}</Text>
-		<Text>{contextUsername}</Text>
-	}
+  render() {
+    <Text>{userContext.username}</Text>
+    <Text>{username}</Text>
+    <Text>{contextUsername}</Text>
+  }
 }
 ```
 
@@ -95,16 +95,16 @@ import React, { useContext } from 'react';
 import { UserContextProvider } from '<path to user context>/UserContext';
 
 function Component(props) {
-	render() {
-		<View>
-			<UserContextProvider>
-				// context can be destructured or renamed as seen above
-				{ context => (
-					<Text>{context.username}</Text>
-				) }
-			</UserContextProvider>
-		<View>
-	}
+  render() {
+    <View>
+      <UserContextProvider>
+        // context can be destructured or renamed as seen above
+        { context => (
+          <Text>{context.username}</Text>
+        ) }
+      </UserContextProvider>
+    <View>
+  }
 }
 ```
 
@@ -115,12 +115,12 @@ import React from 'react';
 import { UserContext } from '<path to user context>/UserContext';
 
 class Component extends React.Component {
-	static contextType = UserContext;
+  static contextType = UserContext;
 
-	render () {
-		return (
-			<Text>{this.context.username}</Text>
-		);
-	}
+  render () {
+    return (
+      <Text>{this.context.username}</Text>
+    );
+  }
 }
 ```

@@ -14,12 +14,12 @@ import axios from 'axios';
 import { UserContext } from '../contexts/UserContext';
 import { green, white } from '../constants/Colors';
 import { getEnvVars } from '../environment';
-const { apiUrl: API_ENDPOINT } = getEnvVars();
+const { apiUrl } = getEnvVars();
 
 export default function SignIn({ navigation }) {
     const {
+        doSignInUser,
         resetState: resetUserContextState,
-        setUserFromResponse: setUserContextFromResponse,
     } = useContext(UserContext);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -35,28 +35,11 @@ export default function SignIn({ navigation }) {
         navigation.navigate('ResetPassword');
     }
 
-    async function onSignIn() {
-        if (!username || !password) {
-            return Alert.alert('Please enter a username and password');
-        }
-
-        try {
-            const params = { username, password };
-            const res = await axios.get(`${API_ENDPOINT}/${__DEV__ ? 'sign_in' : 'sign-in'}`, { params });
-            const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Sign in failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
-            }
-
-            setUserContextFromResponse(data);
-            navigation.navigate('Cards');
-        }
-        catch(error) {
-            console.log('Sign In error:', error);
-        }
+    async function doSignIn() {
+        const user = { username, password };
+        const isSignedIn = await doSignInUser(user);
+        if (!isSignedIn) return;
+        navigation.navigate('Cards');
     }
 
     function onSignUp() {
@@ -84,7 +67,7 @@ export default function SignIn({ navigation }) {
                             secureTextEntry={true}
                             style={styles.input}
                         />
-                        <TouchableWithoutFeedback onPress={onSignIn}>
+                        <TouchableWithoutFeedback onPress={doSignIn}>
                             <View style={{...styles.button, ...styles.buttonColored}}>
                                 <Text style={{...styles.buttonText, color: white}}>Sign in</Text>
                             </View>

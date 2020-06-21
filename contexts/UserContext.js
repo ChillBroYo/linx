@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { Alert } from 'react-native';
+import axios from 'axios';
+import { getEnvVars } from '../environment';
+const { apiUrl } = getEnvVars();
 
 export const UserContext = React.createContext();
 
@@ -10,8 +14,9 @@ export function UserContextProvider({ children }) {
     const defaultAgeRange = [23, 29];
     const defaultInterests = new Set();
 
+    const [userId, setUserId] = useState('');
     const [token, setToken] = useState('');
-    const [uid, setUid] = useState('');
+    const [isOnboarded, setIsOnboarded] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
@@ -28,16 +33,44 @@ export function UserContextProvider({ children }) {
     const [interests, setInterests] = useState(defaultInterests);
     const [sameInterests, setSameInterests] = useState(false);
 
+    const value = {
+        userId, setUserId,
+        token, setToken,
+        isOnboarded, setIsOnboarded,
+        email, setEmail,
+        password, setPassword,
+        username, setUsername,
+        profileImg, setProfileImg,
+        firstName, setFirstName,
+        lastName, setLastName,
+        city, setCity,
+        state, setState,
+        distance, setDistance,
+        birthday, setBirthday,
+        ageRange, setAgeRange,
+        gender, setGender,
+        sameGender, setSameGender,
+        interests, setInterests,
+        sameInterests, setSameInterests,
+        setUserFromResponse,
+        doSignInUser,
+        doSignUpUser,
+        doUpdateUser,
+        formatUserForRequest,
+        resetState,
+    };
+
     function setUserFromResponse(res) {
         const {
-            token,
             uid,
+            token,
             email,
             username,
             profile_picture,
             info,
         } = res;
         const {
+            isOnboarded,
             birthday,
             gender,
             interests,
@@ -53,8 +86,9 @@ export function UserContextProvider({ children }) {
         } = connectWith;
         const { city, state } = location;
 
+        setUserId(uid);
         setToken(token);
-        setUid(uid);
+        setIsOnboarded(Boolean(isOnboarded));
         setEmail(email);
         setUsername(username);
         setProfileImg(profile_picture);
@@ -71,10 +105,85 @@ export function UserContextProvider({ children }) {
         setSameInterests(sameInterests);
     }
 
-    function formatUserInfoForSignUp() {
-        return {
+    function formatParams(user) {
+        const params = new URLSearchParams();
+        for (let key in user) {
+            params.append(key, typeof user[key] == 'object' ? JSON.stringify(user[key]) : user[key]);
+        }
+
+        return params;
+    }
+
+    // user = { username: '', password: '' }
+    async function doSignInUser(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'sign_in' : 'sign-in'}`;
+            const res = await axios.get(API_ENDPOINT, { params: user });
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Sign in failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            setUserFromResponse(data);
+            return true;
+        }
+        catch (error) {
+            console.error('Sign in error:', error);
+            Alert.alert('Sign in failed. Please try again');
+        }
+    }
+
+    async function doSignUpUser(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'sign_up' : 'sign-up'}/`;
+            const params = formatParams(user);
+            const res = await axios.post(API_ENDPOINT, params);
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Sign up failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('doSignUp error:', error);
+            Alert.alert('Sign up failed. Please try again');
+        }
+    }
+
+    async function doUpdateUser(user, callback) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'update_profile' : 'update-profile'}/`;
+            const params = formatParams(user);
+            const res = await axios.post(API_ENDPOINT, params);
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Update failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            if (callback) {
+                await callback();
+            }
+            Alert.alert('Your settings have been updated');
+        }
+        catch (error) {
+            console.error('doUpdateUser failed:', error);
+            Alert.alert('Update failed. Please try again');
+        }
+    }
+
+    function formatUserForRequest(isUpdate = false) {
+        let user = {
             email: email.trim(),
-            password: password,
+            password,
             username: username.trim(),
             profile_picture: profileImg,
             security_level: 'user',
@@ -89,6 +198,7 @@ export function UserContextProvider({ children }) {
                 gender,
                 imgUrl: profileImg,
                 interests: [...interests],
+                isOnboarded,
                 location: {
                     city: city.trim(),
                     state: state.trim(),
@@ -99,11 +209,23 @@ export function UserContextProvider({ children }) {
                 },
             },
         };
+
+        if (isUpdate) {
+            user.user_id = userId;
+            user.token = token;
+            user.image_index = 0;
+            user.images_visited = [];
+            user.friends = [];
+            delete user.password;
+        }
+
+        return user;
     }
 
     function resetState() {
+        setUserId('');
         setToken('');
-        setUid('');
+        setIsOnboarded(false);
         setEmail('');
         setPassword('');
         setUsername('');
@@ -122,30 +244,8 @@ export function UserContextProvider({ children }) {
     }
 
     return (
-        <UserContext.Provider value={{
-            token, setToken,
-            uid, setUid,
-            email, setEmail,
-            password, setPassword,
-            username, setUsername,
-            profileImg, setProfileImg,
-            firstName, setFirstName,
-            lastName, setLastName,
-            city, setCity,
-            state, setState,
-            distance, setDistance,
-            birthday, setBirthday,
-            ageRange, setAgeRange,
-            gender, setGender,
-            sameGender, setSameGender,
-            interests, setInterests,
-            sameInterests, setSameInterests,
-            setUserFromResponse,
-            formatUserInfoForSignUp,
-            resetState,
-        }}>
+        <UserContext.Provider value={value}>
             {children}
         </UserContext.Provider>
     )
 }
-
