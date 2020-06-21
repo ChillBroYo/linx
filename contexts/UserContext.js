@@ -53,6 +53,7 @@ export function UserContextProvider({ children }) {
         interests, setInterests,
         sameInterests, setSameInterests,
         setUserFromResponse,
+        doSignInUser,
         doSignUpUser,
         doUpdateUser,
         formatUserForRequest,
@@ -111,6 +112,28 @@ export function UserContextProvider({ children }) {
         }
 
         return params;
+    }
+
+    // user = { username: '', password: '' }
+    async function doSignInUser(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'sign_in' : 'sign-in'}`;
+            const res = await axios.get(API_ENDPOINT, { params: user });
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Sign in failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            setUserFromResponse(data);
+            return true;
+        }
+        catch (error) {
+            console.error('Sign in error:', error);
+            Alert.alert('Sign in failed. Please try again');
+        }
     }
 
     async function doSignUpUser(user) {
