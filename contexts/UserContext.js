@@ -10,7 +10,9 @@ export function UserContextProvider({ children }) {
     const defaultAgeRange = [23, 29];
     const defaultInterests = new Set();
 
+    const [userId, setUserId] = useState('');
     const [token, setToken] = useState('');
+    const [isOnboarded, setIsOnboarded] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
@@ -29,6 +31,7 @@ export function UserContextProvider({ children }) {
 
     function setUserFromResponse(res) {
         const {
+            uid,
             token,
             email,
             username,
@@ -36,6 +39,7 @@ export function UserContextProvider({ children }) {
             info,
         } = res;
         const {
+            isOnboarded,
             birthday,
             gender,
             interests,
@@ -51,7 +55,9 @@ export function UserContextProvider({ children }) {
         } = connectWith;
         const { city, state } = location;
 
+        setUserId(uid);
         setToken(token);
+        setIsOnboarded(Boolean(isOnboarded));
         setEmail(email);
         setUsername(username);
         setProfileImg(profile_picture);
@@ -86,6 +92,7 @@ export function UserContextProvider({ children }) {
                 gender,
                 imgUrl: profileImg,
                 interests: [...interests],
+                isOnboarded: false,
                 location: {
                     city: city.trim(),
                     state: state.trim(),
@@ -99,7 +106,9 @@ export function UserContextProvider({ children }) {
     }
 
     function resetState() {
+        setUserId('');
         setToken('');
+        setIsOnboarded(false);
         setEmail('');
         setPassword('');
         setUsername('');
@@ -119,7 +128,9 @@ export function UserContextProvider({ children }) {
 
     return (
         <UserContext.Provider value={{
+            userId, setUserId,
             token, setToken,
+            isOnboarded, setIsOnboarded,
             email, setEmail,
             password, setPassword,
             username, setUsername,
