@@ -11,6 +11,7 @@ export function UserContextProvider({ children }) {
     const defaultInterests = new Set();
 
     const [token, setToken] = useState('');
+    const [uid, setUid] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
@@ -30,6 +31,7 @@ export function UserContextProvider({ children }) {
     function setUserFromResponse(res) {
         const {
             token,
+            uid,
             email,
             username,
             profile_picture,
@@ -52,6 +54,7 @@ export function UserContextProvider({ children }) {
         const { city, state } = location;
 
         setToken(token);
+        setUid(uid);
         setEmail(email);
         setUsername(username);
         setProfileImg(profile_picture);
@@ -100,6 +103,7 @@ export function UserContextProvider({ children }) {
 
     function resetState() {
         setToken('');
+        setUid('');
         setEmail('');
         setPassword('');
         setUsername('');
@@ -120,6 +124,7 @@ export function UserContextProvider({ children }) {
     return (
         <UserContext.Provider value={{
             token, setToken,
+            uid, setUid,
             email, setEmail,
             password, setPassword,
             username, setUsername,
