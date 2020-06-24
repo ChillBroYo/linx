@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Alert } from 'react-native';
+import moment from 'moment';
 import axios from 'axios';
 import { getEnvVars } from '../environment';
 const { apiUrl } = getEnvVars();
@@ -55,8 +56,10 @@ export function UserContextProvider({ children }) {
         setUserFromResponse,
         doSignInUser,
         doSignUpUser,
+        doUploadProfileUser,
         doUpdateUser,
         formatUserForRequest,
+        formatUserForImageUpload,
         resetState,
     };
 
@@ -114,6 +117,15 @@ export function UserContextProvider({ children }) {
         return params;
     }
 
+    function formatFormData(user) {
+        const formData = new FormData();
+        for (let key in user) {
+            formData.append(key, user[key])
+        }
+
+        return formData;
+    }
+
     // user = { username: '', password: '' }
     async function doSignInUser(user) {
         try {
@@ -153,6 +165,28 @@ export function UserContextProvider({ children }) {
         } catch (error) {
             console.error('doSignUp error:', error);
             Alert.alert('Sign up failed. Please try again');
+        }
+    }
+
+    async function doUploadProfileUser(user) {
+        try{
+            
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'save_image' : 'save_image'}/`;
+            const formData = formatFormData(user);
+            const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+            const res = await axios.post(API_ENDPOINT, formData, config);
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Profile upload failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('doUploadProfile error:', error);
+            Alert.alert('Profile upload failed. Please try again');
         }
     }
 
@@ -218,6 +252,24 @@ export function UserContextProvider({ children }) {
             user.friends = [];
             delete user.password;
         }
+
+        return user;
+    }
+
+    function formatUserForImageUpload() {
+        const name = 'profile_' + String(userId) + '_' + String(moment().format());
+        const type = 'image/jpeg';
+
+        let user = {
+            image: {
+                name: name,
+                type: type,
+                uri: profileImg,
+            },
+            user_id: userId,
+            token: token,
+            image_type: 'profile',
+        };
 
         return user;
     }

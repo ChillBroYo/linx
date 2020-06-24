@@ -1,11 +1,8 @@
 import React, { useContext, useState } from 'react';
-import { Text, View, Image, StyleSheet } from 'react-native';
+import { Text, View, Image, StyleSheet, Platform } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
-import axios from 'axios';
 import { UserContext } from '../../contexts/UserContext';
-import { getEnvVars } from '../../environment';
-const { apiUrl: API_ENDPOINT } = getEnvVars();
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
@@ -13,24 +10,26 @@ import { globalStyles } from '../../styles/global';
 export default function ReviewProfileScreen({ navigation }) {
 
     const photo = navigation.getParam('data');
-    //console.log(photo.uri);
 
     const {
         profileImg: contextProfileImage,
         setProfileImg: setContextProfileImg,
-        token,
-        uid,
+        doUploadProfileUser,
+        formatUserForImageUpload,
     } = useContext(UserContext);
     const [profileImg, setProfileImg] = useState(contextProfileImage);
 
-    console.log("UID is " + uid)
+    async function doUploadProfile() {
+        const user = getUserForImageUpload();
+        const isUploadedProfile = await doUploadProfileUser(user);
+        if (!isUploadedProfile) return;
+        navigation.navigate('ConfirmProfile');
+    }
 
-    async function completeOnboarding() {
-        try {
-            navigation.navigate('ConfirmProfile')
-        } catch (error) {
-            Alert.alert('Profile upload failed. Please try again');
-        }
+    function getUserForImageUpload() {
+        const user = formatUserForImageUpload();
+        user.image.uri = Platform.OS === 'android' ? profileImg : profileImg.replace('file://', '');
+        return user;
     }
 
     return (
@@ -54,7 +53,7 @@ export default function ReviewProfileScreen({ navigation }) {
                             <Emoji name="-1" style={globalStyles.emojiStyle} onPress={() => navigation.navigate('Profile')} />
                         </View>
                         <View style={globalStyles.emojiSymbol}>
-                            <Emoji name="+1" style={globalStyles.emojiStyle} onPress={completeOnboarding} />
+                            <Emoji name="+1" style={globalStyles.emojiStyle} onPress={doUploadProfile} />
                         </View>
                     </View>
                 </View>
