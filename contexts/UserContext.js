@@ -58,8 +58,10 @@ export function UserContextProvider({ children }) {
         doSignUpUser,
         doUploadProfileUser,
         doUpdateUser,
+        doCompleteOnboardingUser,
         formatUserForRequest,
         formatUserForImageUpload,
+        formatUserForOnboarding,
         resetState,
     };
 
@@ -170,7 +172,6 @@ export function UserContextProvider({ children }) {
 
     async function doUploadProfileUser(user) {
         try{
-            
             const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'save_image' : 'save-image'}/`;
             const formData = formatFormData(user);
             const config = { headers: { 'Content-Type': 'multipart/form-data' } };
@@ -211,6 +212,26 @@ export function UserContextProvider({ children }) {
         catch (error) {
             console.error('doUpdateUser failed:', error);
             Alert.alert('Update failed. Please try again');
+        }
+    }
+
+    async function doCompleteOnboardingUser(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'update_profile' : 'update-profile'}/`;
+            const params = formatParams(user);
+            const res = await axios.post(API_ENDPOINT, params);
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Onboarding completion failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('doCompleteOnboarding error:', error);
+            Alert.alert('Onboarding completion failed. Please try again');
         }
     }
 
@@ -269,6 +290,35 @@ export function UserContextProvider({ children }) {
             user_id: userId,
             token: token,
             image_type: 'profile',
+        };
+
+        return user;
+    }
+
+    function formatUserForOnboarding() {
+        let user = {
+            user_id: userId,
+            info: {
+                birthday: birthday.trim(),
+                connectWith: {
+                    ageRange,
+                    distance,
+                    sameGender,
+                    sameInterests,
+                },
+                gender,
+                imgUrl: profileImg,
+                interests: [...interests],
+                isOnboarded,
+                location: {
+                    city: city.trim(),
+                    state: state.trim(),
+                },
+                name: {
+                    first: firstName.trim(),
+                    last: lastName.trim(),
+                },
+            },
         };
 
         return user;
