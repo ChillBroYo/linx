@@ -171,7 +171,7 @@ export function UserContextProvider({ children }) {
     async function doUploadProfileUser(user) {
         try{
             
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'save_image' : 'save_image'}/`;
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'save_image' : 'save-image'}/`;
             const formData = formatFormData(user);
             const config = { headers: { 'Content-Type': 'multipart/form-data' } };
             const res = await axios.post(API_ENDPOINT, formData, config);
