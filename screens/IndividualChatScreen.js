@@ -28,7 +28,7 @@ export default class App extends Component {
       alert(`An error occurred : ${error}`);
     }
   }
-  
+
   mapMessages() {
     const messages = this.state.messages.slice(0, 10);
     const messagesList = [];
@@ -100,11 +100,11 @@ export default class App extends Component {
 
 
   render() {
-    
+
     const {navigation} = this.props;
 
     const goBackToContacts = () => {
-      navigation.navigate('MessagesScreen');
+      navigation.goBack();
     }
 
     return (
@@ -117,7 +117,7 @@ export default class App extends Component {
             <Text style={styles.contactName}>User {navigation.getParam('contactName')}</Text>
             <View style={styles.contactInfoBtn}><Text style={styles.infoLetter}>i</Text></View>
           </TouchableOpacity>
-        
+
           <View style={styles.conversationContainer}>
 
             {/*{this.state.messages ? this.mapMessages() : null}*/}
@@ -126,9 +126,10 @@ export default class App extends Component {
               keyExtractor={(item) => item.message_id.toString()}
               data={this.state.messages ? this.state.messages.reverse() : null}
               initialScrollToIndex={this.state.messages ? this.state.messages.length - 1 : null}
-              renderItem={({ item }) => 
+              renderItem={({ item }) =>
                 this.renderMessage(item)
               }
+
             />
 
           </View>

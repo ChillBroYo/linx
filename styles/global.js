@@ -40,6 +40,21 @@ export const globalStyles = StyleSheet.create({
 		elevation: 5,
 		zIndex: 1
 	},
+	cardsContainer: {
+		alignItems: 'center',
+		backgroundColor: '#FFF',
+		width: 340,
+		height: 250,
+		top: 140,
+		left: 20,
+		borderRadius: 10,
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+		elevation: 5,
+		zIndex: 1
+	},
 	content: {
 		fontSize: 23,
 		color: '#1B1B1B',
@@ -53,6 +68,21 @@ export const globalStyles = StyleSheet.create({
 		width: 280,
 		height: 40,
 		top: 65,
+		left: 50,
+		borderRadius: 10,
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+		elevation: 5,
+		zIndex: 0
+	},
+	cardsSubContainer: {
+		alignItems: 'center',
+		backgroundColor: '#FFF',
+		width: 280,
+		height: 40,
+		top: 120,
 		left: 50,
 		borderRadius: 10,
 		shadowColor: '#000',
@@ -93,6 +123,12 @@ export const globalStyles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 		top: 90,
+		zIndex: 3
+	},
+	cardsEmojiContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		top: 145,
 		zIndex: 3
 	},
 	emojiSymbol: {

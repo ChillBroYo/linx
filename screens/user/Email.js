@@ -25,6 +25,8 @@ export default function UserEmail({ navigation }) {
     const {
         email: contextEmail,
         setEmail: setContextEmail,
+        doUpdateUser,
+        formatUserForRequest,
     } = useContext(UserContext);
     const [email, setEmail] = useState(contextEmail);
 
@@ -38,12 +40,17 @@ export default function UserEmail({ navigation }) {
 
     function doSave() {
         if (!validateEmail()) return;
-        doUpdateContext();
-        Alert.alert('Your email has been updated');
+        doUpdate();
     }
 
-    function doUpdateContext() {
-        setContextEmail(email);
+    function doUpdate() {
+        const user = formatUserForRequest(true);
+        user.email = email.trim();
+        doUpdateUser(user, doUpdateContext);
+    }
+
+    async function doUpdateContext() {
+        await setContextEmail(email.trim());
     }
 
     function validateEmail() {

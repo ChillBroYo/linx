@@ -36,6 +36,8 @@ export default function UserLocation({ navigation }) {
         setState: setContextState,
         distance: contextDistance,
         setDistance: setContextDistance,
+        doUpdateUser,
+        formatUserForRequest,
     } = useContext(UserContext);
     const [city, setCity] = useState(contextCity);
     const [state, setState] = useState(contextState);
@@ -54,14 +56,26 @@ export default function UserLocation({ navigation }) {
 
     function doSubmit() {
         if (!validateForm()) return;
-        doUpdateContext();
-        isSignUpScreen ? navigation.navigate('SignUpBirthday') : doBack();
+        isSignUpScreen ? doSignUp() : doUpdate();
     }
 
-    function doUpdateContext() {
-        setContextCity(city);
-        setContextState(state);
-        setContextDistance(distance);
+    async function doSignUp() {
+        await doUpdateContext();
+        navigation.navigate('SignUpBirthday');
+    }
+
+    function doUpdate() {
+        const user = formatUserForRequest(true);
+        user.info.connectWith.distance = distance;
+        user.info.location.city = city.trim();
+        user.info.location.state = state.trim();
+        doUpdateUser(user, doUpdateContext);
+    }
+
+    async function doUpdateContext() {
+        await setContextCity(city.trim());
+        await setContextState(state.trim());
+        await setContextDistance(distance);
     }
 
     function validateForm() {
