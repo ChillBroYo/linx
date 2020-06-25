@@ -1,7 +1,8 @@
-import React from 'react';
-import { Text, View, Image, StyleSheet } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { Text, View, Image, StyleSheet, Platform } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
+import { UserContext } from '../../contexts/UserContext';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
@@ -9,7 +10,27 @@ import { globalStyles } from '../../styles/global';
 export default function ReviewProfileScreen({ navigation }) {
 
     const photo = navigation.getParam('data');
-    console.log(photo.uri);
+
+    const {
+        profileImg: contextProfileImage,
+        setProfileImg: setContextProfileImg,
+        doUploadProfileUser,
+        formatUserForImageUpload,
+    } = useContext(UserContext);
+    const [profileImg, setProfileImg] = useState(contextProfileImage);
+
+    async function doUploadProfile() {
+        const user = getUserForImageUpload();
+        const isUploadedProfile = await doUploadProfileUser(user);
+        if (!isUploadedProfile) return;
+        navigation.navigate('ConfirmProfile');
+    }
+
+    function getUserForImageUpload() {
+        const user = formatUserForImageUpload();
+        user.image.uri = Platform.OS === 'android' ? profileImg : profileImg.replace('file://', '');
+        return user;
+    }
 
     return (
         <View style={globalStyles.outerContainer}>
@@ -22,7 +43,7 @@ export default function ReviewProfileScreen({ navigation }) {
                         <Image source={require('../../assets/icons/pagination_two.png')} style={globalStyles.paginationIcon} />
                     </View>
                     <View style={globalStyles.contentContainer}>
-                        <Image source={{ uri: photo.uri }} style={styles.profile} />
+                        <Image source={{ uri: photo.uri }} onLoad={() => setProfileImg(photo.uri)} style={styles.profile} />
                     </View>
                     <View style={globalStyles.verifyContainer}>
                         <Text style={globalStyles.verify} onPress={() => navigation.navigate('TakeProfile')}>Retake photo</Text>
@@ -32,7 +53,7 @@ export default function ReviewProfileScreen({ navigation }) {
                             <Emoji name="-1" style={globalStyles.emojiStyle} onPress={() => navigation.navigate('Profile')} />
                         </View>
                         <View style={globalStyles.emojiSymbol}>
-                            <Emoji name="+1" style={globalStyles.emojiStyle} onPress={() => navigation.navigate('ConfirmProfile')} />
+                            <Emoji name="+1" style={globalStyles.emojiStyle} onPress={doUploadProfile} />
                         </View>
                     </View>
                 </View>
