@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import { Text,  Alert, Button, Image, TextInput, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { UserContext } from "../contexts/UserContext";
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.currentUserID = 2;
-    this.tokens = {
-      2 : '43985ece-e49d-477f-b843-3a5501799ef7',
-    };
+
+    this.currentUserID = UserContext["_currentValue"]["userId"] || 2;
+    this.token = UserContext["_currentValue"]["token"] || '43985ece-e49d-477f-b843-3a5501799ef7';
     this.state = {
-      conversations : {},
       isRead : false,
     };
   }
@@ -19,14 +18,14 @@ export default class App extends Component {
   async componentDidMount() {
     try {
       const currentUserID = this.currentUserID;
-      const responseContacts = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation-list/?uid=${currentUserID}&token=${this.tokens[currentUserID]}&limit=1000`);
+      const responseContacts = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation-list/?uid=${currentUserID}&token=${this.token}&limit=1000`);
       const contacts = responseContacts.data.users;
 
       const conversations = {}
 
       for (const contact in contacts) {
 
-        const responseMessages = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${currentUserID}&oid=${contact}&token=${this.tokens[currentUserID]}&limit=1000&ts=`);
+        const responseMessages = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${currentUserID}&oid=${contact}&token=${this.token}&limit=1000&ts=`);
         const mostRecentMessage = responseMessages.data.messages[0].message;
 
         const responseContact = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-profile/?key=123&uid=${contact}`);
@@ -37,7 +36,7 @@ export default class App extends Component {
         const contactID = contactInfo.user_id;
         const profilePicURL = contactInfo.profile_picture;
 
-        conversations[contact] = {currentUserID, currentUserToken: this.tokens[currentUserID], contactID, contactName, mostRecentMessage, profilePicURL};
+        conversations[contact] = {currentUserID, currentUserToken: this.token, contactID, contactName, mostRecentMessage, profilePicURL};
       }
       this.setState({conversations});
     }
@@ -68,7 +67,10 @@ export default class App extends Component {
       )
       i++;
     }
-    return convoList;
+    if (!this.state.conversations) {
+      return <Text>Loading Messages</Text>
+    }
+    return convoList.length ? convoList : <Text>You have no messages right now</Text>;
   }
 
 
@@ -93,7 +95,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center', // flexDirection is 'column' by default
-    paddingTop: "25%",
+    paddingTop: "20%",
+    justifyContent: 'flex-start',
   },
   heading: {
     fontSize: 30,
@@ -102,12 +105,12 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   convoItem: {
-    width: '80%',
-    height: '14.5%',
+    width: '90%',
     alignItems: 'center',
+    height: 120,
     flexDirection: 'row',
-    paddingTop: '2.5%',
-    paddingBottom: '2%',
+    paddingTop: 25,
+    paddingBottom: 20,
   },
   convoSeparator: {
     borderTopWidth: 1,
@@ -120,7 +123,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderColor: readGray,
     borderWidth: 2,
-    marginRight: '7%'
+    marginRight: 15
   },
   convoText: {
     justifyContent: 'space-around',

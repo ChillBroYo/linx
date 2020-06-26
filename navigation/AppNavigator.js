@@ -12,6 +12,7 @@ import ContactProfileScreen from "../screens/ContactProfileScreen";
 const RouteConfig = {
     // You could add another route here for authentication.
     // Read more at https://reactnavigation.org/docs/en/auth-flow.html
+    // IndividualChatScreen,
     Main: MainTabNavigator,
     ResetPassword,
     SignIn,
@@ -19,7 +20,7 @@ const RouteConfig = {
 };
 
 const NavigatorConfig = {
-    initialRouteName: 'IndividualChatScreen',
+    initialRouteName: 'Main',
 };
 
 export default createAppContainer(createSwitchNavigator(RouteConfig, NavigatorConfig));
