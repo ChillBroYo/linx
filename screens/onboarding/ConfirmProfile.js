@@ -9,7 +9,7 @@ import { UserContext } from '../../contexts/UserContext';
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
 
-export default function ConfirmProfileScreen({ navigation}) {
+export default function ConfirmProfileScreen({ navigation }) {
     const {
         isOnboarded:contextIsOnboarded,
         setIsOnboarded: setContextIsOnboarded,
