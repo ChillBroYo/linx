@@ -172,7 +172,6 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    alignItems: 'center'
   },
   topBanner: {
     height: '10%',
@@ -232,6 +231,7 @@ const styles = StyleSheet.create({
     height: '90%',
     width: '100%',
     overflow: "scroll",
+    paddingHorizontal: 15
   },
   flatlist: {
     paddingHorizontal: '5%',
