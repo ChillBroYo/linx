@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Text, Alert, Button, FlatList, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Image, Text, Alert, Button, FlatList, ScrollView, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
@@ -29,17 +29,33 @@ export default class App extends Component {
     }
   }
 
+  formatDate(dateStr) {
+    return `${dateStr.substring(0, 10)}T${dateStr.substring(11, 19)}Z`;
+  }
+
+  dateOptions = { weekday: 'short', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+
   mapMessages() {
-    const messages = this.state.messages.slice(0, 10);
+    const messages = this.state.messages.slice(0, 30);
     const messagesList = [];
     let showDate = true;
 
     for (let i = messages.length - 1; i >= 0; i--) {
       const currentMessage = messages[i];
+      const currentMessageDate = new Date(this.formatDate(currentMessage.created_at));
+
+      if (currentMessageDate - this.lastShownMessageDate > 1000 * 60 * 60 || currentMessage.message_id === 1) {
+        showDate = true;
+        this.lastShownMessageDate = currentMessageDate;
+      }
+      else {
+        showDate = false;
+      }
+
       if (currentMessage.user_id == this.currentUserID) {
           messagesList.push(
             <View>
-            {showDate ? <Text>{currentMessage.created_at}</Text> : null}
+            {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
             <View key={currentMessage.message_id} style={{...styles.message, ...styles.ownMessage}}>
               <Text style={styles.messageText}>{currentMessage.message}</Text>
             </View>
@@ -48,7 +64,7 @@ export default class App extends Component {
       else {
         messagesList.push(
           <View>
-            {showDate ? <Text>{currentMessage.created_at}</Text> : null}
+            {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
             <View key={currentMessage.message_id} style={styles.otherMessageContainer}>
               <Image style={styles.userIcon} source={{uri: this.props.navigation.getParam('profilePicURL')}}></Image>
               <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{currentMessage.message}</Text></View>
@@ -61,11 +77,7 @@ export default class App extends Component {
     return messagesList;
   }
 
-  formatDate(dateStr) {
-    return `${dateStr.substring(0, 10)}T${dateStr.substring(11, 19)}Z`;
-  }
-
-  dateOptions = { weekday: 'short', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+  
 
   renderMessage(item) {
     const currentMessageDate = new Date(this.formatDate(item.created_at));
@@ -119,18 +131,22 @@ export default class App extends Component {
           </TouchableOpacity>
 
           <View style={styles.conversationContainer}>
-
-            {/*{this.state.messages ? this.mapMessages() : null}*/}
-            <FlatList
+            <ScrollView
+              style={styles.scrollView}
+              ref={ref => {this.scrollView = ref}}
+              onContentSizeChange={() => this.scrollView.scrollToEnd({animated: true})}>
+              {this.state.messages ? this.mapMessages() : null}
+            </ScrollView>
+            {/*<FlatList
               style={styles.flatlist}
               keyExtractor={(item) => item.message_id.toString()}
               data={this.state.messages ? this.state.messages.reverse() : null}
-              initialScrollToIndex={this.state.messages ? this.state.messages.length - 1 : null}
+              initialScrollToIndex={this.state.messages ? this.state.messages.length - 1 : 9}
               renderItem={({ item }) =>
                 this.renderMessage(item)
               }
 
-            />
+            />*/}
 
           </View>
         </LinearGradient>
@@ -153,6 +169,10 @@ const gray = '#8D99AE';
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
+  },
+  scrollView: {
+    flex: 1,
+    alignItems: 'center'
   },
   topBanner: {
     height: '10%',
@@ -204,7 +224,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderColor: gray,
     borderWidth: 2,
-    marginRight: '5%'
+    marginRight: 10
   },
   conversationContainer: {
     position: 'absolute',
@@ -215,22 +235,16 @@ const styles = StyleSheet.create({
   },
   flatlist: {
     paddingHorizontal: '5%',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flex: 2,
   },
   otherMessageContainer: {
     display: 'flex',
     flexDirection: 'row',
     marginVertical: 7,
-    flexWrap: 'wrap'
   },
   message: {
     borderRadius: 20,
     paddingVertical: 8,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     justifyContent: 'center'
   },
   otherMessage: {

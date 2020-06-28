@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text,  Alert, Button, Image, TextInput, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text,  Alert, Button, Image, TextInput, View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { UserContext } from "../contexts/UserContext";
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
@@ -80,7 +80,9 @@ export default class App extends Component {
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
           <View style={styles.container}>
             <Text style={styles.heading}>Messages</Text>
-            {this.mapConversations()}
+            <ScrollView style={styles.scrollView}>
+              {this.mapConversations()}
+            </ScrollView>
           </View>
         </LinearGradient>
       </View>
@@ -97,6 +99,10 @@ const styles = StyleSheet.create({
     alignItems: 'center', // flexDirection is 'column' by default
     paddingTop: "20%",
     justifyContent: 'flex-start',
+  },
+  scrollView: {
+    flex: 1,
+    alignItems: 'center'
   },
   heading: {
     fontSize: 30,
