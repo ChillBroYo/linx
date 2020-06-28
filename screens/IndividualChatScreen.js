@@ -15,7 +15,8 @@ export default class App extends Component {
       startIndex: 0,
       endIndex: 2
     };
-    this.shownMessages = []
+    this.shownMessages = [];
+
     this.handleScrollTop = this.handleScrollTop.bind(this);
   }
 
@@ -26,10 +27,9 @@ export default class App extends Component {
       const messages = response.data.messages;
       this.setState({
         messages,
-      })
+      }, () => this.mapMessages(0, 2))
       this.lastShownMessageDate = new Date(this.formatDate(messages[this.state.endIndex].created_at));
-      this.mapMessages(this.state.startIndex, this.state.endIndex);
-
+      
     }
     catch(error) {
       alert(`An error occurred : ${error}`);
@@ -89,6 +89,7 @@ export default class App extends Component {
           </View>,
           ...this.state.shownMessages
         ]})*/}
+
         this.shownMessages.unshift(
           <View>
             {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
@@ -98,8 +99,10 @@ export default class App extends Component {
             </View>
           </View>
           )
-      }
+      
+      } // else
     }
+    this.forceUpdate();
   }
 
   handleScrollTop(event) {
