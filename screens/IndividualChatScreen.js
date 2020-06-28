@@ -106,7 +106,6 @@ export default class App extends Component {
   }
 
   handleScrollTop(event) {
-      console.log('offset', event.nativeEvent.contentOffset.y)
     const offset = event.nativeEvent.contentOffset.y;
     if (offset < 0 && offset >= -3 && this.state.endIndex < this.state.messages.length) {
       this.setState({
@@ -198,9 +197,6 @@ export default class App extends Component {
   }
 }
 
-class ShownDate extends Component {
-
-}
 
 const platform = Platform.OS;
 let iOSPlatformStyle = {};
