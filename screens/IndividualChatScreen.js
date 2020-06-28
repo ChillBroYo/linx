@@ -11,7 +11,12 @@ export default class App extends Component {
     this.currentUserToken = props.navigation.getParam('currentUserToken') || '43985ece-e49d-477f-b843-3a5501799ef7&limit=1000';
     this.state = {
       messages : null,
+      shownMessages : [],
+      startIndex: 0,
+      endIndex: 2
     };
+    this.shownMessages = []
+    this.handleScrollTop = this.handleScrollTop.bind(this);
   }
 
   async componentDidMount() {
@@ -22,7 +27,9 @@ export default class App extends Component {
       this.setState({
         messages,
       })
-      this.lastShownMessageDate = new Date(this.formatDate(messages[messages.length - 1].created_at));
+      this.lastShownMessageDate = new Date(this.formatDate(messages[this.state.endIndex].created_at));
+      this.mapMessages(this.state.startIndex, this.state.endIndex);
+
     }
     catch(error) {
       alert(`An error occurred : ${error}`);
@@ -35,16 +42,15 @@ export default class App extends Component {
 
   dateOptions = { weekday: 'short', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
 
-  mapMessages() {
-    const messages = this.state.messages.slice(0, 30);
-    const messagesList = [];
+  mapMessages(start, end) {
     let showDate = true;
 
-    for (let i = messages.length - 1; i >= 0; i--) {
-      const currentMessage = messages[i];
+    for (let i = start; i <= end; i++) {
+
+      const currentMessage = this.state.messages[i];
       const currentMessageDate = new Date(this.formatDate(currentMessage.created_at));
 
-      if (currentMessageDate - this.lastShownMessageDate > 1000 * 60 * 60 || currentMessage.message_id === 1) {
+      if (currentMessageDate - this.lastShownMessageDate > 1000 * 60 * 60 || currentMessage.message_id === this.state.endIndex || currentMessage.message_id === 1) {
         showDate = true;
         this.lastShownMessageDate = currentMessageDate;
       }
@@ -53,16 +59,37 @@ export default class App extends Component {
       }
 
       if (currentMessage.user_id == this.currentUserID) {
-          messagesList.push(
+        console.log('i', i, currentMessage.message)
+          {/*this.setState({shownMessages: [
             <View>
-            {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
-            <View key={currentMessage.message_id} style={{...styles.message, ...styles.ownMessage}}>
-              <Text style={styles.messageText}>{currentMessage.message}</Text>
-            </View>
+              {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
+              <View key={currentMessage.message_id} style={{...styles.message, ...styles.ownMessage}}>
+                <Text style={styles.messageText}>{currentMessage.message}</Text>
+              </View>
+            </View>,
+            ...this.state.shownMessages
+            ]}) */}
+          this.shownMessages.unshift(
+            <View>
+              {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
+              <View key={currentMessage.message_id} style={{...styles.message, ...styles.ownMessage}}>
+                <Text style={styles.messageText}>{currentMessage.message}</Text>
+              </View>
             </View>)
       }
       else {
-        messagesList.push(
+        console.log('i', i)
+        {/*this.setState({shownMessages: [
+          <View>
+            {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
+            <View key={currentMessage.message_id} style={styles.otherMessageContainer}>
+              <Image style={styles.userIcon} source={{uri: this.props.navigation.getParam('profilePicURL')}}></Image>
+              <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{currentMessage.message}</Text></View>
+            </View>
+          </View>,
+          ...this.state.shownMessages
+        ]})*/}
+        this.shownMessages.unshift(
           <View>
             {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
             <View key={currentMessage.message_id} style={styles.otherMessageContainer}>
@@ -70,13 +97,22 @@ export default class App extends Component {
               <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{currentMessage.message}</Text></View>
             </View>
           </View>
-        )
+          )
       }
-
     }
-    return messagesList;
   }
 
+  handleScrollTop(event) {
+    if (event.nativeEvent.contentOffset.y <= 0 && this.state.endIndex < this.state.messages.length) {
+      // console.log('top', event.nativeEvent.contentOffset.y)
+      this.setState({
+        startIndex: this.state.endIndex + 1,
+        endIndex: this.state.endIndex + 3,
+      }, this.mapMessages(this.state.startIndex, this.state.endIndex));
+      
+      // this.state ? console.log('who', this.state.startIndex, this.state.endIndex) : null
+    }
+  }
   
 
   renderMessage(item) {
@@ -112,7 +148,6 @@ export default class App extends Component {
 
 
   render() {
-
     const {navigation} = this.props;
 
     const goBackToContacts = () => {
@@ -134,8 +169,12 @@ export default class App extends Component {
             <ScrollView
               style={styles.scrollView}
               ref={ref => {this.scrollView = ref}}
-              onContentSizeChange={() => this.scrollView.scrollToEnd({animated: true})}>
-              {this.state.messages ? this.mapMessages() : null}
+              onContentSizeChange={() => this.scrollView.scrollToEnd({animated: true})}
+              onScroll={this.handleScrollTop}
+              onScrollAnimationEnd={this.handleScrollTop}
+            >
+              {/*{this.state.messages ? this.mapMessages() : null}*/}
+              {this.shownMessages}
             </ScrollView>
             {/*<FlatList
               style={styles.flatlist}
