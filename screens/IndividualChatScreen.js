@@ -106,8 +106,9 @@ export default class App extends Component {
   }
 
   handleScrollTop(event) {
-    if (event.nativeEvent.contentOffset.y <= 0 && this.state.endIndex < this.state.messages.length) {
-      // console.log('top', event.nativeEvent.contentOffset.y)
+      console.log('offset', event.nativeEvent.contentOffset.y)
+    const offset = event.nativeEvent.contentOffset.y;
+    if (offset < 0 && offset >= -3 && this.state.endIndex < this.state.messages.length) {
       this.setState({
         startIndex: this.state.endIndex + 1,
         endIndex: this.state.endIndex + 3,
