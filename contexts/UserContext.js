@@ -288,7 +288,7 @@ export function UserContextProvider({ children }) {
                 uri: profileImg,
             },
             user_id: userId,
-            token: token,
+            token,
             image_type: 'profile',
         };
 
@@ -298,6 +298,7 @@ export function UserContextProvider({ children }) {
     function formatUserForOnboarding() {
         let user = {
             user_id: userId,
+            token,
             info: {
                 birthday: birthday.trim(),
                 connectWith: {
