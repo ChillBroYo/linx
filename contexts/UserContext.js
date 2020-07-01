@@ -33,6 +33,10 @@ export function UserContextProvider({ children }) {
     const [sameGender, setSameGender] = useState(false);
     const [interests, setInterests] = useState(defaultInterests);
     const [sameInterests, setSameInterests] = useState(false);
+    const [imageIndex, setImageIndex] = useState(0);
+    const [imagesVisited, setImagesVisited] = useState([]);
+    const [friends, setFriends] = useState([]);
+    const [createdAt, setCreatedAt] = useState('');
 
     const value = {
         userId, setUserId,
@@ -53,8 +57,14 @@ export function UserContextProvider({ children }) {
         sameGender, setSameGender,
         interests, setInterests,
         sameInterests, setSameInterests,
+        imageIndex, setImageIndex,
+        imagesVisited, setImagesVisited,
+        friends, setFriends,
+        createdAt, setCreatedAt,
         setUserFromResponse,
+        setUserFromProfileResponse,
         doSignInUser,
+        doGetUserProfile,
         doSignUpUser,
         doUploadProfileUser,
         doUpdateUser,
@@ -110,6 +120,23 @@ export function UserContextProvider({ children }) {
         setSameInterests(sameInterests);
     }
 
+    function setUserFromProfileResponse(res) {
+        const { user_info } = res;
+        const {
+            profile_picture,
+            image_index,
+            images_visited,
+            friends,
+            created_at,
+        } = JSON.parse(user_info);
+
+        setProfileImg(profile_picture);
+        setImageIndex(image_index);
+        setImagesVisited(images_visited);
+        setFriends(friends);
+        setCreatedAt(created_at);
+    }
+
     function formatParams(user) {
         const params = new URLSearchParams();
         for (let key in user) {
@@ -147,6 +174,27 @@ export function UserContextProvider({ children }) {
         catch (error) {
             console.error('Sign in error:', error);
             Alert.alert('Sign in failed. Please try again');
+        }
+    }
+
+    async function doGetUserProfile(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'get_profile' : 'get-profile'}`;
+            const res = await axios.get(API_ENDPOINT, { params: user });
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Get user profile failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            setUserFromProfileResponse(data);
+            return true;
+        }
+        catch (error) {
+            console.error('Get user profile error:', error);
+            Alert.alert('Get user profile failed. Please try again');
         }
     }
 
