@@ -27,7 +27,7 @@ export default class App extends Component {
       const messages = response.data.messages;
       this.setState({
         messages,
-      }, () => this.mapMessages(0, 2))
+      }, () => this.mapInitialMessages(4))
       this.lastShownMessageDate = new Date(this.formatDate(messages[this.state.endIndex].created_at));
       
     }
@@ -41,6 +41,33 @@ export default class App extends Component {
   }
 
   dateOptions = { weekday: 'short', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+
+  mapInitialMessages(end) {
+    let showDate;
+
+    for (let i = end; i >=0; i--) {
+      const currentMessage = this.state.messages[i];
+      const currentMessageDate = new Date(this.formatDate(currentMessage.created_at));
+
+      if (i === end || currentMessageDate - this.lastShownMessagDate > 1000 * 60 * 60) {
+        showDate = true;
+        this.lastShownMessagDate = currentMessageDate;
+      }
+      else {
+        showDate = false;
+      }
+
+      if (currentMessage.user_id == this.currentUserID) {
+        this.shownMessages.push(<OwnMessage currentMessage={currentMessage} currentMessageDate={currentMessageDate} showDate={showDate} />)
+      }
+      else {
+        this.shownMessages.push(<OtherMessage showDate={showDate} currentMessage={currentMessage} currentMessageDate={showDate ? currentMessageDate : null} profilePicURL={this.props.navigation.getParam('profilePicURL')} />)
+      }
+    }
+    this.forceUpdate();
+  }
+
+
 
   mapMessages(start, end) {
     let showDate = true;
@@ -116,39 +143,6 @@ export default class App extends Component {
       // this.state ? console.log('who', this.state.startIndex, this.state.endIndex) : null
     }
   }
-  
-
-  renderMessage(item) {
-    const currentMessageDate = new Date(this.formatDate(item.created_at));
-    let showDate = true;
-
-    if (currentMessageDate - this.lastShownMessageDate > 1000 || item.message_id === 1) {
-      showDate = true;
-      this.lastShownMessageDate = currentMessageDate;
-    }
-    else {
-      showDate = false;
-    }
-
-    return (
-      item.user_id == this.currentUserID ?
-        <View>
-          {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
-          <View style={{...styles.message, ...styles.ownMessage}}>
-            <Text style={styles.messageText}>{item.message}</Text>
-          </View>
-        </View>
-        :
-        <View>
-          {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
-          <View style={styles.otherMessageContainer}>
-            <Image style={styles.userIcon} source={{uri: this.props.navigation.getParam('profilePicURL')}}></Image>
-            <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{item.message}</Text></View>
-          </View>
-        </View>
-    )
-  }
-
 
   render() {
     const {navigation} = this.props;
@@ -179,16 +173,7 @@ export default class App extends Component {
               {/*{this.state.messages ? this.mapMessages() : null}*/}
               {this.shownMessages}
             </ScrollView>
-            {/*<FlatList
-              style={styles.flatlist}
-              keyExtractor={(item) => item.message_id.toString()}
-              data={this.state.messages ? this.state.messages.reverse() : null}
-              initialScrollToIndex={this.state.messages ? this.state.messages.length - 1 : 9}
-              renderItem={({ item }) =>
-                this.renderMessage(item)
-              }
-
-            />*/}
+           
 
           </View>
         </LinearGradient>
@@ -197,6 +182,35 @@ export default class App extends Component {
   }
 }
 
+const dateOptions = { weekday: 'short', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+
+
+function OwnMessage(props) {
+  const {showDate, currentMessage, currentMessageDate} = props;
+
+  return (
+    <View>
+      {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", dateOptions)}</Text></View> : null}
+      <View key={currentMessage.message_id} style={{...styles.message, ...styles.ownMessage}}>
+        <Text style={styles.messageText}>{currentMessage.message}</Text>
+      </View>
+    </View>
+  )
+}
+
+function OtherMessage(props) {
+  const {showDate, currentMessage, currentMessageDate, profilePicURL} = props;
+  
+  return (
+    <View>
+      {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", dateOptions)}</Text></View> : null}
+      <View key={currentMessage.message_id} style={styles.otherMessageContainer}>
+        <Image style={styles.userIcon} source={{uri: profilePicURL}}></Image>
+        <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{currentMessage.message}</Text></View>
+      </View>
+    </View>
+  )
+}
 
 const platform = Platform.OS;
 let iOSPlatformStyle = {};
