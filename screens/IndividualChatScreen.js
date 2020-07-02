@@ -12,12 +12,11 @@ export default class App extends Component {
     this.currentUserToken = props.navigation.getParam('currentUserToken') || '43985ece-e49d-477f-b843-3a5501799ef7&limit=1000';
     this.state = {
       messages : null,
-      displayedMessages : [],
       startIndex: 0,
       endIndex: 7
     };
     this.displayedMessages = [];
-
+    this.formatMoment();
     this.handleScrollTop = this.handleScrollTop.bind(this);
   }
 
@@ -40,16 +39,18 @@ export default class App extends Component {
     return `${dateStr.substring(0, 10)}T${dateStr.substring(11, 19)}Z`;
   }
 
-  mapMessages(start, end) {
-    let showDate;
-    const moreMessages = [];
-    let lastShownMessagDate = new Date(this.formatDate(this.state.messages[end].created_at))
-
+  formatMoment() {
     moment.updateLocale('en', {
       longDateFormat : {
           llll: "ddd, MMM D LT"
       }
     });
+  }
+
+  mapMessages(start, end) {
+    let showDate;
+    const moreMessages = [];
+    let lastShownMessagDate = new Date(this.formatDate(this.state.messages[end].created_at))
 
     for (let i = end; i >= start; i--) {
       const currentMessage = this.state.messages[i];
