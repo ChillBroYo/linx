@@ -152,10 +152,10 @@ export default class App extends Component {
 
   handleScrollTop(event) {
     const offset = event.nativeEvent.contentOffset.y;
-    if (offset < 0 && offset >= -3 && this.state.endIndex < this.state.messages.length) {
+    if (offset < 0 && offset >= -3 && this.state.endIndex < this.state.messages.length - 1) {
       this.setState({
         startIndex: this.state.endIndex + 1,
-        endIndex: this.state.endIndex + 3,
+        endIndex: Math.min(this.state.endIndex + 3, this.state.messages.length - 1),
       }, () => this.mapMessages(this.state.startIndex, this.state.endIndex));
       
       console.log('who', this.state.startIndex, this.state.endIndex)
