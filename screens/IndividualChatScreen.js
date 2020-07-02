@@ -11,11 +11,11 @@ export default class App extends Component {
     this.currentUserToken = props.navigation.getParam('currentUserToken') || '43985ece-e49d-477f-b843-3a5501799ef7&limit=1000';
     this.state = {
       messages : null,
-      shownMessages : [],
+      displayedMessages : [],
       startIndex: 0,
       endIndex: 2
     };
-    this.shownMessages = [];
+    this.displayedMessages = [];
 
     this.handleScrollTop = this.handleScrollTop.bind(this);
   }
@@ -27,8 +27,7 @@ export default class App extends Component {
       const messages = response.data.messages;
       this.setState({
         messages,
-      }, () => this.mapInitialMessages(4))
-      this.lastShownMessageDate = new Date(this.formatDate(messages[this.state.endIndex].created_at));
+      }, () => this.mapMessages(this.state.startIndex, this.state.endIndex))
       
     }
     catch(error) {
@@ -42,34 +41,53 @@ export default class App extends Component {
 
   dateOptions = { weekday: 'short', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
 
-  mapInitialMessages(end) {
+  mapMessages(start, end) {
     let showDate;
+    const moreMessages = [];
+    let lastShownMessagDate = new Date(this.formatDate(this.state.messages[end].created_at))
 
-    for (let i = end; i >=0; i--) {
+    for (let i = end; i >= start; i--) {
       const currentMessage = this.state.messages[i];
       const currentMessageDate = new Date(this.formatDate(currentMessage.created_at));
 
-      if (i === end || currentMessageDate - this.lastShownMessagDate > 1000 * 60 * 60) {
+      if (i === end || currentMessageDate - lastShownMessagDate > 1000 * 60 * 60) {
         showDate = true;
-        this.lastShownMessagDate = currentMessageDate;
+        lastShownMessagDate = currentMessageDate;
       }
       else {
         showDate = false;
       }
 
       if (currentMessage.user_id == this.currentUserID) {
-        this.shownMessages.push(<OwnMessage currentMessage={currentMessage} currentMessageDate={currentMessageDate} showDate={showDate} />)
+        moreMessages.push(<OwnMessage currentMessage={currentMessage} currentMessageDate={currentMessageDate} showDate={showDate} />)
       }
       else {
-        this.shownMessages.push(<OtherMessage showDate={showDate} currentMessage={currentMessage} currentMessageDate={showDate ? currentMessageDate : null} profilePicURL={this.props.navigation.getParam('profilePicURL')} />)
+        moreMessages.push(<OtherMessage showDate={showDate} currentMessage={currentMessage} currentMessageDate={showDate ? currentMessageDate : null} profilePicURL={this.props.navigation.getParam('profilePicURL')} />)
       }
     }
+
+    this.displayedMessages = moreMessages.concat(this.displayedMessages);
     this.forceUpdate();
   }
 
+  loadEarlierMessages(lastIndex) {
+    const earlierMessages = [];
+    this.lastShownMessageDate = new Date(this.formatDate(messages[this.state.endIndex].created_at));
+    
+    for (let i = lastIndex + 10; i > lastIndex; i--) {
+      const currentMessage = this.state.messages[i];
+      const currentMessageDate = new Date(this.formatDate(currentMessage.created_at));
+
+      if (currentMessageDate - lastShownMessagDate > 1000 * 60 * 60 || currentMessage.message_id === 1) {
+
+      }
+    }
+    this.displayedMessages = earlierMessages.concat(this.displayedMessages);
+
+  }
 
 
-  mapMessages(start, end) {
+  mapMessages0(start, end) {
     let showDate = true;
 
     for (let i = start; i <= end; i++) {
@@ -87,16 +105,16 @@ export default class App extends Component {
 
       if (currentMessage.user_id == this.currentUserID) {
         console.log('i', i, currentMessage.message)
-          {/*this.setState({shownMessages: [
+          {/*this.setState({displayedMessages: [
             <View>
               {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
               <View key={currentMessage.message_id} style={{...styles.message, ...styles.ownMessage}}>
                 <Text style={styles.messageText}>{currentMessage.message}</Text>
               </View>
             </View>,
-            ...this.state.shownMessages
+            ...this.state.displayedMessages
             ]}) */}
-          this.shownMessages.unshift(
+          this.displayedMessages.unshift(
             <View>
               {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
               <View key={currentMessage.message_id} style={{...styles.message, ...styles.ownMessage}}>
@@ -106,7 +124,7 @@ export default class App extends Component {
       }
       else {
         console.log('i', i)
-        {/*this.setState({shownMessages: [
+        {/*this.setState({displayedMessages: [
           <View>
             {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
             <View key={currentMessage.message_id} style={styles.otherMessageContainer}>
@@ -114,10 +132,10 @@ export default class App extends Component {
               <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{currentMessage.message}</Text></View>
             </View>
           </View>,
-          ...this.state.shownMessages
+          ...this.state.displayedMessages
         ]})*/}
 
-        this.shownMessages.unshift(
+        this.displayedMessages.unshift(
           <View>
             {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", this.dateOptions)}</Text></View> : null}
             <View key={currentMessage.message_id} style={styles.otherMessageContainer}>
@@ -138,9 +156,9 @@ export default class App extends Component {
       this.setState({
         startIndex: this.state.endIndex + 1,
         endIndex: this.state.endIndex + 3,
-      }, this.mapMessages(this.state.startIndex, this.state.endIndex));
+      }, () => this.mapMessages(this.state.startIndex, this.state.endIndex));
       
-      // this.state ? console.log('who', this.state.startIndex, this.state.endIndex) : null
+      console.log('who', this.state.startIndex, this.state.endIndex)
     }
   }
 
@@ -171,7 +189,7 @@ export default class App extends Component {
               onScrollAnimationEnd={this.handleScrollTop}
             >
               {/*{this.state.messages ? this.mapMessages() : null}*/}
-              {this.shownMessages}
+              {this.displayedMessages}
             </ScrollView>
            
 
@@ -183,7 +201,6 @@ export default class App extends Component {
 }
 
 const dateOptions = { weekday: 'short', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
-
 
 function OwnMessage(props) {
   const {showDate, currentMessage, currentMessageDate} = props;
