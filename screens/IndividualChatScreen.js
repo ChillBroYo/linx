@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Image, Text, Alert, Button, FlatList, ScrollView, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
+import moment from 'moment';
 import axios from 'axios';
 
 export default class App extends Component {
@@ -39,12 +40,16 @@ export default class App extends Component {
     return `${dateStr.substring(0, 10)}T${dateStr.substring(11, 19)}Z`;
   }
 
-  dateOptions = { weekday: 'short', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
-
   mapMessages(start, end) {
     let showDate;
     const moreMessages = [];
     let lastShownMessagDate = new Date(this.formatDate(this.state.messages[end].created_at))
+
+    moment.updateLocale('en', {
+      longDateFormat : {
+          llll: "ddd, MMM D LT"
+      }
+    });
 
     for (let i = end; i >= start; i--) {
       const currentMessage = this.state.messages[i];
@@ -59,10 +64,10 @@ export default class App extends Component {
       }
 
       if (currentMessage.user_id == this.currentUserID) {
-        moreMessages.push(<OwnMessage currentMessage={currentMessage} currentMessageDate={currentMessageDate} showDate={showDate} />)
+        moreMessages.push(<OwnMessage showDate={showDate} currentMessage={currentMessage} currentMessageDate={showDate ? moment(currentMessageDate).format('llll') : null}  />)
       }
       else {
-        moreMessages.push(<OtherMessage showDate={showDate} currentMessage={currentMessage} currentMessageDate={showDate ? currentMessageDate : null} profilePicURL={this.props.navigation.getParam('profilePicURL')} />)
+        moreMessages.push(<OtherMessage showDate={showDate} currentMessage={currentMessage} currentMessageDate={showDate ? moment(currentMessageDate).format('llll') : null} profilePicURL={this.props.navigation.getParam('profilePicURL')} />)
       }
     }
 
@@ -117,14 +122,12 @@ export default class App extends Component {
   }
 }
 
-const dateOptions = { weekday: 'short', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
-
 function OwnMessage(props) {
   const {showDate, currentMessage, currentMessageDate} = props;
 
   return (
     <View>
-      {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", dateOptions)}</Text></View> : null}
+      {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate}</Text></View> : null}
       <View key={currentMessage.message_id} style={{...styles.message, ...styles.ownMessage}}>
         <Text style={styles.messageText}>{currentMessage.message}</Text>
       </View>
@@ -137,7 +140,7 @@ function OtherMessage(props) {
   
   return (
     <View>
-      {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate.toLocaleDateString("en-US", dateOptions)}</Text></View> : null}
+      {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate}</Text></View> : null}
       <View key={currentMessage.message_id} style={styles.otherMessageContainer}>
         <Image style={styles.userIcon} source={{uri: profilePicURL}}></Image>
         <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{currentMessage.message}</Text></View>
