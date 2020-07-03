@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Text, Alert, Button, FlatList, ScrollView, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Image, Text, Alert, Button, FlatList, KeyboardAvoidingView, ScrollView, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import moment from 'moment';
@@ -22,12 +22,12 @@ export default class App extends Component {
 
   async componentDidMount() {
     try {
-      const response = await axios('https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=2&oid=1&token=43985ece-e49d-477f-b843-3a5501799ef7&limit=1000&ts=');
-      // const response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${this.currentUserID}&oid=${this.props.navigation.getParam('contactID')}&token=${this.currentUserToken}&limit=1000&ts=`);
+      // const response = await axios('https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=2&oid=1&token=43985ece-e49d-477f-b843-3a5501799ef7&limit=1000&ts=');
+      const response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${this.currentUserID}&oid=${this.props.navigation.getParam('contactID')}&token=${this.currentUserToken}&limit=1000&ts=`);
       const messages = response.data.messages;
       this.setState({
         messages,
-      }, () => this.mapMessages(this.state.startIndex, this.state.endIndex))
+      }, () => this.mapMessages(this.state.startIndex, Math.min(this.state.endIndex, this.state.messages.length - 1)))
       
     }
     catch(error) {
@@ -94,13 +94,13 @@ export default class App extends Component {
     }
 
     return (
-      <View style={{...styles.container, ...iOSPlatformStyle}}>
+      <KeyboardAvoidingView style={{...styles.container, ...iOSPlatformStyle}} behavior="padding">
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
           <TouchableOpacity style={styles.topBanner} onPress={() => alert('info')}>
             <TouchableOpacity style={styles.backArrowContainer} onPress={goBackToContacts}>
               <Icon name='keyboard-arrow-left' color='#1B1B1B' size={50} />
             </TouchableOpacity>
-            <Text style={styles.contactName}>User {navigation.getParam('contactName')}</Text>
+            <Text style={styles.contactName}>{navigation.getParam('contactName')}</Text>
             <View style={styles.contactInfoBtn}><Text style={styles.infoLetter}>i</Text></View>
           </TouchableOpacity>
 
@@ -114,11 +114,12 @@ export default class App extends Component {
             >
               {this.displayedMessages}
             </ScrollView>
-           
-
+          </View>
+          <View style={styles.inputContainer}>
+            <TextInput style={styles.messageInput}/>
           </View>
         </LinearGradient>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -217,9 +218,7 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   conversationContainer: {
-    position: 'absolute',
-    top: '10%',
-    height: '90%',
+    height: '80%',
     width: '100%',
     overflow: "scroll",
     paddingHorizontal: 15
@@ -264,5 +263,18 @@ const styles = StyleSheet.create({
   dateText: {
     color: gray,
     fontSize: 18
+  },
+  inputContainer: {
+    backgroundColor: '#CCC',
+    width: '100%',
+    alignItems: 'center',
+  },
+  messageInput: {
+    borderWidth: 1,
+    borderColor: '#777',
+    padding: 8,
+    margin: 10,
+    width: '90%',
+    backgroundColor: 'white'
   }
 });
