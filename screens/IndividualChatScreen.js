@@ -67,10 +67,10 @@ export default class App extends Component {
       }
 
       if (currentMessage.user_id == this.currentUserID) {
-        moreMessages.push(<OwnMessage showDate={showDate} currentMessage={currentMessage} currentMessageDate={showDate ? moment(currentMessageDate).format('llll') : null}  />)
+        moreMessages.push(<OwnMessage showDate={showDate} currentMessage={currentMessage.message} currentMessageDate={showDate ? moment(currentMessageDate).format('llll') : null}  />)
       }
       else {
-        moreMessages.push(<OtherMessage showDate={showDate} currentMessage={currentMessage} currentMessageDate={showDate ? moment(currentMessageDate).format('llll') : null} profilePicURL={this.props.navigation.getParam('profilePicURL')} />)
+        moreMessages.push(<OtherMessage showDate={showDate} currentMessage={currentMessage.message} currentMessageDate={showDate ? moment(currentMessageDate).format('llll') : null} profilePicURL={this.props.navigation.getParam('profilePicURL')} />)
       }
     }
 
@@ -97,8 +97,9 @@ export default class App extends Component {
       "other_id" : this.props.navigation.getParam('contactID'),
       "user_id" : this.currentUserID
     }
-    this.setState({messages: [msgObj, ...this.state.messages]});
-    this.displayedMessages.push();
+    // this.setState({messages: [msgObj, ...this.state.messages]});
+    this.displayedMessages.push(<OwnMessage currentMessage={this.state.userInput} />);
+    this.forceUpdate();
     console.log('msg', this.state.messages)
     console.log('ob', msgObj)
   }
@@ -138,7 +139,7 @@ export default class App extends Component {
               onChangeText={(val) => this.setState({userInput: val})}
               multiline
             />
-            <TouchableOpacity style={styles.sendIconContainer}>
+            <TouchableOpacity style={styles.sendIconContainer} onPress={() => this.addInputToMessages()}>
               <Ionicons name="md-send" size={30} color={"black"} />
             </TouchableOpacity>
           </View>
@@ -154,8 +155,8 @@ function OwnMessage(props) {
   return (
     <View>
       {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate}</Text></View> : null}
-      <View key={currentMessage.message_id} style={{...styles.message, ...styles.ownMessage}}>
-        <Text style={styles.messageText}>{currentMessage.message}</Text>
+      <View style={{...styles.message, ...styles.ownMessage}}>
+        <Text style={styles.messageText}>{currentMessage}</Text>
       </View>
     </View>
   )
@@ -167,9 +168,9 @@ function OtherMessage(props) {
   return (
     <View>
       {showDate ? <View style={styles.dateContainer}><Text style={styles.dateText}>{currentMessageDate}</Text></View> : null}
-      <View key={currentMessage.message_id} style={styles.otherMessageContainer}>
+      <View style={styles.otherMessageContainer}>
         <Image style={styles.userIcon} source={{uri: profilePicURL}}></Image>
-        <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{currentMessage.message}</Text></View>
+        <View style={{...styles.message, ...styles.otherMessage}}><Text style={styles.messageText}>{currentMessage}</Text></View>
       </View>
     </View>
   )
