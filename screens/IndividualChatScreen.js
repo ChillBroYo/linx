@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Image, Text, Alert, Button, FlatList, KeyboardAvoidingView, ScrollView, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import moment from 'moment';
 import axios from 'axios';
@@ -13,11 +13,13 @@ export default class App extends Component {
     this.state = {
       messages : null,
       startIndex: 0,
-      endIndex: 7
+      endIndex: 7,
+      userInput: ''
     };
     this.displayedMessages = [];
     this.formatMoment();
     this.handleScrollTop = this.handleScrollTop.bind(this);
+    this.mapMessages = this.mapMessages.bind(this);
   }
 
   async componentDidMount() {
@@ -86,6 +88,21 @@ export default class App extends Component {
     }
   }
 
+  addInputToMessages() {
+    console.log('hi', this.state.userInput)
+    const msgObj = {
+      "created_at" : new Date().toString(),
+      "message": this.state.userInput,
+      "message_id" : this.state.messages[0].message_id + 1,
+      "other_id" : this.props.navigation.getParam('contactID'),
+      "user_id" : this.currentUserID
+    }
+    this.setState({messages: [msgObj, ...this.state.messages]});
+    this.displayedMessages.push();
+    console.log('msg', this.state.messages)
+    console.log('ob', msgObj)
+  }
+
   render() {
     const {navigation} = this.props;
 
@@ -98,7 +115,7 @@ export default class App extends Component {
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
           <TouchableOpacity style={styles.topBanner} onPress={() => alert('info')}>
             <TouchableOpacity style={styles.backArrowContainer} onPress={goBackToContacts}>
-              <Icon name='keyboard-arrow-left' color='#1B1B1B' size={50} />
+              <Ionicons name='ios-arrow-back' color='#1B1B1B' size={50} />
             </TouchableOpacity>
             <Text style={styles.contactName}>{navigation.getParam('contactName')}</Text>
             <View style={styles.contactInfoBtn}><Text style={styles.infoLetter}>i</Text></View>
@@ -116,7 +133,14 @@ export default class App extends Component {
             </ScrollView>
           </View>
           <View style={styles.inputContainer}>
-            <TextInput style={styles.messageInput}/>
+            <TextInput 
+              style={styles.messageInput}
+              onChangeText={(val) => this.setState({userInput: val})}
+              multiline
+            />
+            <TouchableOpacity style={styles.sendIconContainer}>
+              <Ionicons name="md-send" size={30} color={"black"} />
+            </TouchableOpacity>
           </View>
         </LinearGradient>
       </KeyboardAvoidingView>
@@ -267,14 +291,20 @@ const styles = StyleSheet.create({
   inputContainer: {
     backgroundColor: '#CCC',
     width: '100%',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-around"
   },
   messageInput: {
     borderWidth: 1,
     borderColor: '#777',
     padding: 8,
     margin: 10,
-    width: '90%',
+    width: '80%',
     backgroundColor: 'white'
+  },
+  sendIconContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "15%",
   }
 });
