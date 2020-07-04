@@ -12,12 +12,12 @@ export default function ReviewProfileScreen({ navigation }) {
     const photo = navigation.getParam('data');
 
     const {
-        profileImg: contextProfileImage,
+        profileImg: contextProfileImg,
         setProfileImg: setContextProfileImg,
         doUploadProfileUser,
         formatUserForImageUpload,
     } = useContext(UserContext);
-    const [profileImg, setProfileImg] = useState(contextProfileImage);
+    const [profileImg, setProfileImg] = useState(contextProfileImg);
 
     async function doUploadProfile() {
         const user = getUserForImageUpload();
