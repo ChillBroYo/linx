@@ -88,20 +88,28 @@ export default class App extends Component {
     }
   }
 
-  addInputToMessages() {
-    console.log('hi', this.state.userInput)
-    const msgObj = {
-      "created_at" : new Date().toString(),
-      "message": this.state.userInput,
-      "message_id" : this.state.messages[0].message_id + 1,
-      "other_id" : this.props.navigation.getParam('contactID'),
-      "user_id" : this.currentUserID
+  async uploadMessage() {
+    try {
+      const msgObj = {
+        "uid" : this.currentUserID,
+        "oid" : this.props.navigation.getParam('contactID'),
+        "token" : this.currentUserToken,
+        "msg" : this.state.userInput
+      }
+
+      const API_ENDPOINT = 'https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/add-message/';
+      const params = new URLSearchParams();
+      for (let key in msgObj) {
+        params.append(key, msgObj[key]);
+      }
+      const res = await axios.post(API_ENDPOINT, params);
+
+      this.displayedMessages.push(<OwnMessage currentMessage={this.state.userInput} />);
+      this.forceUpdate();
     }
-    // this.setState({messages: [msgObj, ...this.state.messages]});
-    this.displayedMessages.push(<OwnMessage currentMessage={this.state.userInput} />);
-    this.forceUpdate();
-    console.log('msg', this.state.messages)
-    console.log('ob', msgObj)
+    catch (error) {
+      console.log('upload error:', error)
+    }
   }
 
   render() {
@@ -139,7 +147,7 @@ export default class App extends Component {
               onChangeText={(val) => this.setState({userInput: val})}
               multiline
             />
-            <TouchableOpacity style={styles.sendIconContainer} onPress={() => this.addInputToMessages()}>
+            <TouchableOpacity style={styles.sendIconContainer} onPress={() => this.uploadMessage()}>
               <Ionicons name="md-send" size={30} color={"black"} />
             </TouchableOpacity>
           </View>
