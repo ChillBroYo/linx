@@ -35,8 +35,12 @@ export async function registerForPushNotificationsAsync(callback) {
     }
 }
 
+// listeners are not called when when present local notifications
+// call .remove() on return value to remove listener
+// listener is passed the notification object
+// listener function: (notification) => { do something... }
 export function addNotificationListener(listener) {
-    Notifications.addListener(listener);
+    return Notifications.addListener(listener);
 }
 
 // https://docs.expo.io/versions/v35.0.0/sdk/notifications/#localnotification

@@ -13,7 +13,10 @@ import {
 import axios from 'axios';
 import { UserContext } from '../contexts/UserContext';
 import { green, white } from '../constants/Colors';
-import { registerForPushNotificationsAsync } from '../helpers/notifications';
+import {
+    addNotificationListener,
+    registerForPushNotificationsAsync
+} from '../helpers/notifications';
 import { getEnvVars } from '../environment';
 const { apiUrl } = getEnvVars();
 
@@ -35,6 +38,14 @@ export default function SignIn({ navigation }) {
 
     useEffect(() => {
         registerForPushNotificationsAsync(setExpoPushToken);
+
+        function handleNotification(notification) {
+            console.log('New notification:', { notification });
+        }
+
+        const notificationLogListener = addNotificationListener(handleNotification);
+
+        return () => notificationLogListener.remove();
     }, []);
 
     async function doSignIn() {
