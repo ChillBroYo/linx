@@ -113,8 +113,11 @@ export function UserContextProvider({ children }) {
         setSameInterests(sameInterests);
 
         // update existing users with expo push token
-        if (expoPushToken && !info.expoPushToken) {
-            doUpdateUser(formatUserForRequest(true));
+        if (!info.expoPushToken && expoPushToken) {
+            info.expoPushToken = expoPushToken;
+            // TODO: fix update call error
+            // only important for backwards compatibility
+            // doUpdateUser({ info });
         }
     }
 
@@ -254,13 +257,13 @@ export function UserContextProvider({ children }) {
         };
 
         if (isUpdate) {
+            delete user.password;
             user.user_id = userId;
             user.token = token;
             // TODO: fields below need to be updated
-            user.image_index = 0;
-            user.images_visited = [];
-            user.friends = [];
-            delete user.password;
+            // user.image_index = 0;
+            // user.images_visited = [];
+            // user.friends = [];
         }
 
         return user;
