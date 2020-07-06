@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { Image, Text, Alert, Button, Dimensions, FlatList, KeyboardAvoidingView, ScrollView, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Header } from "react-navigation-stack";
 import { Ionicons } from '@expo/vector-icons';
 import InView from "react-native-component-inview";
 import { LinearGradient } from 'expo-linear-gradient';
 import moment from 'moment';
 import axios from 'axios';
+
+const platform = Platform.OS;
 
 export default class App extends Component {
   constructor(props) {
@@ -143,6 +146,12 @@ export default class App extends Component {
       }
       const res = await axios.post(API_ENDPOINT, params);
 
+      const response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${this.currentUserID}&oid=${this.props.navigation.getParam('contactID')}&token=${this.currentUserToken}&limit=1000&ts=`);
+      const messages = response.data.messages;
+      this.setState({
+        messages,
+      });
+      
       this.displayedMessages.push(<OwnMessage currentMessage={this.state.userInput} />);
       this.forceUpdate();
     }
@@ -166,7 +175,7 @@ export default class App extends Component {
     };
 
     return (
-      <KeyboardAvoidingView style={{...styles.container, ...iOSPlatformStyle}} behavior="padding">
+      <KeyboardAvoidingView style={{...styles.container, ...iOSPlatformStyle}} behavior={platform === "ios" ? "padding" : null} >
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
           <TouchableOpacity style={styles.topBanner} onPress={() => alert('info')}>
             <TouchableOpacity style={styles.backArrowContainer} onPress={goBackToContacts}>
@@ -181,13 +190,7 @@ export default class App extends Component {
               style={styles.scrollView}
               ref={ref => {this.scrollView = ref}}
               onContentSizeChange={() => this.scrollView.scrollToEnd({animated: true})}
-              onScroll={(event) => {
-
-                this.handleScrollTop(event);
-                if (isCloseToBottom(event.nativeEvent)) {
-                  // this.refreshMessages = setInterval(() => this.mapMessages(0, 7, true, false), 3000);
-                }
-              }}
+              onScroll={this.handleScrollTop}
               onScrollAnimationEnd={this.handleScrollTop}
             >
               {this.displayedMessages}
@@ -236,7 +239,6 @@ function OtherMessage(props) {
   )
 }
 
-const platform = Platform.OS;
 let iOSPlatformStyle = {};
 if (platform === 'ios') iOSPlatformStyle = {paddingTop: 40};
 
