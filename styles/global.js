@@ -115,7 +115,7 @@ export const globalStyles = StyleSheet.create({
 		textShadowRadius: 4
 	},
 	confettiContainer: {
-    zIndex: 2,
-    top: 175
+    	zIndex: 2,
+    	top: 175
   }
 });
