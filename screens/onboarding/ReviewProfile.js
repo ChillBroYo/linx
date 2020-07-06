@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Text, View, Image, StyleSheet, Platform } from 'react-native';
+import { Text, View, Image, Platform } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import { UserContext } from '../../contexts/UserContext';
@@ -43,7 +43,7 @@ export default function ReviewProfileScreen({ navigation }) {
                         <Image source={require('../../assets/icons/pagination_two.png')} style={globalStyles.paginationIcon} />
                     </View>
                     <View style={globalStyles.contentContainer}>
-                        <Image source={{ uri: photo.uri }} onLoad={() => setProfileImg(photo.uri)} style={styles.profile} />
+                        <Image source={{ uri: photo.uri }} onLoad={() => setProfileImg(photo.uri)} style={globalStyles.imageContent} />
                     </View>
                     <View style={globalStyles.verifyContainer}>
                         <Text style={globalStyles.verify} onPress={() => navigation.navigate('TakeProfile')}>Retake photo</Text>
@@ -61,12 +61,3 @@ export default function ReviewProfileScreen({ navigation }) {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    profile: {
-        width: 290,
-        height: 200,
-        top: 15,
-        resizeMode: 'contain'
-    }
-});
