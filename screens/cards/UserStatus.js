@@ -9,7 +9,7 @@ export default function UserStatusScreen({ navigation }) {
 	} = useContext(UserContext);
 
 	if(isOnboarded) {
-		return(<MainCardsScreen navigation={ navigation }/>);
+		return(<MainCardsScreen navigation={ navigation } />);
 	}
 	return(<WelcomeScreen navigation={ navigation } />);
 }

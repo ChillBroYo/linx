@@ -173,88 +173,6 @@ export function UserContextProvider({ children }) {
         return formData;
     }
 
-    async function doCompleteOnboardingUser(user) {
-        try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'update_profile' : 'update-profile'}/`;
-            const params = formatParams(user);
-            const res = await axios.post(API_ENDPOINT, params);
-            const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Onboarding completion failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
-            }
-
-            return true;
-        } catch (error) {
-            console.error('doCompleteOnboarding error:', error);
-            Alert.alert('Onboarding completion failed. Please try again');
-        }
-    }
-
-    async function doGetImage(image) {
-        try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'get_image' : 'get-image'}`;
-            const res = await axios.get(API_ENDPOINT, { params: image });
-            const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Get image failed. Please try again');
-            }
-            if (data.success == 'false') {
-                return false;
-            }
-
-            setImageFromResponse(data);
-            return true;
-        }
-        catch (error) {
-            console.error('Get image error:', error);
-            Alert.alert('Get image failed. Please try again');
-        }
-    }
-
-    async function doGetUserProfile(user) {
-        try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'get_profile' : 'get-profile'}`;
-            const res = await axios.get(API_ENDPOINT, { params: user });
-            const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Get user profile failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
-            }
-
-            setUserFromProfileResponse(data);
-            return true;
-        }
-        catch (error) {
-            console.error('Get user profile error:', error);
-            Alert.alert('Get user profile failed. Please try again');
-        }
-    }
-
-    async function doReactImage(user) {
-        try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'react_to_image' : 'react-to-image'}/`;
-            const params = formatParams(user);
-            const res = await axios.post(API_ENDPOINT, params);
-            const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Reaction failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
-            }
-
-            return true;
-        } catch (error) {
-            console.error('Reaction error:', error);
-            Alert.alert('Reaction failed. Please try again');
-        }
-    }
-
     async function doSignInUser(user) {
         try {
             const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'sign_in' : 'sign-in'}`;
@@ -273,26 +191,6 @@ export function UserContextProvider({ children }) {
         catch (error) {
             console.error('Sign in error:', error);
             Alert.alert('Sign in failed. Please try again');
-        }
-    }
-
-    async function doSignUpUser(user) {
-        try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'sign_up' : 'sign-up'}/`;
-            const params = formatParams(user);
-            const res = await axios.post(API_ENDPOINT, params);
-            const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Sign up failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
-            }
-
-            return true;
-        } catch (error) {
-            console.error('Sign up error:', error);
-            Alert.alert('Sign up failed. Please try again');
         }
     }
 
@@ -320,6 +218,26 @@ export function UserContextProvider({ children }) {
         }
     }
 
+    async function doSignUpUser(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'sign_up' : 'sign-up'}/`;
+            const params = formatParams(user);
+            const res = await axios.post(API_ENDPOINT, params);
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Sign up failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Sign up error:', error);
+            Alert.alert('Sign up failed. Please try again');
+        }
+    }
+
     async function doUploadProfileUser(user) {
         try{
             const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'save_image' : 'save-image'}/`;
@@ -338,6 +256,90 @@ export function UserContextProvider({ children }) {
         } catch (error) {
             console.error('doUploadProfile error:', error);
             Alert.alert('Profile upload failed. Please try again');
+        }
+    }
+
+    async function doCompleteOnboardingUser(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'update_profile' : 'update-profile'}/`;
+            const params = formatParams(user);
+            const res = await axios.post(API_ENDPOINT, params);
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Onboarding completion failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('doCompleteOnboarding error:', error);
+            Alert.alert('Onboarding completion failed. Please try again');
+        }
+    }
+
+    async function doGetUserProfile(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'get_profile' : 'get-profile'}`;
+            const res = await axios.get(API_ENDPOINT, { params: user });
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Get user profile failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            setUserFromProfileResponse(data);
+            return true;
+        }
+        catch (error) {
+            console.error('Get user profile error:', error);
+            Alert.alert('Get user profile failed. Please try again');
+        }
+    }
+
+    async function doGetImage(image) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'get_image' : 'get-image'}`;
+            const res = await axios.get(API_ENDPOINT, { params: image });
+            const data = res.data;
+            if (res.status != 200) {
+                //return Alert.alert('Get image failed. Please try again');
+                return false;
+            }
+            if (data.success == 'false') {
+                return false;
+            }
+
+            setImageFromResponse(data);
+            return true;
+        }
+        catch (error) {
+            //console.error('Get image error:', error);
+            //Alert.alert('Get image failed. Please try again');
+            return false;
+        }
+    }
+
+    async function doReactImage(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'react_to_image' : 'react-to-image'}/`;
+            const params = formatParams(user);
+            const res = await axios.post(API_ENDPOINT, params);
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Reaction failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Reaction error:', error);
+            Alert.alert('Reaction failed. Please try again');
         }
     }
 

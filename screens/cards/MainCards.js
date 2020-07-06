@@ -23,13 +23,16 @@ export default function MainCardsScreen({ navigation }) {
         doReactImage,
     } = useContext(UserContext);
 
+    const [cardsReact, setCardsReact] = useState(true);
+
     async function performAPICalls() {
         const user = { uid: userId, key: 123 };
         const didGetProfile = await doGetUserProfile(user);
         if(!didGetProfile) navigation.navigate('SignIn');
+
         const image = { image_type: 'general', image_index: imageIndex };
         const didGetImage = await doGetImage(image);
-        if(!didGetImage) navigation.navigate('SignIn');
+        if(!didGetImage) setCardsReact(false);
     }
 
     useEffect(() => {
@@ -44,6 +47,10 @@ export default function MainCardsScreen({ navigation }) {
         if(!didReact) return;
     }
 
+    if(!cardsReact) {
+        return (<CardsCompletionScreen navigation={ navigation } />);
+    };
+
 	return(
 		<View style={globalStyles.outerContainer}>
       		<LinearGradient colors={['#439E73', 'rgba(254, 241, 2, 0)']} style={{height: '100%'}}>
@@ -53,7 +60,7 @@ export default function MainCardsScreen({ navigation }) {
                         <Text style={globalStyles.subtitleText}>{imageIndex + 1} / 15</Text>
                     </View>
        				<View style={globalStyles.contentContainer}>
-                        <Image source={{ uri: 'https://linx-images.s3-us-west-2.amazonaws.com/g1.png' }} style={globalStyles.imageContent} />
+                        <Image source={{ uri: imageLink }} style={globalStyles.imageContent} />
        				</View>
        				<View style={globalStyles.blankContainer} />
        				<View style={globalStyles.emojiContainer}>
