@@ -18,15 +18,14 @@ export default class App extends Component {
   async componentDidMount() {
     try {
       const currentUserID = this.currentUserID;
-      const responseContacts = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation-list/?uid=${currentUserID}&token=${this.token}&limit=1000`);
-      const contacts = responseContacts.data.users;
-
+      const responseFriends = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-profile/?uid=${this.currentUserID}&key=123`);
+      const contacts = JSON.parse(responseFriends.data.user_info.friends);
       const conversations = {}
 
-      for (const contact in contacts) {
+      for (const contact of contacts) {
 
         const responseMessages = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${currentUserID}&oid=${contact}&token=${this.token}&limit=1000&ts=`);
-        const mostRecentMessage = responseMessages.data.messages[0].message;
+        const mostRecentMessage = responseMessages.data.messages[0] ? responseMessages.data.messages[0].message : null;
 
         const responseContact = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-profile/?key=123&uid=${contact}`);
         const contactInfoStr = responseContact.data.user_info.info;

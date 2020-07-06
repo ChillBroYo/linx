@@ -56,6 +56,7 @@ export default class App extends Component {
   }
 
   mapMessages(start, end, refreshing, mounted) {
+    if (this.state.messages.length === 0) return;
     let showDate;
     const moreMessages = [];
     let lastShownMessagDate = new Date(this.formatDate(this.state.messages[end].created_at))
