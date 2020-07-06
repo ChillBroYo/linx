@@ -14,7 +14,7 @@ export default class App extends Component {
       messages : null,
       startIndex: 0,
       endIndex: 7,
-      userInput: ''
+      userInput: '',
     };
     this.displayedMessages = [];
     this.formatMoment();
@@ -24,17 +24,21 @@ export default class App extends Component {
 
   async componentDidMount() {
     try {
-      // const response = await axios('https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=2&oid=1&token=43985ece-e49d-477f-b843-3a5501799ef7&limit=1000&ts=');
       const response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${this.currentUserID}&oid=${this.props.navigation.getParam('contactID')}&token=${this.currentUserToken}&limit=1000&ts=`);
       const messages = response.data.messages;
       this.setState({
         messages,
-      }, () => this.mapMessages(this.state.startIndex, Math.min(this.state.endIndex, this.state.messages.length - 1)))
+      }, () => this.mapMessages(this.state.startIndex, Math.min(this.state.endIndex, this.state.messages.length - 1)));
       
+      this.refreshMessages = setInterval(() => this.mapMessages(0, Math.min(7, this.state.messages.length - 1), true), 2000);
     }
     catch(error) {
       alert(`An error occurred : ${error}`);
     }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.refreshMessages);
   }
 
   formatDate(dateStr) {
@@ -49,10 +53,14 @@ export default class App extends Component {
     });
   }
 
-  mapMessages(start, end) {
+  i = 0;
+  mapMessages(start, end, refreshing) {
     let showDate;
     const moreMessages = [];
     let lastShownMessagDate = new Date(this.formatDate(this.state.messages[end].created_at))
+
+    console.log('map', this.i++, this.state.startIndex)
+    if (refreshing === true) this.displayedMessages = [];
 
     for (let i = end; i >= start; i--) {
       const currentMessage = this.state.messages[i];
@@ -80,12 +88,17 @@ export default class App extends Component {
 
   handleScrollTop(event) {
     const offset = event.nativeEvent.contentOffset.y;
+    console.log('offset', offset)
+
     if (offset < 0 && offset >= -3 && this.state.endIndex < this.state.messages.length - 1) {
+      clearInterval(this.refreshMessages);
       this.setState({
         startIndex: this.state.endIndex + 1,
         endIndex: Math.min(this.state.endIndex + 10, this.state.messages.length - 1),
+        hasScrolledUp: true,
       }, () => this.mapMessages(this.state.startIndex, this.state.endIndex));
     }
+
   }
 
   async uploadMessage() {
@@ -108,9 +121,12 @@ export default class App extends Component {
       this.forceUpdate();
     }
     catch (error) {
-      console.log('upload error:', error)
+      console.log('message upload error:', error)
     }
   }
+
+  
+
 
   render() {
     const {navigation} = this.props;
@@ -118,6 +134,10 @@ export default class App extends Component {
     const goBackToContacts = () => {
       navigation.goBack();
     }
+
+    const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+      return layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+    };
 
     return (
       <KeyboardAvoidingView style={{...styles.container, ...iOSPlatformStyle}} behavior="padding">
@@ -135,7 +155,11 @@ export default class App extends Component {
               style={styles.scrollView}
               ref={ref => {this.scrollView = ref}}
               onContentSizeChange={() => this.scrollView.scrollToEnd({animated: true})}
-              onScroll={this.handleScrollTop}
+              onScroll={(event) => {
+                
+                this.handleScrollTop(event);
+
+              }}
               onScrollAnimationEnd={this.handleScrollTop}
             >
               {this.displayedMessages}
