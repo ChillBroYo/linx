@@ -8,6 +8,7 @@ import ConfirmProfileScreen from '../screens/onboarding/ConfirmProfile';
 import DenyProfileScreen from '../screens/onboarding/DenyProfile';
 import ConfirmDenialScreen from '../screens/onboarding/ConfirmDenial';
 import MainCardsScreen from '../screens/cards/MainCards';
+import UserStatusScreen from '../screens/cards/UserStatus';
 import TabBarIcon from '../components/TabBarIcon';
 
 const CardsStack = createStackNavigator(
@@ -19,11 +20,12 @@ const CardsStack = createStackNavigator(
         Profile: ProfileScreen,
         ReviewProfile: ReviewProfileScreen,
         TakeProfile: TakeProfileScreen,
+        UserStatus: UserStatusScreen,
         Welcome: WelcomeScreen,
     },
     {
         headerMode: 'none',
-        initialRouteName: 'Welcome',
+        initialRouteName: 'UserStatus',
         navigationOptions: ({ navigation }) => {
             const routes = navigation.state.routes;
             const currentRoute = routes[routes.length - 1];
