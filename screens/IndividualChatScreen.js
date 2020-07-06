@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Image, Text, Alert, Button, FlatList, KeyboardAvoidingView, ScrollView, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Image, Text, Alert, Button, Dimensions, FlatList, KeyboardAvoidingView, ScrollView, Platform, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import InView from "react-native-component-inview";
 import { LinearGradient } from 'expo-linear-gradient';
 import moment from 'moment';
 import axios from 'axios';
@@ -30,7 +31,8 @@ export default class App extends Component {
         messages,
       }, () => this.mapMessages(this.state.startIndex, Math.min(this.state.endIndex, this.state.messages.length - 1)));
       
-      this.refreshMessages = setInterval(() => this.mapMessages(0, Math.min(7, this.state.messages.length - 1), true), 2000);
+      this.refreshMessages = setInterval(() => this.mapMessages(0, Math.min(7, this.state.messages.length - 1), true, true), 2000);
+      
     }
     catch(error) {
       alert(`An error occurred : ${error}`);
@@ -53,13 +55,12 @@ export default class App extends Component {
     });
   }
 
-  i = 0;
-  mapMessages(start, end, refreshing) {
+  mapMessages(start, end, refreshing, mounted) {
     let showDate;
     const moreMessages = [];
     let lastShownMessagDate = new Date(this.formatDate(this.state.messages[end].created_at))
 
-    console.log('map', this.i++, this.state.startIndex)
+    // console.log('map', this.state.isVisible, refreshing, 'mounted', mounted)
     if (refreshing === true) this.displayedMessages = [];
 
     for (let i = end; i >= start; i--) {
@@ -75,10 +76,30 @@ export default class App extends Component {
       }
 
       if (currentMessage.user_id == this.currentUserID) {
-        moreMessages.push(<OwnMessage showDate={showDate} currentMessage={currentMessage.message} currentMessageDate={showDate ? moment(currentMessageDate).format('llll') : null}  />)
+        if (i === 0) {
+          moreMessages.push(
+          <InView onChange={isVisible => this.setState({isVisible})}>
+            <OwnMessage showDate={showDate} currentMessage={currentMessage.message} currentMessageDate={showDate ? moment(currentMessageDate).format('llll') : null} />
+          </InView>
+          )
+        }
+        else {
+          moreMessages.push(
+            <OwnMessage showDate={showDate} currentMessage={currentMessage.message} currentMessageDate={showDate ? moment(currentMessageDate).format('llll') : null} />
+          )
+        }
       }
       else {
-        moreMessages.push(<OtherMessage showDate={showDate} currentMessage={currentMessage.message} currentMessageDate={showDate ? moment(currentMessageDate).format('llll') : null} profilePicURL={this.props.navigation.getParam('profilePicURL')} />)
+        if (i === 0) {
+          moreMessages.push(
+          <InView onChange={isVisible => this.setState({isVisible})}>
+            <OtherMessage showDate={showDate} currentMessage={currentMessage.message} currentMessageDate={showDate ? moment(currentMessageDate).format('llll') : null} profilePicURL={this.props.navigation.getParam('profilePicURL')} />
+          </InView>
+          )
+        }
+        else {
+          moreMessages.push(<OtherMessage showDate={showDate} currentMessage={currentMessage.message} currentMessageDate={showDate ? moment(currentMessageDate).format('llll') : null} profilePicURL={this.props.navigation.getParam('profilePicURL')} />);
+        }
       }
     }
 
@@ -88,17 +109,21 @@ export default class App extends Component {
 
   handleScrollTop(event) {
     const offset = event.nativeEvent.contentOffset.y;
-    console.log('offset', offset)
+    clearInterval(this.refreshMessages);
 
-    if (offset < 0 && offset >= -3 && this.state.endIndex < this.state.messages.length - 1) {
-      clearInterval(this.refreshMessages);
+    if (offset < 0 && offset > -5 && this.state.endIndex < this.state.messages.length - 1) {
       this.setState({
         startIndex: this.state.endIndex + 1,
         endIndex: Math.min(this.state.endIndex + 10, this.state.messages.length - 1),
-        hasScrolledUp: true,
       }, () => this.mapMessages(this.state.startIndex, this.state.endIndex));
     }
-
+    else if (this.state.isVisible) {
+      this.setState({
+        startIndex: 0,
+        endIndex: 7
+      });
+      this.refreshMessages = setInterval(() => this.mapMessages(0, Math.min(7, this.state.messages.length - 1), true), 2000);
+    }
   }
 
   async uploadMessage() {
@@ -156,9 +181,11 @@ export default class App extends Component {
               ref={ref => {this.scrollView = ref}}
               onContentSizeChange={() => this.scrollView.scrollToEnd({animated: true})}
               onScroll={(event) => {
-                
-                this.handleScrollTop(event);
 
+                this.handleScrollTop(event);
+                if (isCloseToBottom(event.nativeEvent)) {
+                  // this.refreshMessages = setInterval(() => this.mapMessages(0, 7, true, false), 3000);
+                }
               }}
               onScrollAnimationEnd={this.handleScrollTop}
             >
