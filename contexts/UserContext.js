@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Alert } from 'react-native';
-import moment from 'moment';
 import axios from 'axios';
+import moment from 'moment';
 import { getEnvVars } from '../environment';
 const { apiUrl } = getEnvVars();
 
@@ -15,6 +15,7 @@ export function UserContextProvider({ children }) {
     const defaultAgeRange = [23, 29];
     const defaultInterests = new Set();
 
+    const [expoPushToken, setExpoPushToken] = useState('');
     const [userId, setUserId] = useState('');
     const [token, setToken] = useState('');
     const [isOnboarded, setIsOnboarded] = useState(false);
@@ -35,6 +36,7 @@ export function UserContextProvider({ children }) {
     const [sameInterests, setSameInterests] = useState(false);
 
     const value = {
+        expoPushToken, setExpoPushToken,
         userId, setUserId,
         token, setToken,
         isOnboarded, setIsOnboarded,
@@ -72,8 +74,9 @@ export function UserContextProvider({ children }) {
             email,
             username,
             profile_picture,
-            info,
+            info: infoJSON,
         } = res;
+        const info = JSON.parse(infoJSON);
         const {
             isOnboarded,
             birthday,
@@ -82,7 +85,7 @@ export function UserContextProvider({ children }) {
             connectWith,
             location,
             name,
-        } = JSON.parse(info);
+        } = info;
         const {
             ageRange,
             distance,
@@ -108,6 +111,14 @@ export function UserContextProvider({ children }) {
         setSameGender(sameGender);
         setInterests(new Set(interests));
         setSameInterests(sameInterests);
+
+        // update existing users with expo push token
+        if (!info.expoPushToken && expoPushToken) {
+            info.expoPushToken = expoPushToken;
+            // TODO: fix update call error
+            // only important for backwards compatibility
+            // doUpdateUser({ info });
+        }
     }
 
     function formatParams(user) {
@@ -242,36 +253,17 @@ export function UserContextProvider({ children }) {
             username: username.trim(),
             profile_picture: profileImg,
             security_level: 'user',
-            info: {
-                birthday: birthday.trim(),
-                connectWith: {
-                    ageRange,
-                    distance,
-                    sameGender,
-                    sameInterests,
-                },
-                gender,
-                imgUrl: profileImg,
-                interests: [...interests],
-                isOnboarded,
-                location: {
-                    city: city.trim(),
-                    state: state.trim(),
-                },
-                name: {
-                    first: firstName.trim(),
-                    last: lastName.trim(),
-                },
-            },
+            info: formatUserInfo(),
         };
 
         if (isUpdate) {
+            delete user.password;
             user.user_id = userId;
             user.token = token;
-            user.image_index = 0;
-            user.images_visited = [];
-            user.friends = [];
-            delete user.password;
+            // TODO: fields below need to be updated
+            // user.image_index = 0;
+            // user.images_visited = [];
+            // user.friends = [];
         }
 
         return user;
@@ -299,33 +291,39 @@ export function UserContextProvider({ children }) {
         let user = {
             user_id: userId,
             token,
-            info: {
-                birthday: birthday.trim(),
-                connectWith: {
-                    ageRange,
-                    distance,
-                    sameGender,
-                    sameInterests,
-                },
-                gender,
-                imgUrl: profileImg,
-                interests: [...interests],
-                isOnboarded,
-                location: {
-                    city: city.trim(),
-                    state: state.trim(),
-                },
-                name: {
-                    first: firstName.trim(),
-                    last: lastName.trim(),
-                },
-            },
+            info: formatUserInfo(),
         };
 
         return user;
     }
 
+    function formatUserInfo() {
+        return {
+            birthday: birthday.trim(),
+            connectWith: {
+                ageRange,
+                distance,
+                sameGender,
+                sameInterests,
+            },
+            expoPushToken,
+            gender,
+            imgUrl: profileImg,
+            interests: [...interests],
+            isOnboarded,
+            location: {
+                city: city.trim(),
+                state: state.trim(),
+            },
+            name: {
+                first: firstName.trim(),
+                last: lastName.trim(),
+            },
+        };
+    }
+
     function resetState() {
+        setExpoPushToken('');
         setUserId('');
         setToken('');
         setIsOnboarded(false);
