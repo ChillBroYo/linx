@@ -34,6 +34,13 @@ export function UserContextProvider({ children }) {
     const [sameGender, setSameGender] = useState(false);
     const [interests, setInterests] = useState(defaultInterests);
     const [sameInterests, setSameInterests] = useState(false);
+    const [imageIndex, setImageIndex] = useState(0);
+    const [imagesVisited, setImagesVisited] = useState([]);
+    const [friends, setFriends] = useState([]);
+    const [createdAt, setCreatedAt] = useState('');
+    const [imageId, setImageId] = useState('');
+    const [imageCategory, setImageCategory] = useState(6);
+    const [imageLink, setImageLink] = useState('');
 
     const value = {
         expoPushToken, setExpoPushToken,
@@ -55,15 +62,28 @@ export function UserContextProvider({ children }) {
         sameGender, setSameGender,
         interests, setInterests,
         sameInterests, setSameInterests,
+        imageIndex, setImageIndex,
+        imagesVisited, setImagesVisited,
+        friends, setFriends,
+        createdAt, setCreatedAt,
+        imageId, setImageId,
+        imageCategory, setImageCategory,
+        imageLink, setImageLink,
         setUserFromResponse,
+        setUserFromProfileResponse,
+        setImageFromResponse,
         doSignInUser,
+        doGetUserProfile,
+        doGetImage,
         doSignUpUser,
         doUploadProfileUser,
         doUpdateUser,
         doCompleteOnboardingUser,
+        doReactImage,
         formatUserForRequest,
         formatUserForImageUpload,
         formatUserForOnboarding,
+        formatUserForReaction,
         resetState,
     };
 
@@ -121,6 +141,31 @@ export function UserContextProvider({ children }) {
         }
     }
 
+    function setUserFromProfileResponse(res) {
+        const { user_info } = res;
+        const {
+            profile_picture,
+            image_index,
+            images_visited,
+            friends,
+            created_at,
+        } = user_info;
+
+        setProfileImg(profile_picture);
+        setImageIndex(image_index);
+        setImagesVisited(images_visited);
+        setFriends(friends);
+        setCreatedAt(created_at);
+    }
+
+    function setImageFromResponse(res) {
+        const { image_id, image_category, link } = res;
+
+        setImageId(image_id);
+        setImageCategory(image_category);
+        setImageLink(link);
+    }
+
     function formatParams(user) {
         const params = new URLSearchParams();
         for (let key in user) {
@@ -139,7 +184,6 @@ export function UserContextProvider({ children }) {
         return formData;
     }
 
-    // user = { username: '', password: '' }
     async function doSignInUser(user) {
         try {
             const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'sign_in' : 'sign-in'}`;
@@ -158,47 +202,6 @@ export function UserContextProvider({ children }) {
         catch (error) {
             console.warn('Sign in error:', error);
             Alert.alert('Sign in failed. Please try again');
-        }
-    }
-
-    async function doSignUpUser(user) {
-        try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'sign_up' : 'sign-up'}/`;
-            const params = formatParams(user);
-            const res = await axios.post(API_ENDPOINT, params);
-            const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Sign up failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
-            }
-
-            return true;
-        } catch (error) {
-            console.warn('doSignUp error:', error);
-            Alert.alert('Sign up failed. Please try again');
-        }
-    }
-
-    async function doUploadProfileUser(user) {
-        try{
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'save_image' : 'save-image'}/`;
-            const formData = formatFormData(user);
-            const config = { headers: { 'Content-Type': 'multipart/form-data' } };
-            const res = await axios.post(API_ENDPOINT, formData, config);
-            const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Profile upload failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
-            }
-
-            return true;
-        } catch (error) {
-            console.warn('doUploadProfile error:', error);
-            Alert.alert('Profile upload failed. Please try again');
         }
     }
 
@@ -221,8 +224,49 @@ export function UserContextProvider({ children }) {
             Alert.alert('Your settings have been updated');
         }
         catch (error) {
-            console.warn('doUpdateUser failed:', error);
+            console.error('Update failed:', error);
             Alert.alert('Update failed. Please try again');
+        }
+    }
+
+    async function doSignUpUser(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'sign_up' : 'sign-up'}/`;
+            const params = formatParams(user);
+            const res = await axios.post(API_ENDPOINT, params);
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Sign up failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Sign up error:', error);
+            Alert.alert('Sign up failed. Please try again');
+        }
+    }
+
+    async function doUploadProfileUser(user) {
+        try{
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'save_image' : 'save-image'}/`;
+            const formData = formatFormData(user);
+            const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+            const res = await axios.post(API_ENDPOINT, formData, config);
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Profile upload failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return true;
+        } catch (error) {
+            console.warn('Profile upload error:', error);
+            Alert.alert('Profile upload failed. Please try again');
         }
     }
 
@@ -241,8 +285,72 @@ export function UserContextProvider({ children }) {
 
             return true;
         } catch (error) {
-            console.warn('doCompleteOnboarding error:', error);
+            console.error('Onboarding completion error:', error);
             Alert.alert('Onboarding completion failed. Please try again');
+        }
+    }
+
+    async function doGetUserProfile(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'get_profile' : 'get-profile'}`;
+            const res = await axios.get(API_ENDPOINT, { params: user });
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Get user profile failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            setUserFromProfileResponse(data);
+            return true;
+        }
+        catch (error) {
+            console.error('Get user profile error:', error);
+            Alert.alert('Get user profile failed. Please try again');
+        }
+    }
+
+    async function doGetImage(image) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'get_image' : 'get-image'}`;
+            const res = await axios.get(API_ENDPOINT, { params: image });
+            const data = res.data;
+            if (res.status != 200) {
+                //return Alert.alert('Get image failed. Please try again');
+                return false;
+            }
+            if (data.success == 'false') {
+                return false;
+            }
+
+            setImageFromResponse(data);
+            return true;
+        }
+        catch (error) {
+            //console.error('Get image error:', error);
+            //Alert.alert('Get image failed. Please try again');
+            return false;
+        }
+    }
+
+    async function doReactImage(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'react_to_image' : 'react-to-image'}/`;
+            const params = formatParams(user);
+            const res = await axios.post(API_ENDPOINT, params);
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Reaction failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Reaction error:', error);
+            Alert.alert('Reaction failed. Please try again');
         }
     }
 
@@ -292,6 +400,17 @@ export function UserContextProvider({ children }) {
             user_id: userId,
             token,
             info: formatUserInfo(),
+        };
+
+        return user;
+    }
+
+    function formatUserForReaction(reactionType) {
+        let user = {
+            uid: userId,
+            token,
+            image_id: imageId,
+            reaction_type: reactionType,
         };
 
         return user;

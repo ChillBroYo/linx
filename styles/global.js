@@ -2,18 +2,11 @@ import { StyleSheet } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
 	outerContainer: {
-  },
+	},
 	innerContainer: {
 	},
 	titleContainer: {
 		top: 40
-	},
-	paginationContainer: {
-		alignItems: 'center',
-		top: 55
-	},
-	paginationIcon: {
-		resizeMode: 'contain'
 	},
 	blackTitle: {
 		textAlign: 'center',
@@ -24,6 +17,18 @@ export const globalStyles = StyleSheet.create({
 		textAlign: 'center',
 		color: '#FFF',
 		fontSize: 35
+	},
+	paginationContainer: {
+		alignItems: 'center',
+		top: 55
+	},
+	paginationIcon: {
+		resizeMode: 'contain'
+	},
+	subtitleText: {
+		textAlign: 'center',
+		color: '#FFF',
+		fontSize: 20
 	},
 	contentContainer: {
 		alignItems: 'center',
@@ -40,21 +45,6 @@ export const globalStyles = StyleSheet.create({
 		elevation: 5,
 		zIndex: 1
 	},
-	cardsContainer: {
-		alignItems: 'center',
-		backgroundColor: '#FFF',
-		width: 340,
-		height: 250,
-		top: 140,
-		left: 20,
-		borderRadius: 10,
-		shadowColor: '#000',
-		shadowOffset: { width: 0, height: 2 },
-		shadowOpacity: 0.25,
-		shadowRadius: 3.84,
-		elevation: 5,
-		zIndex: 1
-	},
 	content: {
 		fontSize: 23,
 		color: '#1B1B1B',
@@ -62,27 +52,18 @@ export const globalStyles = StyleSheet.create({
 		top: 30,
 		left: 10,
 	},
+	imageContent: {
+		width: 330,
+        height: 240,
+        top: 5,
+        resizeMode: 'contain'
+	},
 	blankContainer: {
 		alignItems: 'center',
 		backgroundColor: '#FFF',
 		width: 280,
 		height: 40,
 		top: 65,
-		left: 50,
-		borderRadius: 10,
-		shadowColor: '#000',
-		shadowOffset: { width: 0, height: 2 },
-		shadowOpacity: 0.25,
-		shadowRadius: 3.84,
-		elevation: 5,
-		zIndex: 0
-	},
-	cardsSubContainer: {
-		alignItems: 'center',
-		backgroundColor: '#FFF',
-		width: 280,
-		height: 40,
-		top: 120,
 		left: 50,
 		borderRadius: 10,
 		shadowColor: '#000',
@@ -125,12 +106,6 @@ export const globalStyles = StyleSheet.create({
 		top: 90,
 		zIndex: 3
 	},
-	cardsEmojiContainer: {
-		flexDirection: 'row',
-		justifyContent: 'space-around',
-		top: 145,
-		zIndex: 3
-	},
 	emojiSymbol: {
 	},
 	emojiStyle: {
@@ -138,5 +113,9 @@ export const globalStyles = StyleSheet.create({
 		textShadowColor: 'rgba(0, 0, 0, 0.25)',
 		textShadowOffset: {width: 0, height: 4},
 		textShadowRadius: 4
-	}
+	},
+	confettiContainer: {
+    	zIndex: 2,
+    	top: 175
+  }
 });

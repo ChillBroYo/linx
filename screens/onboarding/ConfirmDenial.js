@@ -1,5 +1,5 @@
 import React, { useRef, useContext, useState } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { Text, View, Image } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
 import Dots from 'react-native-dots-pagination';
 import Emoji from 'react-native-emoji';
@@ -31,6 +31,7 @@ export default function ConfirmDenialScreen({ navigation }) {
         const user = getUserForOnboarding();
         const isCompletedOnboarding = await doCompleteOnboardingUser(user);
         if (!isCompletedOnboarding) return;
+
         navigation.navigate('MainCards');
     }
 
@@ -48,8 +49,7 @@ export default function ConfirmDenialScreen({ navigation }) {
                         <Text style={globalStyles.whiteTitle}>Let's start!</Text>
                     </View>
                     <View style={globalStyles.paginationContainer}>
-                        <Image source={require('../../assets/icons/pagination_three.png')} onLoad={() => setIsOnboarded(true)}
-                        style={globalStyles.paginationIcon} />
+                        <Image source={require('../../assets/icons/pagination_three.png')} style={globalStyles.paginationIcon} />
                     </View>
                     <View style={globalStyles.contentContainer}>
                         <Text style={globalStyles.content}>Ok. You can always verify to connect with other verified people if you change your mind.</Text>
@@ -59,10 +59,10 @@ export default function ConfirmDenialScreen({ navigation }) {
                     </View>
                     <View style={globalStyles.emojiContainer}>
                         <View style={globalStyles.emojiSymbol}>
-                            <Emoji name="tada" style={globalStyles.emojiStyle} onPress={shootCannon} />
+                            <Emoji name="tada" style={globalStyles.emojiStyle} onLayout={() => setIsOnboarded(true)} onPress={shootCannon} />
                         </View>
                     </View>
-                    <View style={styles.confettiContainer}>
+                    <View style={globalStyles.confettiContainer}>
                         <ConfettiCannon count={100} origin={{ x: 175, y: 125 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
                         autoStart={false} ref={cannon} onAnimationEnd={doCompleteOnboarding} />
                     </View>
@@ -71,11 +71,3 @@ export default function ConfirmDenialScreen({ navigation }) {
         </View>
     );
 }
-
-//Styling of screen
-const styles = StyleSheet.create({
-    confettiContainer: {
-        zIndex: 2,
-        top: 175
-    }
-});
