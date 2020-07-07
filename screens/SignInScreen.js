@@ -13,11 +13,16 @@ import {
 import axios from 'axios';
 import { UserContext } from '../contexts/UserContext';
 import { green, white } from '../constants/Colors';
+import {
+    addNotificationListener,
+    registerForPushNotificationsAsync
+} from '../helpers/notifications';
 import { getEnvVars } from '../environment';
 const { apiUrl } = getEnvVars();
 
 export default function SignIn({ navigation }) {
     const {
+        setExpoPushToken,
         doSignInUser,
         resetState: resetUserContextState,
     } = useContext(UserContext);
@@ -31,15 +36,27 @@ export default function SignIn({ navigation }) {
         resetUserContextState();
     }, []);
 
-    function onForgotPassword() {
-        navigation.navigate('ResetPassword');
-    }
+    useEffect(() => {
+        registerForPushNotificationsAsync(setExpoPushToken);
+
+        function handleNotification(notification) {
+            console.log('New notification:', { notification });
+        }
+
+        const notificationLogListener = addNotificationListener(handleNotification);
+
+        return () => notificationLogListener.remove();
+    }, []);
 
     async function doSignIn() {
         const user = { username, password };
         const isSignedIn = await doSignInUser(user);
         if (!isSignedIn) return;
         navigation.navigate('Cards');
+    }
+
+    function onForgotPassword() {
+        navigation.navigate('ResetPassword');
     }
 
     function onSignUp() {
