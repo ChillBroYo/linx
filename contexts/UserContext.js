@@ -145,7 +145,7 @@ export function UserContextProvider({ children }) {
             return true;
         }
         catch (error) {
-            console.error('Sign in error:', error);
+            console.warn('Sign in error:', error);
             Alert.alert('Sign in failed. Please try again');
         }
     }
@@ -165,7 +165,7 @@ export function UserContextProvider({ children }) {
 
             return true;
         } catch (error) {
-            console.error('doSignUp error:', error);
+            console.warn('doSignUp error:', error);
             Alert.alert('Sign up failed. Please try again');
         }
     }
@@ -183,10 +183,10 @@ export function UserContextProvider({ children }) {
             if (!data.success || data.success == 'false') {
                 return Alert.alert(data.errmsg);
             }
-            
+
             return true;
         } catch (error) {
-            console.error('doUploadProfile error:', error);
+            console.warn('doUploadProfile error:', error);
             Alert.alert('Profile upload failed. Please try again');
         }
     }
@@ -210,7 +210,7 @@ export function UserContextProvider({ children }) {
             Alert.alert('Your settings have been updated');
         }
         catch (error) {
-            console.error('doUpdateUser failed:', error);
+            console.warn('doUpdateUser failed:', error);
             Alert.alert('Update failed. Please try again');
         }
     }
@@ -230,7 +230,7 @@ export function UserContextProvider({ children }) {
 
             return true;
         } catch (error) {
-            console.error('doCompleteOnboarding error:', error);
+            console.warn('doCompleteOnboarding error:', error);
             Alert.alert('Onboarding completion failed. Please try again');
         }
     }
