@@ -83,7 +83,7 @@ export default function MainCardsScreen({ navigation }) {
                         <Text style={globalStyles.subtitleText}>{imageIndex + 1} / 15</Text>
                     </Animated.View>
        				<View style={globalStyles.contentContainer}>
-                        <Animated.Image source={{ uri: 'https://i.pinimg.com/originals/24/97/c0/2497c0eb70da907bd6948e8ce97cd32d.jpg' }} style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
+                        <Animated.Image source={{ uri: imageLink }} style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
        				</View>
        				<View style={globalStyles.blankContainer} />
        				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
