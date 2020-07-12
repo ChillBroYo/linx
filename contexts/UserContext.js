@@ -80,10 +80,12 @@ export function UserContextProvider({ children }) {
         doUpdateUser,
         doCompleteOnboardingUser,
         doReactImage,
+        doUpdateImageIndex,
         formatUserForRequest,
         formatUserForImageUpload,
         formatUserForOnboarding,
         formatUserForReaction,
+        formatUserForIndex,
         resetState,
     };
 
@@ -354,6 +356,26 @@ export function UserContextProvider({ children }) {
         }
     }
 
+    async function doUpdateImageIndex(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'update_profile' : 'update-profile'}/`;
+            const params = formatParams(user);
+            const res = await axios.post(API_ENDPOINT, params);
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Update card profile failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Update card profile error:', error);
+            Alert.alert('Update card profile failed. Please try again');
+        }
+    }
+
     function formatUserForRequest(isUpdate = false) {
         let user = {
             email: email.trim(),
@@ -412,6 +434,16 @@ export function UserContextProvider({ children }) {
             image_id: imageId,
             reaction_type: reactionType,
         };
+
+        return user;
+    }
+
+    function formatUserForIndex() {
+        let user = {
+            user_id: userId,
+            token,
+            image_index: imageIndex,
+        }
 
         return user;
     }

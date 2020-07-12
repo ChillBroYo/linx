@@ -1,7 +1,6 @@
 import React, { useRef, useContext, useState } from 'react';
 import { Text, View, Image } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
-import Dots from 'react-native-dots-pagination';
 import Emoji from 'react-native-emoji';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import { UserContext } from '../../contexts/UserContext';

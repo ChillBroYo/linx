@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import React, { useContext, useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, Image, Animated } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import CardsCompletionScreen from './CardsCompletion';
@@ -11,19 +11,20 @@ import { globalStyles } from '../../styles/global';
 
 export default function MainCardsScreen({ navigation }) {
     const {
-        token,
         userId,
         doGetUserProfile,
         imageIndex,
-        imageId,
+        doGetImage,
         imageCategory,
         imageLink,
-        doGetImage,
         formatUserForReaction,
         doReactImage,
+        formatUserForIndex,
+        doUpdateImageIndex,
     } = useContext(UserContext);
 
     const [cardsReact, setCardsReact] = useState(true);
+    const [refresh, setRefresh] = useState(0);
 
     async function performAPICalls() {
         const user = { uid: userId, key: 123 };
@@ -39,38 +40,60 @@ export default function MainCardsScreen({ navigation }) {
         performAPICalls();
     });
 
-    const symbols = getSymbols(imageCategory);
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const fadeIn = Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true
+    });
+    const fadeOut = Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true
+    });
 
     async function doReaction(reaction) {
-        const user = formatUserForReaction(reaction);
-        const didReact = await doReactImage(user);
-        if(!didReact) return;
+        const [react, user] = getUserForReaction(reaction);
+        const [didReact, didUpdateIndex] = await Promise.all([doReactImage(react), doUpdateImageIndex(user)]);
+        if(!didReact || !didUpdateIndex) return;
+        fadeOut.start(() => {setRefresh(refresh + 1)});
+    }
+
+    function getUserForReaction(reaction) {
+        const react = formatUserForReaction(reaction);
+        const user = formatUserForIndex();
+        user.image_index = imageIndex + 1;
+        return [react, user];
     }
 
     if(!cardsReact) {
         return (<CardsCompletionScreen navigation={ navigation } />);
+    } else {
+        fadeIn.start();
     };
+
+    const symbols = getSymbols(imageCategory);
 
 	return(
 		<View style={globalStyles.outerContainer}>
       		<LinearGradient colors={['#439E73', 'rgba(254, 241, 2, 0)']} style={{height: '100%'}}>
       			<View style={globalStyles.innerContainer}>
                     <View style={styles.noTitleContainer} />
-                    <View style={globalStyles.paginationContainer}>
+                    <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
                         <Text style={globalStyles.subtitleText}>{imageIndex + 1} / 15</Text>
-                    </View>
+                    </Animated.View>
        				<View style={globalStyles.contentContainer}>
-                        <Image source={{ uri: imageLink }} style={globalStyles.imageContent} />
+                        <Animated.Image source={{ uri: 'https://i.pinimg.com/originals/24/97/c0/2497c0eb70da907bd6948e8ce97cd32d.jpg' }} style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
        				</View>
        				<View style={globalStyles.blankContainer} />
-       				<View style={globalStyles.emojiContainer}>
+       				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
        					<View style={globalStyles.emojiSymbol}>
                         	<Emoji name={symbols[0]} style={globalStyles.emojiStyle} onPress={() => doReaction(1)} />
                     	</View>
                         <View style={globalStyles.emojiSymbol}>
                             <Emoji name={symbols[1]} style={globalStyles.emojiStyle} onPress={() => doReaction(2)} />
                         </View>
-                    </View>
+                    </Animated.View>
   				</View>
   			</LinearGradient>
   		</View>
