@@ -255,7 +255,7 @@ export function UserContextProvider({ children }) {
         try{
             const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'save_image' : 'save-image'}/`;
             const formData = formatFormData(user);
-            const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+            const config = { headers: { 'Content-Type': 'multipart/form-data; boundary=frontier' } };
             const res = await axios.post(API_ENDPOINT, formData, config);
             const data = res.data;
             if (res.status != 200) {
@@ -400,7 +400,7 @@ export function UserContextProvider({ children }) {
     }
 
     function formatUserForImageUpload() {
-        const name = 'profile_' + String(userId) + '_' + String(moment().format());
+        const name = 'profile_' + String(userId) + '_' + String(moment.utc().format('YYYY-MM-DDTHH:mm:ss')) + '.jpg';
         const type = 'image/jpeg';
 
         let user = {
@@ -412,6 +412,7 @@ export function UserContextProvider({ children }) {
             user_id: userId,
             token,
             image_type: 'profile',
+            image_category: 6,
         };
 
         return user;

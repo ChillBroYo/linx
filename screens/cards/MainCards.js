@@ -26,29 +26,31 @@ export default function MainCardsScreen({ navigation }) {
     const [cardsReact, setCardsReact] = useState(true);
     const [refresh, setRefresh] = useState(0);
 
-    async function performAPICalls() {
+    function performAPICalls() {
         const user = { uid: userId, key: 123 };
-        const didGetProfile = await doGetUserProfile(user);
+        const didGetProfile = doGetUserProfile(user);
         if(!didGetProfile) navigation.navigate('SignIn');
 
+        //console.log('Image Index: ' + imageIndex);
         const image = { image_type: 'general', image_index: imageIndex };
-        const didGetImage = await doGetImage(image);
+        const didGetImage = doGetImage(image);
         if(!didGetImage) setCardsReact(false);
+        //console.log('Link: ' + imageLink);
     }
 
     useEffect(() => {
         performAPICalls();
-    });
+    }, [refresh]);
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const fadeIn = Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 1000,
+        duration: 750,
         useNativeDriver: true
     });
     const fadeOut = Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 1000,
+        duration: 750,
         useNativeDriver: true
     });
 
@@ -69,7 +71,7 @@ export default function MainCardsScreen({ navigation }) {
     if(!cardsReact) {
         return (<CardsCompletionScreen navigation={ navigation } />);
     } else {
-        fadeIn.start();
+        //console.log('Link: ' + imageLink);
     };
 
     const symbols = getSymbols(imageCategory);
@@ -83,9 +85,9 @@ export default function MainCardsScreen({ navigation }) {
                         <Text style={globalStyles.subtitleText}>{imageIndex + 1} / 15</Text>
                     </Animated.View>
        				<View style={globalStyles.contentContainer}>
-                        <Animated.Image source={{ uri: imageLink }} style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
+                        <Animated.Image source={{ uri: imageLink }} onLoad={() => fadeIn.start()} style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
        				</View>
-       				<View style={globalStyles.blankContainer} />
+       				<Animated.View style={[globalStyles.blankContainer, {opacity: fadeAnim}]} />
        				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
        					<View style={globalStyles.emojiSymbol}>
                         	<Emoji name={symbols[0]} style={globalStyles.emojiStyle} onPress={() => doReaction(1)} />
