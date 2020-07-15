@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useContext, useState, useLayoutEffect, useRef } from 'react';
 import { StyleSheet, Text, View, Image, Animated } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
@@ -24,21 +24,20 @@ export default function MainCardsScreen({ navigation }) {
     } = useContext(UserContext);
 
     const [cardsReact, setCardsReact] = useState(true);
-    const [refresh, setRefresh] = useState(0);
+    const [refresh, setRefresh] = useState(-1);
 
-    function performAPICalls() {
+    async function performAPICalls() {
         const user = { uid: userId, key: 123 };
-        const didGetProfile = doGetUserProfile(user);
+        const didGetProfile = await doGetUserProfile(user);
         if(!didGetProfile) navigation.navigate('SignIn');
+        setRefresh(imageIndex);
 
-        //console.log('Image Index: ' + imageIndex);
         const image = { image_type: 'general', image_index: imageIndex };
-        const didGetImage = doGetImage(image);
+        const didGetImage = await doGetImage(image);
         if(!didGetImage) setCardsReact(false);
-        //console.log('Link: ' + imageLink);
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         performAPICalls();
     }, [refresh]);
 
@@ -70,8 +69,6 @@ export default function MainCardsScreen({ navigation }) {
 
     if(!cardsReact) {
         return (<CardsCompletionScreen navigation={ navigation } />);
-    } else {
-        //console.log('Link: ' + imageLink);
     };
 
     const symbols = getSymbols(imageCategory);
