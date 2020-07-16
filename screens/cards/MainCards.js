@@ -1,4 +1,4 @@
-import React, { useContext, useState, useLayoutEffect, useRef } from 'react';
+import React, { useContext, useState, useLayoutEffect, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, Image, Animated } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
@@ -30,11 +30,12 @@ export default function MainCardsScreen({ navigation }) {
         const user = { uid: userId, key: 123 };
         const didGetProfile = await doGetUserProfile(user);
         if(!didGetProfile) navigation.navigate('SignIn');
-        setRefresh(imageIndex);
 
         const image = { image_type: 'general', image_index: imageIndex };
         const didGetImage = await doGetImage(image);
         if(!didGetImage) setCardsReact(false);
+
+        setRefresh(0);
     }
 
     useLayoutEffect(() => {
@@ -82,7 +83,7 @@ export default function MainCardsScreen({ navigation }) {
                         <Text style={globalStyles.subtitleText}>{imageIndex + 1} / 15</Text>
                     </Animated.View>
        				<View style={globalStyles.contentContainer}>
-                        <Animated.Image source={{ uri: imageLink }} onLoad={() => fadeIn.start()} style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
+                        <Animated.Image source={imageLink ? { uri: imageLink } : null} onLoad={() => fadeIn.start()} style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
        				</View>
        				<Animated.View style={[globalStyles.blankContainer, {opacity: fadeAnim}]} />
        				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
