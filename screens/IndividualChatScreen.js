@@ -159,9 +159,9 @@ export default class App extends Component {
         messages,
       }, () => this.mapMessages(this.state.startIndex, Math.min(this.state.endIndex, this.state.messages.length - 1), true));
       
-      // this.displayedMessages.push(<OwnMessage currentMessage={this.state.userInput} />);
+      this.displayedMessages.push(<OwnMessage currentMessage={this.state.userInput} />);
       this.setState({userInput:''});
-      // this.forceUpdate();
+      this.forceUpdate();
     }
     catch (error) {
       console.log('message upload error:', error)
