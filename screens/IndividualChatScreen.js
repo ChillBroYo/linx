@@ -33,8 +33,8 @@ export default class App extends Component {
       let response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${this.currentUserID}&oid=${this.props.navigation.getParam('contactID')}&token=${this.currentUserToken}&limit=1000&ts=`);
       let messages = response.data.messages;
       this.setState({
-        messages,
-      }, () => this.mapMessages(this.state.startIndex, Math.min(this.state.endIndex, this.state.messages.length - 1))
+        messages : messages,
+      }, () => this.mapMessages(this.state.startIndex, Math.min(this.state.endIndex, this.state.messages.length - 1), true)
       );
 
       console.log('ja')
@@ -66,6 +66,7 @@ export default class App extends Component {
   }
 
   mapMessages(start, end, refreshing, mounted) {
+    console.log('msgs', this.state.startIndex, this.state.endIndex)
     if (this.state.messages.length === 0) return;
     let showDate;
     const moreMessages = [];
@@ -115,7 +116,7 @@ export default class App extends Component {
     }
 
     this.displayedMessages = moreMessages.concat(this.displayedMessages);
-    this.forceUpdate();
+    // this.forceUpdate();
   }
 
   handleScrollTop(event) {
