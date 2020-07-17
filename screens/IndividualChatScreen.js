@@ -24,22 +24,29 @@ export default class App extends Component {
     this.formatMoment();
     this.handleScrollTop = this.handleScrollTop.bind(this);
     this.mapMessages = this.mapMessages.bind(this);
+    this.getMessages = this.getMessages.bind(this);
   }
 
-  async componentDidMount() {
+  async getMessages() {
     try {
-      const response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${this.currentUserID}&oid=${this.props.navigation.getParam('contactID')}&token=${this.currentUserToken}&limit=1000&ts=`);
-      const messages = response.data.messages;
+      console.log('hiya')
+      let response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${this.currentUserID}&oid=${this.props.navigation.getParam('contactID')}&token=${this.currentUserToken}&limit=1000&ts=`);
+      let messages = response.data.messages;
       this.setState({
         messages,
-      }, () => this.mapMessages(this.state.startIndex, Math.min(this.state.endIndex, this.state.messages.length - 1)));
-      
-      this.refreshMessages = setInterval(() => this.mapMessages(0, Math.min(7, this.state.messages.length - 1), true, true), 2000);
-      
+      }, () => this.mapMessages(this.state.startIndex, Math.min(this.state.endIndex, this.state.messages.length - 1))
+      );
+
+      console.log('ja')
     }
     catch(error) {
       alert(`An error occurred : ${error}`);
     }
+  }
+
+  componentDidMount() {
+      this.refreshMessages = setInterval(this.getMessages, 2000);
+
   }
 
   componentWillUnmount() {
