@@ -133,7 +133,7 @@ export default class App extends Component {
         startIndex: 0,
         endIndex: 7
       });
-      this.refreshMessages = setInterval(() => this.getMessages(0, Math.min(7, this.state.messages.length - 1), true), 2000);
+      this.refreshMessages = setInterval(this.getMessages, 2000);
     }
   }
 
