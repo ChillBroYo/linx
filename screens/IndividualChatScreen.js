@@ -46,7 +46,6 @@ export default class App extends Component {
 
   componentDidMount() {
       this.refreshMessages = setInterval(this.getMessages, 2000);
-
   }
 
   componentWillUnmount() {
@@ -116,7 +115,7 @@ export default class App extends Component {
     }
 
     this.displayedMessages = moreMessages.concat(this.displayedMessages);
-    // this.forceUpdate();
+    this.forceUpdate();
   }
 
   handleScrollTop(event) {
@@ -134,7 +133,7 @@ export default class App extends Component {
         startIndex: 0,
         endIndex: 7
       });
-      this.refreshMessages = setInterval(() => this.mapMessages(0, Math.min(7, this.state.messages.length - 1), true), 2000);
+      this.refreshMessages = setInterval(() => this.getMessages(0, Math.min(7, this.state.messages.length - 1), true), 2000);
     }
   }
 
@@ -158,11 +157,11 @@ export default class App extends Component {
       const messages = response.data.messages;
       this.setState({
         messages,
-      });
+      }, () => this.mapMessages(this.state.startIndex, Math.min(this.state.endIndex, this.state.messages.length - 1), true));
       
-      this.displayedMessages.push(<OwnMessage currentMessage={this.state.userInput} />);
+      // this.displayedMessages.push(<OwnMessage currentMessage={this.state.userInput} />);
       this.setState({userInput:''});
-      this.forceUpdate();
+      // this.forceUpdate();
     }
     catch (error) {
       console.log('message upload error:', error)

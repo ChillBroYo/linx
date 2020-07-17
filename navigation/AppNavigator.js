@@ -21,7 +21,7 @@ const RouteConfig = {
 };
 
 const NavigatorConfig = {
-    initialRouteName: 'SignIn',
+    initialRouteName: 'MessagesScreen',
 };
 
 export default createAppContainer(createSwitchNavigator(RouteConfig, NavigatorConfig));
