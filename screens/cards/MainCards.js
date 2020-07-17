@@ -1,4 +1,4 @@
-import React, { useContext, useState, useLayoutEffect, useEffect, useRef } from 'react';
+import React, { useContext, useState, useLayoutEffect, useRef } from 'react';
 import { StyleSheet, Text, View, Image, Animated } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
@@ -13,10 +13,7 @@ export default function MainCardsScreen({ navigation }) {
     const {
         userId,
         doGetUserProfile,
-        imageIndex,
         doGetImage,
-        imageCategory,
-        imageLink,
         formatUserForReaction,
         doReactImage,
         formatUserForIndex,
@@ -24,23 +21,42 @@ export default function MainCardsScreen({ navigation }) {
     } = useContext(UserContext);
 
     const [cardsReact, setCardsReact] = useState(true);
-    const [refresh, setRefresh] = useState(-1);
+    const [imageIndex, setImageIndex] = useState(-1);
+    const [imageId, setImageId] = useState(-1);
+    const [imageCategory, setImageCategory] = useState(6);
+    const [imageLink, setImageLink] = useState('');
 
-    async function performAPICalls() {
+    async function performGetProfile() {
         const user = { uid: userId, key: 123 };
-        const didGetProfile = await doGetUserProfile(user);
-        if(!didGetProfile) navigation.navigate('SignIn');
+        const result = await doGetUserProfile(user);
 
-        const image = { image_type: 'general', image_index: imageIndex };
-        const didGetImage = await doGetImage(image);
-        if(!didGetImage) setCardsReact(false);
-
-        setRefresh(0);
+        if(!(result instanceof Object)) {
+            navigation.navigate('SignIn');
+        } else {
+            setImageIndex(result.imageIndex);
+        };
     }
 
     useLayoutEffect(() => {
-        performAPICalls();
-    }, [refresh]);
+        performGetProfile();
+    }, []);
+
+    async function performGetImage() {
+        const image = { image_type: 'general', image_index: imageIndex };
+        const result = await doGetImage(image);
+
+        if(!(result instanceof Object)) {
+            setCardsReact(false);
+        } else {
+            setImageId(result.imageId);
+            setImageCategory(result.imageCategory);
+            setImageLink(result.imageLink);
+        };
+    }
+
+    useLayoutEffect(() => {
+        if(imageIndex != -1) performGetImage();
+    }, [imageIndex]);
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const fadeIn = Animated.timing(fadeAnim, {
@@ -58,13 +74,12 @@ export default function MainCardsScreen({ navigation }) {
         const [react, user] = getUserForReaction(reaction);
         const [didReact, didUpdateIndex] = await Promise.all([doReactImage(react), doUpdateImageIndex(user)]);
         if(!didReact || !didUpdateIndex) return;
-        fadeOut.start(() => {setRefresh(refresh + 1)});
+        fadeOut.start(() => {setImageIndex(imageIndex + 1)});
     }
 
     function getUserForReaction(reaction) {
-        const react = formatUserForReaction(reaction);
-        const user = formatUserForIndex();
-        user.image_index = imageIndex + 1;
+        const react = formatUserForReaction(reaction, imageId);
+        const user = formatUserForIndex(imageIndex + 1);
         return [react, user];
     }
 
@@ -83,7 +98,8 @@ export default function MainCardsScreen({ navigation }) {
                         <Text style={globalStyles.subtitleText}>{imageIndex + 1} / 15</Text>
                     </Animated.View>
        				<View style={globalStyles.contentContainer}>
-                        <Animated.Image source={imageLink ? { uri: imageLink } : null} onLoad={() => fadeIn.start()} style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
+                        <Animated.Image source={imageLink ? { uri: imageLink } : null} onLoad={() => fadeIn.start()}
+                        style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
        				</View>
        				<Animated.View style={[globalStyles.blankContainer, {opacity: fadeAnim}]} />
        				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>

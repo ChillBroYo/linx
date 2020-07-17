@@ -34,13 +34,8 @@ export function UserContextProvider({ children }) {
     const [sameGender, setSameGender] = useState(false);
     const [interests, setInterests] = useState(defaultInterests);
     const [sameInterests, setSameInterests] = useState(false);
-    const [imageIndex, setImageIndex] = useState(0);
     const [imagesVisited, setImagesVisited] = useState([]);
     const [friends, setFriends] = useState([]);
-    const [createdAt, setCreatedAt] = useState('');
-    const [imageId, setImageId] = useState('');
-    const [imageCategory, setImageCategory] = useState(6);
-    const [imageLink, setImageLink] = useState('');
 
     const value = {
         expoPushToken, setExpoPushToken,
@@ -62,16 +57,10 @@ export function UserContextProvider({ children }) {
         sameGender, setSameGender,
         interests, setInterests,
         sameInterests, setSameInterests,
-        imageIndex, setImageIndex,
         imagesVisited, setImagesVisited,
         friends, setFriends,
-        createdAt, setCreatedAt,
-        imageId, setImageId,
-        imageCategory, setImageCategory,
-        imageLink, setImageLink,
         setUserFromResponse,
         setUserFromProfileResponse,
-        setImageFromResponse,
         doSignInUser,
         doGetUserProfile,
         doGetImage,
@@ -147,25 +136,13 @@ export function UserContextProvider({ children }) {
         const { user_info } = res;
         const {
             profile_picture,
-            image_index,
             images_visited,
             friends,
-            created_at,
         } = user_info;
 
         setProfileImg(profile_picture);
-        setImageIndex(image_index);
         setImagesVisited(images_visited);
         setFriends(friends);
-        setCreatedAt(created_at);
-    }
-
-    function setImageFromResponse(res) {
-        const { image_id, image_category, link } = res;
-
-        setImageId(image_id);
-        setImageCategory(image_category);
-        setImageLink(link);
     }
 
     function formatParams(user) {
@@ -305,7 +282,7 @@ export function UserContextProvider({ children }) {
             }
 
             setUserFromProfileResponse(data);
-            return true;
+            return {imageIndex: data.user_info.image_index};
         }
         catch (error) {
             console.error('Get user profile error:', error);
@@ -326,8 +303,11 @@ export function UserContextProvider({ children }) {
                 return false;
             }
 
-            setImageFromResponse(data);
-            return true;
+            return {
+                imageId: data.image_id,
+                imageCategory: data.image_category,
+                imageLink: data.link,
+            };
         }
         catch (error) {
             //console.error('Get image error:', error);
@@ -428,7 +408,7 @@ export function UserContextProvider({ children }) {
         return user;
     }
 
-    function formatUserForReaction(reactionType) {
+    function formatUserForReaction(reactionType, imageId) {
         let user = {
             uid: userId,
             token,
@@ -439,11 +419,11 @@ export function UserContextProvider({ children }) {
         return user;
     }
 
-    function formatUserForIndex() {
+    function formatUserForIndex(index) {
         let user = {
             user_id: userId,
             token,
-            image_index: imageIndex,
+            image_index: index,
         }
 
         return user;
