@@ -19,6 +19,7 @@ export function UserContextProvider({ children }) {
     const [userId, setUserId] = useState('');
     const [token, setToken] = useState('');
     const [isOnboarded, setIsOnboarded] = useState(false);
+    const [lastReaction, setLastReaction] = useState(moment.utc().format('YYYY-MM-DDTHH:mm:ss'));
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
@@ -42,6 +43,7 @@ export function UserContextProvider({ children }) {
         userId, setUserId,
         token, setToken,
         isOnboarded, setIsOnboarded,
+        lastReaction, setLastReaction,
         email, setEmail,
         password, setPassword,
         username, setUsername,
@@ -90,6 +92,7 @@ export function UserContextProvider({ children }) {
         const info = JSON.parse(infoJSON);
         const {
             isOnboarded,
+            lastReaction,
             birthday,
             gender,
             interests,
@@ -108,6 +111,7 @@ export function UserContextProvider({ children }) {
         setUserId(uid);
         setToken(token);
         setIsOnboarded(Boolean(isOnboarded));
+        setLastReaction(lastReaction);
         setEmail(email);
         setUsername(username);
         setProfileImg(profile_picture);
@@ -424,6 +428,7 @@ export function UserContextProvider({ children }) {
             user_id: userId,
             token,
             image_index: index,
+            info: formatUserInfo(),
         }
 
         return user;
@@ -443,6 +448,7 @@ export function UserContextProvider({ children }) {
             imgUrl: profileImg,
             interests: [...interests],
             isOnboarded,
+            lastReaction,
             location: {
                 city: city.trim(),
                 state: state.trim(),
@@ -459,6 +465,7 @@ export function UserContextProvider({ children }) {
         setUserId('');
         setToken('');
         setIsOnboarded(false);
+        setLastReaction(moment.utc().format('YYYY-MM-DDTHH:mm:ss'));
         setEmail('');
         setPassword('');
         setUsername('');

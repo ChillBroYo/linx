@@ -2,6 +2,7 @@ import React, { useContext, useState, useLayoutEffect, useRef } from 'react';
 import { StyleSheet, Text, View, Image, Animated } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
+import moment from 'moment';
 import CardsCompletionScreen from './CardsCompletion';
 import { getSymbols } from './helpers';
 import { UserContext } from '../../contexts/UserContext';
@@ -13,6 +14,7 @@ export default function MainCardsScreen({ navigation }) {
     const {
         userId,
         doGetUserProfile,
+        lastReaction: contextLastReaction,
         doGetImage,
         formatUserForReaction,
         doReactImage,
@@ -22,9 +24,12 @@ export default function MainCardsScreen({ navigation }) {
 
     const [cardsReact, setCardsReact] = useState(true);
     const [imageIndex, setImageIndex] = useState(-1);
+    const [lastReaction, setLastReaction] = useState(contextLastReaction);
     const [imageId, setImageId] = useState(-1);
     const [imageCategory, setImageCategory] = useState(6);
     const [imageLink, setImageLink] = useState('');
+
+    let reactionTime = '';
 
     async function performGetProfile() {
         const user = { uid: userId, key: 123 };
@@ -70,16 +75,23 @@ export default function MainCardsScreen({ navigation }) {
         useNativeDriver: true
     });
 
+    function updateStates() {
+        setLastReaction(reactionTime);
+        setImageIndex(imageIndex + 1);
+    }
+
     async function doReaction(reaction) {
         const [react, user] = getUserForReaction(reaction);
         const [didReact, didUpdateIndex] = await Promise.all([doReactImage(react), doUpdateImageIndex(user)]);
         if(!didReact || !didUpdateIndex) return;
-        fadeOut.start(() => {setImageIndex(imageIndex + 1)});
+        fadeOut.start(updateStates);
     }
 
     function getUserForReaction(reaction) {
         const react = formatUserForReaction(reaction, imageId);
         const user = formatUserForIndex(imageIndex + 1);
+        reactionTime = moment.utc().format('YYYY-MM-DDTHH:mm:ss');
+        user.info.lastReaction = reactionTime;
         return [react, user];
     }
 
