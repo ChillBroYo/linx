@@ -6,24 +6,19 @@ import axios from 'axios';
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.currentUserID = 1;
-    this.tokens = {
-      1 : '58db4abf-fd9c-451f-ab5d-199f04118335',
-      2 : 'beacde9c-d02f-40ea-a987-fac7b8b1b019',
-      3 : '12b2d376-d566-42a8-8109-11586e205698',
-      4 : '410735d6-1ac9-4e16-b0db-88282c77858f',
-      5 : '289f72a7-3cdf-401f-b589-5366f5ccb9a1',
-      7 : 'b617cc9f-3c0b-4506-ab10-e2941ba4dfd5',
-    };
+    this.contactID = this.props.navigation.getParam('contactID');
+    
     this.state = {
-      conversations : {},
-      isRead : false,
+      
     };
   }
 
   async componentDidMount() {
     try {
-      
+      const response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-profile/?uid=${this.contactID}&key=123`);
+      const contactInfo = JSON.parse(response.data.user_info.info);
+      console.log('test')
+      console.log(typeof(contactInfo), contactInfo.birthday)
 
     }
     catch(error) {
@@ -35,12 +30,17 @@ export default class App extends Component {
   
   
   render() {
+
+    const goBackToChat = () => {
+      this.props.navigation.goBack();
+    }
+
     return (
       <View>
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
           <View style={styles.container}>
             <Text style={styles.heading}>Profile of Ohter user</Text>
-            
+            <TouchableOpacity onPress={goBackToChat}><Text>Chat {this.contactID}</Text></TouchableOpacity>
           </View>
         </LinearGradient>
       </View>
