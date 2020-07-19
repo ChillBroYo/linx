@@ -36,6 +36,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",
     "react-native-component-inview": "^1.0.1",
     "react-native-confetti-cannon": "^1.5.0",
+    "react-native-countdown-component": "^2.7.1",
     "react-native-dots-pagination": "^0.1.9",
     "react-native-elements": "^2.0.4",
     "react-native-emoji": "^1.8.0",

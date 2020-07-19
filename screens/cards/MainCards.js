@@ -4,7 +4,8 @@ import { LinearGradient} from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import moment from 'moment';
 import CardsCompletionScreen from './CardsCompletion';
-import { getSymbols } from './helpers';
+import CardsTimerScreen from './CardsTimer';
+import { getSymbols, timeDifference } from './helpers';
 import { UserContext } from '../../contexts/UserContext';
 
 //Import global styles used throughout app
@@ -22,7 +23,7 @@ export default function MainCardsScreen({ navigation }) {
         doUpdateImageIndex,
     } = useContext(UserContext);
 
-    const [cardsReact, setCardsReact] = useState(true);
+    const [cardsReact, setCardsReact] = useState(0);
     const [imageIndex, setImageIndex] = useState(-1);
     const [lastReaction, setLastReaction] = useState(contextLastReaction);
     const [imageId, setImageId] = useState(-1);
@@ -47,11 +48,20 @@ export default function MainCardsScreen({ navigation }) {
     }, []);
 
     async function performGetImage() {
+
+        if(imageIndex % 15 == 0 && imageIndex != 0) {
+            const diff = timeDifference(lastReaction);
+            if(diff < 24 * 60 * 60) {
+                setCardsReact(2);
+                return;
+            };
+        };
+
         const image = { image_type: 'general', image_index: imageIndex };
         const result = await doGetImage(image);
 
         if(!(result instanceof Object)) {
-            setCardsReact(false);
+            setCardsReact(1);
         } else {
             setImageId(result.imageId);
             setImageCategory(result.imageCategory);
@@ -95,8 +105,10 @@ export default function MainCardsScreen({ navigation }) {
         return [react, user];
     }
 
-    if(!cardsReact) {
+    if(cardsReact == 1) {
         return (<CardsCompletionScreen navigation={ navigation } />);
+    } else if(cardsReact == 2) {
+        return (<CardsTimerScreen navigation={ navigation } lastReaction={ lastReaction } />);
     };
 
     const symbols = getSymbols(imageCategory);
