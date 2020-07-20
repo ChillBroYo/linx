@@ -178,14 +178,14 @@ export default class App extends Component {
       navigation.goBack();
     }
 
-    const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-      return layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
-    };
+    const contactPressHandler = () => {
+      this.props.navigation.navigate('MessagesProfile', {contactID: this.props.navigation.getParam('contactID')})
+    }
 
     return (
       <KeyboardAvoidingView style={{...styles.container, ...iOSPlatformStyle}} behavior={platform === "ios" ? "padding" : null} >
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
-          <TouchableOpacity style={styles.topBanner} onPress={() => alert('info')}>
+          <TouchableOpacity style={styles.topBanner} onPress={contactPressHandler}>
             <TouchableOpacity style={styles.backArrowContainer} onPress={goBackToContacts}>
               <Ionicons name='ios-arrow-back' color='#1B1B1B' size={50} />
             </TouchableOpacity>
