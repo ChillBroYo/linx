@@ -22,7 +22,7 @@ const RouteConfig = {
 };
 
 const NavigatorConfig = {
-    initialRouteName: 'ContactProfileScreen',
+    initialRouteName: 'SignIn',
 };
 
 export default createAppContainer(createSwitchNavigator(RouteConfig, NavigatorConfig));

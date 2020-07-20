@@ -51,6 +51,9 @@ export default class App extends Component {
     else if (contactInfo.gender === "female") {
       return "woman";
     }
+    else {
+      return "";
+    }
   }
 
   determineAge() {
@@ -74,7 +77,7 @@ export default class App extends Component {
     const {contactInfo} = this.state;
 
     const pronoun = this.determinePronoun();
-    const isPronounThey = pronoun === "they" ? true : false;
+    const isPronounThey = pronoun === "They" ? true : false;
 
     return (
       <View>
