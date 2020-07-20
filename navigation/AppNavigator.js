@@ -22,7 +22,7 @@ const RouteConfig = {
 };
 
 const NavigatorConfig = {
-    initialRouteName: 'MessagesScreen',
+    initialRouteName: 'ContactProfileScreen',
 };
 
 export default createAppContainer(createSwitchNavigator(RouteConfig, NavigatorConfig));

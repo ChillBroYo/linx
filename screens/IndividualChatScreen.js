@@ -171,10 +171,6 @@ export default class App extends Component {
       navigation.goBack();
     }
 
-    const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-      return layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
-    };
-
     const contactPressHandler = () => {
       this.props.navigation.navigate('MessagesProfile', {contactID: this.props.navigation.getParam('contactID')})
     }
