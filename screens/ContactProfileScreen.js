@@ -127,14 +127,14 @@ const styles = StyleSheet.create({
   },
   subheading: {
     color: headingPurple,
-    marginVertical: '4%',
+    marginVertical: '5%',
     fontSize: 22,
     fontWeight: '600',
   },
   infoLine: {
     fontSize: 22,
     fontWeight: '300',
-    marginVertical: '5%'
+    marginBottom: '6%'
   },
   separator: {
     borderBottomColor: '#8D99AE',
