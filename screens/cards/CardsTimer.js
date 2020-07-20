@@ -1,13 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Text, View, Image, Animated } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
+import CountDown from 'react-native-countdown-component';
 import Emoji from 'react-native-emoji';
 import ConfettiCannon from 'react-native-confetti-cannon';
+import MainCardsScreen from './MainCards';
+import { timeDifference } from './helpers';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
 
-export default function CardsCompletionScreen({ navigation }) {
+export default function CardsTimerScreen({ navigation, lastReaction }) {
+
+    const [timerOver, setTimerOver] = useState(false);
 
     let cannon = useRef();
     function shootCannon() {
@@ -20,13 +25,26 @@ export default function CardsCompletionScreen({ navigation }) {
         duration: 750,
         useNativeDriver: true
     });
+    const fadeOut = Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 750,
+        useNativeDriver: true
+    });
+
+    if(timerOver) {
+        return (<MainCardsScreen navigation={ navigation } />);
+    };
+
+    const diff = 24 * 60 * 60 - timeDifference(lastReaction);
 
 	return(
 		<View style={globalStyles.outerContainer}>
       		<LinearGradient colors={['#439E73', 'rgba(254, 241, 2, 0)']} style={{height: '100%'}}>
       			<View style={globalStyles.innerContainer}>
                     <Animated.View style={[globalStyles.titleContainer, {opacity: fadeAnim}]}>
-                        <Text style={globalStyles.whiteTitle}>Please Wait</Text>
+                        <CountDown until={diff} size={35} timeToShow={['H', 'M', 'S']} timeLabels={{h: null, m: null, s: null}} showSeparator={true}
+                        separatorStyle={{color: '#FFF'}} digitStyle={{backgroundColor: 'transparent', width: 55, height: 35}}
+                        digitTxtStyle={{color: '#FFF', fontWeight: 'normal'}} onFinish={() => fadeOut.start(() => setTimerOver(true))} />
                     </Animated.View>
                     <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
                         <Text style={globalStyles.subtitleText}>until new cards are available</Text>

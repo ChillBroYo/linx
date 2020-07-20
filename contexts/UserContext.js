@@ -19,6 +19,7 @@ export function UserContextProvider({ children }) {
     const [userId, setUserId] = useState('');
     const [token, setToken] = useState('');
     const [isOnboarded, setIsOnboarded] = useState(false);
+    const [lastReaction, setLastReaction] = useState(moment.utc().format('YYYY-MM-DDTHH:mm:ss'));
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
@@ -34,19 +35,15 @@ export function UserContextProvider({ children }) {
     const [sameGender, setSameGender] = useState(false);
     const [interests, setInterests] = useState(defaultInterests);
     const [sameInterests, setSameInterests] = useState(false);
-    const [imageIndex, setImageIndex] = useState(0);
     const [imagesVisited, setImagesVisited] = useState([]);
     const [friends, setFriends] = useState([]);
-    const [createdAt, setCreatedAt] = useState('');
-    const [imageId, setImageId] = useState('');
-    const [imageCategory, setImageCategory] = useState(6);
-    const [imageLink, setImageLink] = useState('');
 
     const value = {
         expoPushToken, setExpoPushToken,
         userId, setUserId,
         token, setToken,
         isOnboarded, setIsOnboarded,
+        lastReaction, setLastReaction,
         email, setEmail,
         password, setPassword,
         username, setUsername,
@@ -62,16 +59,10 @@ export function UserContextProvider({ children }) {
         sameGender, setSameGender,
         interests, setInterests,
         sameInterests, setSameInterests,
-        imageIndex, setImageIndex,
         imagesVisited, setImagesVisited,
         friends, setFriends,
-        createdAt, setCreatedAt,
-        imageId, setImageId,
-        imageCategory, setImageCategory,
-        imageLink, setImageLink,
         setUserFromResponse,
         setUserFromProfileResponse,
-        setImageFromResponse,
         doSignInUser,
         doGetUserProfile,
         doGetImage,
@@ -80,10 +71,12 @@ export function UserContextProvider({ children }) {
         doUpdateUser,
         doCompleteOnboardingUser,
         doReactImage,
+        doUpdateImageIndex,
         formatUserForRequest,
         formatUserForImageUpload,
         formatUserForOnboarding,
         formatUserForReaction,
+        formatUserForIndex,
         resetState,
     };
 
@@ -99,6 +92,7 @@ export function UserContextProvider({ children }) {
         const info = JSON.parse(infoJSON);
         const {
             isOnboarded,
+            lastReaction,
             birthday,
             gender,
             interests,
@@ -117,6 +111,7 @@ export function UserContextProvider({ children }) {
         setUserId(uid);
         setToken(token);
         setIsOnboarded(Boolean(isOnboarded));
+        setLastReaction(lastReaction);
         setEmail(email);
         setUsername(username);
         setProfileImg(profile_picture);
@@ -145,25 +140,13 @@ export function UserContextProvider({ children }) {
         const { user_info } = res;
         const {
             profile_picture,
-            image_index,
             images_visited,
             friends,
-            created_at,
         } = user_info;
 
         setProfileImg(profile_picture);
-        setImageIndex(image_index);
         setImagesVisited(images_visited);
         setFriends(friends);
-        setCreatedAt(created_at);
-    }
-
-    function setImageFromResponse(res) {
-        const { image_id, image_category, link } = res;
-
-        setImageId(image_id);
-        setImageCategory(image_category);
-        setImageLink(link);
     }
 
     function formatParams(user) {
@@ -253,7 +236,7 @@ export function UserContextProvider({ children }) {
         try{
             const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'save_image' : 'save-image'}/`;
             const formData = formatFormData(user);
-            const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+            const config = { headers: { 'Content-Type': 'multipart/form-data; boundary=frontier' } };
             const res = await axios.post(API_ENDPOINT, formData, config);
             const data = res.data;
             if (res.status != 200) {
@@ -303,7 +286,7 @@ export function UserContextProvider({ children }) {
             }
 
             setUserFromProfileResponse(data);
-            return true;
+            return {imageIndex: data.user_info.image_index};
         }
         catch (error) {
             console.error('Get user profile error:', error);
@@ -324,8 +307,11 @@ export function UserContextProvider({ children }) {
                 return false;
             }
 
-            setImageFromResponse(data);
-            return true;
+            return {
+                imageId: data.image_id,
+                imageCategory: data.image_category,
+                imageLink: data.link,
+            };
         }
         catch (error) {
             //console.error('Get image error:', error);
@@ -354,6 +340,26 @@ export function UserContextProvider({ children }) {
         }
     }
 
+    async function doUpdateImageIndex(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'update_profile' : 'update-profile'}/`;
+            const params = formatParams(user);
+            const res = await axios.post(API_ENDPOINT, params);
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Update card profile failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Update card profile error:', error);
+            Alert.alert('Update card profile failed. Please try again');
+        }
+    }
+
     function formatUserForRequest(isUpdate = false) {
         let user = {
             email: email.trim(),
@@ -378,7 +384,7 @@ export function UserContextProvider({ children }) {
     }
 
     function formatUserForImageUpload() {
-        const name = 'profile_' + String(userId) + '_' + String(moment().format());
+        const name = 'profile_' + String(userId) + '_' + String(moment.utc().format('YYYY-MM-DDTHH:mm:ss')) + '.jpg';
         const type = 'image/jpeg';
 
         let user = {
@@ -390,6 +396,7 @@ export function UserContextProvider({ children }) {
             user_id: userId,
             token,
             image_type: 'profile',
+            image_category: 6,
         };
 
         return user;
@@ -405,13 +412,24 @@ export function UserContextProvider({ children }) {
         return user;
     }
 
-    function formatUserForReaction(reactionType) {
+    function formatUserForReaction(reactionType, imageId) {
         let user = {
             uid: userId,
             token,
             image_id: imageId,
             reaction_type: reactionType,
         };
+
+        return user;
+    }
+
+    function formatUserForIndex(index) {
+        let user = {
+            user_id: userId,
+            token,
+            image_index: index,
+            info: formatUserInfo(),
+        }
 
         return user;
     }
@@ -430,6 +448,7 @@ export function UserContextProvider({ children }) {
             imgUrl: profileImg,
             interests: [...interests],
             isOnboarded,
+            lastReaction,
             location: {
                 city: city.trim(),
                 state: state.trim(),
@@ -446,6 +465,7 @@ export function UserContextProvider({ children }) {
         setUserId('');
         setToken('');
         setIsOnboarded(false);
+        setLastReaction(moment.utc().format('YYYY-MM-DDTHH:mm:ss'));
         setEmail('');
         setPassword('');
         setUsername('');
