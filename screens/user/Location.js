@@ -138,6 +138,7 @@ export default function UserLocation({ navigation }) {
                                 value={zip}
                                 onChangeText={zip => setZip(zip)}
                                 clearButtonMode='while-editing'
+                                keyboardType='number-pad'
                                 style={formStyles.input}
                             />
                             <Text style={formStyles.text}>

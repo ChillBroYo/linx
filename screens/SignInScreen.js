@@ -97,9 +97,9 @@ export default function SignIn({ navigation }) {
                     </View>
                 </SafeAreaView>
                 <TouchableWithoutFeedback onPress={onForgotPassword}>
-                    <View style={styles.forgotPassword}>
+                    <SafeAreaView style={styles.forgotPassword}>
                         <Text style={{...styles.buttonText, color: white}}>Forgot password</Text>
-                    </View>
+                    </SafeAreaView>
                 </TouchableWithoutFeedback>
             </ImageBackground>
         </View>
