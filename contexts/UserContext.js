@@ -439,7 +439,7 @@ export function UserContextProvider({ children }) {
 
     function formatUserInfo() {
         return {
-            birthday: birthday.trim(),
+            birthday: birthday?.trim() || '',
             connectWith: {
                 ageRange,
                 distance,
@@ -453,13 +453,13 @@ export function UserContextProvider({ children }) {
             isOnboarded,
             lastReaction,
             location: {
-                city: city.trim(),
-                state: state.trim(),
-                zip: zip.trim(),
+                city: city?.trim() || '',
+                state: state?.trim() || '',
+                zip: zip?.trim() || '',
             },
             name: {
-                first: firstName.trim(),
-                last: lastName.trim(),
+                first: firstName?.trim() || '',
+                last: lastName?.trim() || '',
             },
         };
     }
