@@ -79,7 +79,7 @@ export default class App extends Component {
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
           <View style={styles.container}>
             <Text style={styles.heading}>Messages</Text>
-            <ScrollView style={styles.scrollView}>
+            <ScrollView contentContainerStyle={styles.scrollView}>
               {this.mapConversations()}
             </ScrollView>
           </View>
