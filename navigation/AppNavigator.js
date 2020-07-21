@@ -12,6 +12,7 @@ import ContactProfileScreen from "../screens/ContactProfileScreen";
 const RouteConfig = {
     // You could add another route here for authentication.
     // Read more at https://reactnavigation.org/docs/en/auth-flow.html
+    ContactProfileScreen,
     IndividualChatScreen,
     MessagesScreen,
     Main: MainTabNavigator,
