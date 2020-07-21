@@ -34,6 +34,8 @@ export default function UserLocation({ navigation }) {
         setCity: setContextCity,
         state: contextState,
         setState: setContextState,
+        zip: contextZip,
+        setZip: setContextZip,
         distance: contextDistance,
         setDistance: setContextDistance,
         doUpdateUser,
@@ -41,6 +43,7 @@ export default function UserLocation({ navigation }) {
     } = useContext(UserContext);
     const [city, setCity] = useState(contextCity);
     const [state, setState] = useState(contextState);
+    const [zip, setZip] = useState(contextZip);
     const [distance, setDistance] = useState(contextDistance);
 
     useEffect(() => {
@@ -69,12 +72,14 @@ export default function UserLocation({ navigation }) {
         user.info.connectWith.distance = distance;
         user.info.location.city = city.trim();
         user.info.location.state = state.trim();
+        user.info.location.zip = zip.trim();
         doUpdateUser(user, doUpdateContext);
     }
 
     async function doUpdateContext() {
         await setContextCity(city.trim());
         await setContextState(state.trim());
+        await setContextZip(zip.trim());
         await setContextDistance(distance);
     }
 
@@ -85,8 +90,21 @@ export default function UserLocation({ navigation }) {
         else if (!state) {
             return Alert.alert('State is empty');
         }
+        else if (!zip) {
+            return Alert.alert('ZIP Code is empty');
+        }
+        else {
+            if (!validateZipCode()) {
+                return Alert.alert('ZIP Code is not valid');
+            }
+        }
 
         return true;
+    }
+
+    function validateZipCode() {
+        const zipCodeRegex = /^\d{5}(?:[-\s]\d{4})?$/;
+        return zipCodeRegex.test(zip);
     }
 
     return (
@@ -112,6 +130,13 @@ export default function UserLocation({ navigation }) {
                                 placeholder='State'
                                 value={state}
                                 onChangeText={state => setState(state)}
+                                clearButtonMode='while-editing'
+                                style={formStyles.input}
+                            />
+                            <TextInput
+                                placeholder='ZIP Code'
+                                value={zip}
+                                onChangeText={zip => setZip(zip)}
                                 clearButtonMode='while-editing'
                                 style={formStyles.input}
                             />
