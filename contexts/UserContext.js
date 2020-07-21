@@ -28,6 +28,7 @@ export function UserContextProvider({ children }) {
     const [lastName, setLastName] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
+    const [zip, setZip] = useState('');
     const [distance, setDistance] = useState(defaultDistance);
     const [birthday, setBirthday] = useState('');
     const [ageRange, setAgeRange] = useState(defaultAgeRange);
@@ -52,6 +53,7 @@ export function UserContextProvider({ children }) {
         lastName, setLastName,
         city, setCity,
         state, setState,
+        zip, setZip,
         distance, setDistance,
         birthday, setBirthday,
         ageRange, setAgeRange,
@@ -106,7 +108,7 @@ export function UserContextProvider({ children }) {
             sameGender,
             sameInterests,
         } = connectWith;
-        const { city, state } = location;
+        const { city, state, zip } = location;
 
         setUserId(uid);
         setToken(token);
@@ -121,6 +123,7 @@ export function UserContextProvider({ children }) {
         setAgeRange(ageRange);
         setCity(city);
         setState(state);
+        setZip(zip);
         setDistance(distance);
         setGender(gender);
         setSameGender(sameGender);
@@ -452,6 +455,7 @@ export function UserContextProvider({ children }) {
             location: {
                 city: city.trim(),
                 state: state.trim(),
+                zip: zip.trim(),
             },
             name: {
                 first: firstName.trim(),
@@ -474,6 +478,7 @@ export function UserContextProvider({ children }) {
         setLastName('');
         setCity('');
         setState('');
+        setZip('');
         setDistance(defaultDistance);
         setBirthday('');
         setAgeRange(defaultAgeRange);

@@ -23,6 +23,7 @@ export default function Settings({ navigation }) {
         email,
         city,
         state,
+        zip,
         distance,
         birthday,
         ageRange,
@@ -87,7 +88,7 @@ export default function Settings({ navigation }) {
                             <View style={styles.row}>
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>I live in</Text>
-                                    <Text>{city}, {state}</Text>
+                                    <Text>{city}, {state} {zip}</Text>
                                     <Text>Max distance: {distance} miles</Text>
                                 </View>
                                 <Ionicons name="ios-arrow-forward" size={20} />
