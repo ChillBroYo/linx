@@ -10,6 +10,7 @@ import {
     TextInput,
     TouchableWithoutFeedback,
     View,
+    Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -35,14 +36,14 @@ export default function UserName({ navigation }) {
         setFirstName: setContextFirstName,
         lastName: contextLastName,
         setLastName: setContextLastName,
-        profileImg: contextProfileImage,
+        profileImg: contextProfileImg,
         setProfileImg: setContextProfileImg,
         doUpdateUser,
         formatUserForRequest,
     } = useContext(UserContext);
     const [firstName, setFirstName] = useState(contextFirstName);
     const [lastName, setLastName] = useState(contextLastName);
-    const [profileImg, setProfileImg] = useState(contextProfileImage);
+    const [profileImg, setProfileImg] = useState(contextProfileImg);
 
     useEffect(() => {
         StatusBar.setBarStyle(isSignUpScreen ? 'light-content' : 'dark-content');
@@ -101,14 +102,17 @@ export default function UserName({ navigation }) {
                         <PageHeader value={isSignUpScreen ? 'My name is' : 'Profile'} />
                         <Form>
                             {!isSignUpScreen && (
-                                <TouchableWithoutFeedback>
-                                    <View style={styles.profileImage}>
-                                        <Text style={styles.profileInitials}>{firstName[0]}{lastName[0]}</Text>
+                                <View style={styles.profileImage}>
+                                    {contextProfileImg
+                                        ? <Image source={{ uri: contextProfileImg }} style={styles.image} />
+                                        : <Text style={styles.profileInitials}>{firstName[0]}{lastName[0]}</Text>
+                                    }
+                                    <TouchableWithoutFeedback onPress={() => navigation.navigate('SettingsProfileImage')}>
                                         <View style={styles.cameraButton}>
                                             <Ionicons name="ios-camera" size={24} color={white} />
                                         </View>
-                                    </View>
-                                </TouchableWithoutFeedback>
+                                    </TouchableWithoutFeedback>
+                                </View>
                             )}
                             <TextInput
                                 name='firstName'
@@ -160,6 +164,12 @@ const styles = StyleSheet.create({
         height: 120,
         width: 120,
         marginBottom: 40,
+    },
+    image: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        overflow: 'hidden',
     },
     profileInitials: {
         color: white,

@@ -8,6 +8,7 @@ import SettingsInterests from '../screens/user/Interests';
 import SettingsLocation from '../screens/user/Location';
 import SettingsPassword from '../screens/user/Password';
 import SettingsProfile from '../screens/user/Profile';
+import SettingsProfileImage from '../screens/user/ProfileImage';
 import TabBarIcon from '../components/TabBarIcon';
 
 const SettingsStack = createStackNavigator(
@@ -20,6 +21,7 @@ const SettingsStack = createStackNavigator(
         SettingsLocation,
         SettingsPassword,
         SettingsProfile,
+        SettingsProfileImage,
     },
     {
         headerMode: 'none',
