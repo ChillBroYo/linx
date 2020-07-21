@@ -119,7 +119,7 @@ export default function MainCardsScreen({ navigation }) {
       			<View style={globalStyles.innerContainer}>
                     <View style={styles.noTitleContainer} />
                     <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
-                        <Text style={globalStyles.subtitleText}>{imageIndex + 1} / 15</Text>
+                        <Text style={globalStyles.subtitleText}>{(imageIndex % 15) + 1} / 15</Text>
                     </Animated.View>
        				<View style={globalStyles.contentContainer}>
                         <Animated.Image source={imageLink ? { uri: imageLink } : null} onLoad={() => fadeIn.start()}
