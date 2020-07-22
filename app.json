@@ -3,7 +3,6 @@
     "name": "Linx",
     "slug": "Lets-get-linx",
     "privacy": "public",
-    "sdkVersion": "35.0.0",
     "platforms": [
       "ios",
       "android"
