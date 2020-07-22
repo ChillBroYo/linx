@@ -8,7 +8,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -27,7 +27,7 @@
     },
     "android": {
       "package": "com.linx.linx",
-      "versionCode": 2
+      "versionCode": 3
     },
     "description": ""
   }
