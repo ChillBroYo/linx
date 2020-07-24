@@ -137,7 +137,11 @@ export default function UserGender({ navigation }) {
                         </View>
                     </ScrollView>
                 </LinearGradient>
-                <BarButton value={isSignUpScreen ? 'Done' : 'Save'} doPress={doSubmit} />
+                <BarButton
+                    active={true}
+                    value={isSignUpScreen ? 'Done' : 'Save'}
+                    doPress={doSubmit}
+                />
             </View>
         </TouchableWithoutFeedback>
     );

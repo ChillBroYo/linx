@@ -82,7 +82,11 @@ export default function UserEmail({ navigation }) {
                         </Form>
                     </ScrollView>
                 </LinearGradient>
-                <BarButton value='Save' doPress={doSave} />
+                <BarButton
+                    active={!!email}
+                    value='Save'
+                    doPress={doSave}
+                />
             </View>
         </TouchableWithoutFeedback>
     );

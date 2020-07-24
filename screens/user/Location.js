@@ -155,7 +155,11 @@ export default function UserLocation({ navigation }) {
                         </Form>
                     </ScrollView>
                 </LinearGradient>
-                <BarButton value={isSignUpScreen ? 'Continue' : 'Save'} doPress={doSubmit} />
+                <BarButton
+                    active={!!(city && state && zip)}
+                    value={isSignUpScreen ? 'Continue' : 'Save'}
+                    doPress={doSubmit}
+                />
             </View>
         </TouchableWithoutFeedback>
     );
