@@ -88,7 +88,6 @@ export function UserContextProvider({ children }) {
             token,
             email,
             username,
-            profile_picture,
             info: infoJSON,
         } = res;
         const info = JSON.parse(infoJSON);
@@ -116,7 +115,6 @@ export function UserContextProvider({ children }) {
         setLastReaction(lastReaction);
         setEmail(email);
         setUsername(username);
-        setProfileImg(profile_picture);
         setFirstName(name.first);
         setLastName(name.last);
         setBirthday(birthday);
@@ -248,7 +246,7 @@ export function UserContextProvider({ children }) {
             if (!data.success || data.success == 'false') {
                 return Alert.alert(data.errmsg);
             }
-
+            setProfileImg(data.image_url);
             return true;
         } catch (error) {
             console.warn('Profile upload error:', error);

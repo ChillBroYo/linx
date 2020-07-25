@@ -13,7 +13,6 @@ import { UserContext } from '../../contexts/UserContext';
 
 export default function UserProfileImage({ navigation }) {
     const {
-        setProfileImg,
         doUploadProfileUser,
         formatUserForImageUpload,
     } = useContext(UserContext);
@@ -53,7 +52,6 @@ export default function UserProfileImage({ navigation }) {
         const user = getUserForImageUpload(photo);
         const isUploadedProfile = await doUploadProfileUser(user);
         if (!isUploadedProfile) return;
-        setProfileImg(photo);
         navigation.goBack();
     }
 

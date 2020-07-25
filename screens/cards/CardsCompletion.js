@@ -17,7 +17,7 @@ export default function CardsCompletionScreen({ navigation }) {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const fadeIn = Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 750,
+        duration: 250,
         useNativeDriver: true
     });
 

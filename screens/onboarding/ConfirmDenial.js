@@ -30,8 +30,8 @@ export default function ConfirmDenialScreen({ navigation }) {
         const user = getUserForOnboarding();
         const isCompletedOnboarding = await doCompleteOnboardingUser(user);
         if (!isCompletedOnboarding) return;
-
-        navigation.navigate('MainCards');
+        setContextIsOnboarded(true);
+        navigation.navigate('UserStatus');
     }
 
     function getUserForOnboarding() {
