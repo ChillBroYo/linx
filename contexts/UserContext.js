@@ -89,6 +89,7 @@ export function UserContextProvider({ children }) {
             email,
             username,
             profile_picture,
+            friends,
             info: infoJSON,
         } = res;
         const info = JSON.parse(infoJSON);
@@ -129,6 +130,7 @@ export function UserContextProvider({ children }) {
         setSameGender(sameGender);
         setInterests(new Set(interests));
         setSameInterests(sameInterests);
+        setFriends(JSON.parse(friends));
 
         // update existing users with expo push token
         if (!info.expoPushToken && expoPushToken) {
