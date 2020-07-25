@@ -157,11 +157,10 @@ export default class App extends Component {
       const messages = response.data.messages;
       this.setState({
         messages,
-      }, () => this.mapMessages(this.state.startIndex, Math.min(this.state.endIndex, this.state.messages.length - 1), true));
+      });
       
       this.displayedMessages.push(<OwnMessage currentMessage={this.state.userInput} />);
       this.setState({userInput:''});
-      this.forceUpdate();
     }
     catch (error) {
       console.log('message upload error:', error)
