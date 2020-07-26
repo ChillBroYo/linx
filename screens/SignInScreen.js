@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import {
     Alert,
     Image,
@@ -29,15 +29,17 @@ export default function SignIn({ navigation }) {
     } = useContext(UserContext);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [autoLogin, setAutoLogin] = useState(false);
 
-    useEffect(() => {
+
+    useLayoutEffect(() => {
         // reset sign up state on screen load
         // going back to sign in screen from sign up
         // going back to sign in screen after sign up completion
         resetUserContextState();
     }, []);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         registerForPushNotificationsAsync(setExpoPushToken);
 
         function handleNotification(notification) {
@@ -49,13 +51,17 @@ export default function SignIn({ navigation }) {
         return () => notificationLogListener.remove();
     }, []);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         getData();
     }, []);
 
+    useLayoutEffect(() => {
+        if (autoLogin) doSignIn();
+    }, [autoLogin]);
+
     async function storeData() {
         try {
-            await AsyncStorage.multiSet([['@username', username], ['@password', password]]);
+            await AsyncStorage.multiSet([['@username', username], ['@password', password], ['@signin', 'true']]);
         }
         catch (error) {
             console.warn('AsyncStorage store error: ', error);
@@ -65,12 +71,26 @@ export default function SignIn({ navigation }) {
 
     async function getData() {
         try {
-            const values = await AsyncStorage.multiGet(['@username', '@password']);
-            if (values[0][1] !== null) setUsername(values[0][1]);
-            if (values[1][1] !== null) setPassword(values[1][1]);
+            const values = await AsyncStorage.multiGet(['@username', '@password', '@signin']);            
+            if (values[0][1] !== null && values[1][1] !== null) {
+                setUsername(values[0][1]);
+                setPassword(values[1][1]);
+                if (navigation.getParam('data') !== undefined) updateData();
+                if (navigation.getParam('data') === undefined && values[2][1] !== null) setAutoLogin(true);
+            }
+            
         }
         catch (error) {
             console.warn('AsyncStorage get error: ', error);
+        }
+    }
+
+    async function updateData() {
+        try {
+            await AsyncStorage.removeItem('@signin');
+        }
+        catch (error) {
+            console.warn('AsyncStorage update error: ', error);
         }
     }
 
@@ -89,6 +109,14 @@ export default function SignIn({ navigation }) {
     function onSignUp() {
         navigation.navigate('SignUp');
     }
+
+    if (autoLogin) {
+        return (
+            <View style={styles.container}>
+                <ImageBackground source={BACKGROUND_IMAGE} style={styles.background} />
+            </View>
+        )
+    };
 
     return (
         <View style={styles.container}>
