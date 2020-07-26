@@ -133,7 +133,11 @@ export default function UserName({ navigation }) {
                         </Form>
                     </ScrollView>
                 </LinearGradient>
-                <BarButton value={isSignUpScreen ? 'Continue' : 'Save'} doPress={doSubmit} />
+                <BarButton
+                    active={!!(firstName && lastName)}
+                    value={isSignUpScreen ? 'Continue' : 'Save'}
+                    doPress={doSubmit}
+                />
             </View>
         </TouchableWithoutFeedback>
     );
