@@ -10,6 +10,10 @@
     "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
+    "notification": {
+        "icon": "./assets/images/notification_icon.png",
+        "iosDisplayInForeground": true
+    },
     "splash": {
       "image": "./assets/images/cover_image.png",
       "resizeMode": "cover",
