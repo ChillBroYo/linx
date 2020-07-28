@@ -2,18 +2,18 @@ import React from 'react';
 import {
     StyleSheet,
     Text,
-    TouchableWithoutFeedback,
+    TouchableOpacity,
     View,
 } from 'react-native';
 import { black, purple, white } from '../constants/Colors';
 
 export default function PillButton({ selected, value, doPress}) {
     return (
-        <TouchableWithoutFeedback onPress={doPress}>
+        <TouchableOpacity activeOpacity={0.8} onPress={doPress}>
             <View style={StyleSheet.compose(styles.button, selected && styles.buttonSelected)}>
                 <Text style={StyleSheet.compose(styles.text, selected && styles.textSelected)}>{value}</Text>
             </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
     );
 }
 
