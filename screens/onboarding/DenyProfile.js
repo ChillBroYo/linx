@@ -1,12 +1,31 @@
 import React from 'react';
-import { Text, View, Image } from 'react-native';
+import { Text, View, Image, Alert } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
+import { Camera } from 'expo-camera';
+import * as Linking from 'expo-linking';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
 
 export default function DenyProfileScreen({ navigation }) {
+
+    async function checkPermission() {
+        const { status } = await Camera.getPermissionsAsync();
+        if (status === 'denied') {
+            Alert.alert('Permission Denied',
+                'Linx currently does not have permission to access Camera. Please go into Settings to grant Linx access.',
+                [
+                    { text: 'OK', style: 'cancel' },
+                    { text: 'Settings', onPress: () => Linking.openSettings()}
+                ],
+                { cancelable: false }
+            );
+        } else {
+            navigation.navigate('TakeProfile');
+        }
+    }
+
     return(
         <View style={globalStyles.outerContainer}>
             <LinearGradient colors={['#439E73', 'rgba(254, 241, 2, 0)']} style={{height: '100%'}}>
@@ -21,7 +40,7 @@ export default function DenyProfileScreen({ navigation }) {
                         <Text style={globalStyles.content}>Are you sure you don't want to verify that you are a real person? This will limit who you will be able to connect with.</Text>
                     </View>
                     <View style={globalStyles.verifyContainer}>
-                        <Text style={globalStyles.verify} onPress={() => navigation.navigate('TakeProfile')}>Verify with photo</Text>
+                        <Text style={globalStyles.verify} onPress={checkPermission}>Verify with photo</Text>
                     </View>
                     <View style={globalStyles.emojiContainer}>
                         <View style={globalStyles.emojiSymbol}>

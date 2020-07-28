@@ -1,17 +1,16 @@
-import React, { useContext, useState, useEffect } from 'react';
-import {
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    Platform,
-} from 'react-native';
+import React, { useContext, useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { pageStyles } from './common';
+import { lightGradient } from '../../constants/Colors';
 import { Camera } from 'expo-camera';
-import * as Permissions from 'expo-permissions';
 import { Ionicons } from '@expo/vector-icons';
 import { UserContext } from '../../contexts/UserContext';
 
 export default function UserProfileImage({ navigation }) {
+
+    let camera = useRef();
+
     const {
         doUploadProfileUser,
         formatUserForImageUpload,
@@ -26,27 +25,31 @@ export default function UserProfileImage({ navigation }) {
     //Hook to update status of camera permission based on user input
     useEffect(() => {
         (async () => {
-            const { status } = await Permissions.askAsync(Permissions.CAMERA);
-            setHasPermission(status == 'granted');
+            const { status } = await Camera.requestPermissionsAsync();
+            setHasPermission(status === 'granted');
         })();
     }, []);
 
     //Case when permission has neither been approved nor denied
-    if (hasPermission == null) {
-        return <View />;
+    if (hasPermission === null) {
+        return (
+            <View style={pageStyles.container}>
+                <LinearGradient colors={lightGradient} style={pageStyles.container} />
+            </View>
+        );
     }
 
     //Case when permission has been denied
-    if (hasPermission == false) {
+    if (hasPermission === false) {
         navigation.goBack();
     }
 
-    snap = async () => {
-        if (this.camera) {
-            let photo = await this.camera.takePictureAsync();
+    async function snap() {
+        if (camera.current) {
+            let photo = await camera.current.takePictureAsync();
             doUploadProfile(photo.uri);
         }
-    };
+    }
 
     async function doUploadProfile(photo) {
         const user = getUserForImageUpload(photo);
@@ -64,14 +67,14 @@ export default function UserProfileImage({ navigation }) {
     //Case when permission has been approved
     return (
         <View style={styles.cameraContainer}>
-            <Camera style={styles.camera} type={type} flashMode={'auto'} ref={ref => { this.camera = ref; }} >
+            <Camera style={styles.camera} type={type} flashMode={'auto'} ref={camera} >
                 <View style={styles.navigationButtonContainer}>
                     <TouchableOpacity style={styles.backButtonContainer} onPress={() => navigation.goBack()}>
                         <Ionicons name="ios-arrow-back" style={styles.backButton} />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.cameraButtonContainer}>
-                    <TouchableOpacity style={styles.takePictureContainer} onPress={this.snap}>
+                    <TouchableOpacity style={styles.takePictureContainer} onPress={snap}>
                         <Ionicons name="ios-camera" style={styles.takePicture} />
                     </TouchableOpacity>
                     <TouchableOpacity
