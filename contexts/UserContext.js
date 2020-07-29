@@ -5,6 +5,13 @@ import moment from 'moment';
 import { getEnvVars } from '../environment';
 const { apiUrl } = getEnvVars();
 
+// default config for axios requests
+const DEFAULT_CONFIG = {
+    validateStatus: function (status) {
+        return (status >= 200 && status < 300) || status == 400;
+    },
+};
+
 export const UserContext = React.createContext();
 
 export const UserContextConsumer = UserContext.Consumer;
@@ -195,13 +202,10 @@ export function UserContextProvider({ children }) {
         try {
             const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'update_profile' : 'update-profile'}/`;
             const params = formatParams(user);
-            const res = await axios.post(API_ENDPOINT, params);
+            const res = await axios.post(API_ENDPOINT, params, DEFAULT_CONFIG);
             const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Update failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
+            if (res.status != 200 || !data.success || data.success == 'false') {
+                return Alert.alert(data?.errmsg || 'Update failed. Please try again.');
             }
 
             if (callback) {
@@ -210,7 +214,7 @@ export function UserContextProvider({ children }) {
             Alert.alert('Your settings have been updated');
         }
         catch (error) {
-            console.error('Update failed:', error);
+            console.warn('Update failed:', error);
             Alert.alert('Update failed. Please try again');
         }
     }
@@ -219,18 +223,15 @@ export function UserContextProvider({ children }) {
         try {
             const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'sign_up' : 'sign-up'}/`;
             const params = formatParams(user);
-            const res = await axios.post(API_ENDPOINT, params);
+            const res = await axios.post(API_ENDPOINT, params, DEFAULT_CONFIG);
             const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Sign up failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
+            if (res.status != 200 || !data.success || data.success == 'false') {
+                return Alert.alert(data?.errmsg || 'Sign up failed. Please try again.');
             }
 
             return true;
         } catch (error) {
-            console.error('Sign up error:', error);
+            console.warn('Sign up error:', error);
             Alert.alert('Sign up failed. Please try again');
         }
     }
@@ -239,14 +240,16 @@ export function UserContextProvider({ children }) {
         try{
             const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'save_image' : 'save-image'}/`;
             const formData = formatFormData(user);
-            const config = { headers: { 'Content-Type': 'multipart/form-data; boundary=frontier' } };
+            const config = {
+                ...DEFAULT_CONFIG,
+                headers: {
+                    'Content-Type': 'multipart/form-data; boundary=frontier'
+                }
+            };
             const res = await axios.post(API_ENDPOINT, formData, config);
             const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Profile upload failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
+            if (res.status != 200 || !data.success || data.success == 'false') {
+                return Alert.alert(data?.errmsg || 'Profile upload failed. Please try again.');
             }
 
             return true;
@@ -260,18 +263,15 @@ export function UserContextProvider({ children }) {
         try {
             const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'update_profile' : 'update-profile'}/`;
             const params = formatParams(user);
-            const res = await axios.post(API_ENDPOINT, params);
+            const res = await axios.post(API_ENDPOINT, params, DEFAULT_CONFIG);
             const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Onboarding completion failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
+            if (res.status != 200 || !data.success || data.success == 'false') {
+                return Alert.alert(data?.errmsg || 'Onboarding completion failed. Please try again.');
             }
 
             return true;
         } catch (error) {
-            console.error('Onboarding completion error:', error);
+            console.warn('Onboarding completion error:', error);
             Alert.alert('Onboarding completion failed. Please try again');
         }
     }
@@ -292,7 +292,7 @@ export function UserContextProvider({ children }) {
             return {imageIndex: data.user_info.image_index};
         }
         catch (error) {
-            console.error('Get user profile error:', error);
+            console.warn('Get user profile error:', error);
             Alert.alert('Get user profile failed. Please try again');
         }
     }
@@ -317,7 +317,7 @@ export function UserContextProvider({ children }) {
             };
         }
         catch (error) {
-            //console.error('Get image error:', error);
+            //console.warn('Get image error:', error);
             //Alert.alert('Get image failed. Please try again');
             return false;
         }
@@ -338,7 +338,7 @@ export function UserContextProvider({ children }) {
 
             return true;
         } catch (error) {
-            console.error('Reaction error:', error);
+            console.warn('Reaction error:', error);
             Alert.alert('Reaction failed. Please try again');
         }
     }
@@ -358,7 +358,7 @@ export function UserContextProvider({ children }) {
 
             return true;
         } catch (error) {
-            console.error('Update card profile error:', error);
+            console.warn('Update card profile error:', error);
             Alert.alert('Update card profile failed. Please try again');
         }
     }

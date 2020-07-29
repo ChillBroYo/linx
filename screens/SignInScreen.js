@@ -7,6 +7,7 @@ import {
     StyleSheet,
     Text,
     TextInput,
+    TouchableOpacity,
     TouchableWithoutFeedback,
     View
 } from 'react-native';
@@ -84,16 +85,16 @@ export default function SignIn({ navigation }) {
                             secureTextEntry={true}
                             style={styles.input}
                         />
-                        <TouchableWithoutFeedback onPress={doSignIn}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={doSignIn}>
                             <View style={{...styles.button, ...styles.buttonColored}}>
                                 <Text style={{...styles.buttonText, color: white}}>Sign in</Text>
                             </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback onPress={onSignUp}>
+                        </TouchableOpacity>
+                        <TouchableOpacity activeOpacity={0.8} onPress={onSignUp}>
                             <View style={{...styles.button, ...styles.buttonTransparent}}>
                                 <Text style={{...styles.buttonText, color: green}}>Sign up</Text>
                             </View>
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
                     </View>
                 </SafeAreaView>
                 <TouchableWithoutFeedback onPress={onForgotPassword}>

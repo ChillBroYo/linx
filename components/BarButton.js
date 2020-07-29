@@ -2,18 +2,18 @@ import React from 'react';
 import {
     StyleSheet,
     Text,
-    TouchableWithoutFeedback,
+    TouchableOpacity,
 } from 'react-native';
 import { grey, white } from '../constants/Colors';
 import { SafeAreaView } from 'react-navigation';
 
 export default function BarButton({ active, value, doPress }) {
     return (
-        <TouchableWithoutFeedback onPress={doPress}>
+        <TouchableOpacity activeOpacity={0.8} onPress={doPress}>
             <SafeAreaView style={[styles.button, active ? styles.buttonActive : null]}>
                 <Text style={styles.text}>{value}</Text>
             </SafeAreaView>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
     );
 }
 
