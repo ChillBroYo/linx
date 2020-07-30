@@ -63,7 +63,7 @@ export default function UserGender({ navigation }) {
         const user = getUserForRequest(false);
         const isSignedUp = await doSignUpUser(user);
         if (!isSignedUp) return;
-        navigation.navigate('SignIn');
+        navigation.navigate('SignIn', {data: true});
     }
 
     function doUpdate() {

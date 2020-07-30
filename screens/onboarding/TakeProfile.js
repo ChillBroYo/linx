@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import {
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { LinearGradient} from 'expo-linear-gradient';
 import { Camera } from 'expo-camera';
-import * as Permissions from 'expo-permissions';
 import { Ionicons } from '@expo/vector-icons';
 
+//Import global styles used throughout app
+import { globalStyles } from '../../styles/global';
+
 export default function TakeProfileScreen({ navigation }) {
+    
+    let camera = useRef();
+
     //Variables to determine if permission is granted by user to access camera
     const [hasPermission, setHasPermission] = useState(null);
 
@@ -19,34 +20,38 @@ export default function TakeProfileScreen({ navigation }) {
     //Hook to update status of camera permission based on user input
     useEffect(() => {
         (async () => {
-            const { status } = await Permissions.askAsync(Permissions.CAMERA);
-            setHasPermission(status == 'granted');
+            const { status } = await Camera.requestPermissionsAsync();
+            setHasPermission(status === 'granted');
         })();
     }, []);
 
     //Case when permission has neither been approved nor denied
-    if (hasPermission == null) {
-        return <View />;
+    if (hasPermission === null) {
+        return (
+            <View style={globalStyles.outerContainer}>
+                <LinearGradient colors={['#439E73', 'rgba(254, 241, 2, 0)']} style={{height: '100%'}} />
+            </View>
+        );
     }
 
     //Case when permission has been denied
-    if (hasPermission == false) {
-        navigation.goBack();
+    if (hasPermission === false) {
+        navigation.navigate('DenyProfile');
     }
 
-    snap = async () => {
-        if (this.camera) {
-            let photo = await this.camera.takePictureAsync();
+    async function snap() {
+        if (camera.current) {
+            let photo = await camera.current.takePictureAsync();
             navigation.navigate('ReviewProfile', {data: photo});
         }
-    };
+    }
 
     //Case when permission has been approved
     return (
         <View style={styles.cameraContainer}>
-            <Camera style={styles.camera} type={type} flashMode={'auto'} ref={ref => { this.camera = ref; }} >
+            <Camera style={styles.camera} type={type} flashMode={'auto'} ref={camera} >
                 <View style={styles.cameraButtonContainer}>
-                    <TouchableOpacity style={styles.takePictureContainer} onPress={this.snap}>
+                    <TouchableOpacity style={styles.takePictureContainer} onPress={snap}>
                         <Ionicons name="ios-camera" style={styles.takePicture} />
                     </TouchableOpacity>
                     <TouchableOpacity

@@ -58,7 +58,7 @@ export default function Settings({ navigation }) {
     }
 
     function doLogout() {
-        navigation.navigate('SignIn');
+        navigation.navigate('SignIn', {data: true});
     }
 
     function doPassword() {
