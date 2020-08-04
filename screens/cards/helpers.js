@@ -18,3 +18,15 @@ export function timeDifference(lastReaction) {
 	const difference = moment(current).diff(moment(lastReaction), 'seconds');
 	return difference;
 }
+
+export const fadeInVals = {
+	toValue: 1,
+    duration: 250,
+    useNativeDriver: true
+}
+
+export const fadeOutVals = {
+	toValue: 0,
+    duration: 250,
+    useNativeDriver: true
+}

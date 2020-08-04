@@ -1,12 +1,14 @@
 import React, { useContext, useState, useLayoutEffect, useRef } from 'react';
-import { StyleSheet, Text, View, Image, Animated } from 'react-native';
-import { LinearGradient} from 'expo-linear-gradient';
+import { StyleSheet, Text, View, Image, Animated, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import moment from 'moment';
 import CardsCompletionScreen from './CardsCompletion';
 import CardsTimerScreen from './CardsTimer';
-import { getSymbols, timeDifference } from './helpers';
+import { getSymbols, timeDifference, fadeInVals, fadeOutVals } from './helpers';
 import { UserContext } from '../../contexts/UserContext';
+import { darkGradient } from '../../constants/Colors';
+import { scaling } from '../helpers';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
@@ -74,16 +76,11 @@ export default function MainCardsScreen({ navigation }) {
     }, [imageIndex]);
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
-    const fadeIn = Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 250,
-        useNativeDriver: true
-    });
-    const fadeOut = Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 250,
-        useNativeDriver: true
-    });
+    const fadeIn = Animated.timing(fadeAnim, fadeInVals);
+    const fadeOut = Animated.timing(fadeAnim, fadeOutVals);
+
+    const emojiAnim1 = useRef(new Animated.Value(0)).current;
+    const emojiAnim2 = useRef(new Animated.Value(0)).current;
 
     function updateStates() {
         setLastReaction(reactionTime);
@@ -115,7 +112,7 @@ export default function MainCardsScreen({ navigation }) {
 
 	return(
 		<View style={globalStyles.outerContainer}>
-      		<LinearGradient colors={['#439E73', 'rgba(254, 241, 2, 0)']} style={{height: '100%'}}>
+      		<LinearGradient colors={darkGradient} style={{height: '100%'}}>
       			<View style={globalStyles.innerContainer}>
                     <View style={styles.noTitleContainer} />
                     <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
@@ -123,16 +120,24 @@ export default function MainCardsScreen({ navigation }) {
                     </Animated.View>
        				<View style={globalStyles.contentContainer}>
                         <Animated.Image source={imageLink ? { uri: imageLink } : null} onLoad={() => fadeIn.start()}
-                        style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
+                            style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
        				</View>
        				<Animated.View style={[globalStyles.blankContainer, {opacity: fadeAnim}]} />
        				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
-       					<View style={globalStyles.emojiSymbol}>
-                        	<Emoji name={symbols[0]} style={globalStyles.emojiStyle} onPress={() => doReaction(1)} />
-                    	</View>
-                        <View style={globalStyles.emojiSymbol}>
-                            <Emoji name={symbols[1]} style={globalStyles.emojiStyle} onPress={() => doReaction(2)} />
-                        </View>
+                        <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim1)} onPressOut={() => scaling.pressOutAnim(emojiAnim1)}
+                            onPress={() => doReaction(1)} style={scaling.scalingStyle(emojiAnim1)}
+                        >
+           					<Animated.View style={globalStyles.emojiSymbol}>
+                            	<Emoji name={symbols[0]} style={globalStyles.emojiStyle} />
+                        	</Animated.View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim2)} onPressOut={() => scaling.pressOutAnim(emojiAnim2)}
+                            onPress={() => doReaction(2)} style={scaling.scalingStyle(emojiAnim2)}
+                        >
+                            <Animated.View style={globalStyles.emojiSymbol}>
+                                <Emoji name={symbols[1]} style={globalStyles.emojiStyle} />
+                            </Animated.View>
+                        </TouchableOpacity>
                     </Animated.View>
   				</View>
   			</LinearGradient>

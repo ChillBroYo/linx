@@ -98,7 +98,11 @@ export default function SignIn({ navigation }) {
     async function doSignIn() {
         const user = { username, password };
         const isSignedIn = await doSignInUser(user);
-        if (!isSignedIn) return;
+        if (!isSignedIn) {
+            updateData();
+            setAutoLogin(false);
+            return;
+        }
         storeData();
         navigation.navigate('Cards');
     }

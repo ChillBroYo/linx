@@ -95,6 +95,10 @@ export default class App extends Component {
               <Text style={styles.subheading}>{`${pronoun} ${isPronounThey ? "like" : "likes"}`}</Text>
               <Text style={styles.infoLine}>{contactInfo.interests ? contactInfo.interests.join(", ") : ""}</Text>
               <View style={styles.separator} />
+
+            {/* TODO: Add images users both liked*/}
+            {/*<Text style={styles.subheading}>You both liked</Text>*/}
+            
             </ScrollView>
             <TouchableOpacity onPress={goBackToChat} style={{...styles.chatBar, ...iOSPlatformBottom}}><Text style={styles.chatText}>Chat</Text></TouchableOpacity>
           </View>
