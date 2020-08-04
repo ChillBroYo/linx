@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
     Alert,
     Button,
@@ -25,6 +25,7 @@ import { getEnvVars } from '../../environment';
 const { apiUrl } = getEnvVars();
 
 export default function Messages({ navigation }) {
+    let isMounted = useRef(null);
     const {
         friends,
         token,
@@ -35,11 +36,20 @@ export default function Messages({ navigation }) {
     const [messages, setMessages] = useState(null);
 
     useEffect(() => {
+        isMounted.current = true;
+
         getMessagesCount();
 
-        const intervalId = setInterval(getMessagesCount, 5000);
+        const intervalId = setInterval(() => {
+            if (isMounted.current) {
+                getMessagesCount();
+            }
+        }, 5000);
 
-        return () => clearInterval(intervalId);
+        return () => {
+            isMounted.current = false;
+            clearInterval(intervalId);
+        }
     }, []);
 
     useEffect(() => {
@@ -151,7 +161,10 @@ export default function Messages({ navigation }) {
                                 <TouchableHighlight
                                     activeOpacity={1}
                                     underlayColor='none'
-                                    onPress={() => navigation.navigate('FriendsMessage', { id })}
+                                    onPress={() => navigation.navigate(
+                                        'FriendsMessage',
+                                        { contact: { ...user, id } }
+                                    )}
                                     style={styles.userWrapper}
                                 >
                                     <>
