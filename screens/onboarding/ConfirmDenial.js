@@ -1,9 +1,11 @@
 import React, { useRef, useContext, useState } from 'react';
-import { Text, View, Image } from 'react-native';
+import { Text, View, Image, Alert } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import { UserContext } from '../../contexts/UserContext';
+import { Camera } from 'expo-camera';
+import * as Linking from 'expo-linking';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
@@ -30,14 +32,30 @@ export default function ConfirmDenialScreen({ navigation }) {
         const user = getUserForOnboarding();
         const isCompletedOnboarding = await doCompleteOnboardingUser(user);
         if (!isCompletedOnboarding) return;
-
-        navigation.navigate('MainCards');
+        setContextIsOnboarded(true);
+        navigation.navigate('UserStatus');
     }
 
     function getUserForOnboarding() {
         const user = formatUserForOnboarding();
         user.info.isOnboarded = isOnboarded;
         return user;
+    }
+
+    async function checkPermission() {
+        const { status } = await Camera.getPermissionsAsync();
+        if (status === 'denied') {
+            Alert.alert('Permission Denied',
+                'Linx currently does not have permission to access Camera. Please go into Settings to grant Linx access.',
+                [
+                    { text: 'OK', style: 'cancel' },
+                    { text: 'Settings', onPress: () => Linking.openSettings()}
+                ],
+                { cancelable: false }
+            );
+        } else {
+            navigation.navigate('TakeProfile');
+        }
     }
 
     return(
@@ -54,7 +72,7 @@ export default function ConfirmDenialScreen({ navigation }) {
                         <Text style={globalStyles.content}>Ok. You can always verify to connect with other verified people if you change your mind.</Text>
                     </View>
                     <View style={globalStyles.verifyContainer}>
-                        <Text style={globalStyles.verify} onPress={() => navigation.navigate('TakeProfile')}>Verify with photo</Text>
+                        <Text style={globalStyles.verify} onPress={checkPermission}>Verify with photo</Text>
                     </View>
                     <View style={globalStyles.emojiContainer}>
                         <View style={globalStyles.emojiSymbol}>

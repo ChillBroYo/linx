@@ -74,7 +74,11 @@ export default function UserName({ navigation }) {
                         </Form>
                     </ScrollView>
                 </LinearGradient>
-                <BarButton value='Save' doPress={doSave} />
+                <BarButton
+                    active={!!newPassword}
+                    value='Save'
+                    doPress={doSave}
+                />
             </View>
         </TouchableWithoutFeedback>
     );

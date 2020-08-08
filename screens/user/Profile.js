@@ -28,6 +28,8 @@ import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple, white } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
+import { Camera } from 'expo-camera';
+import * as Linking from 'expo-linking';
 
 export default function UserName({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
@@ -89,6 +91,22 @@ export default function UserName({ navigation }) {
         return true;
     }
 
+    async function checkPermission() {
+        const { status } = await Camera.getPermissionsAsync();
+        if (status === 'denied') {
+            Alert.alert('Permission Denied',
+                'Linx currently does not have permission to access Camera. Please go into Settings to grant Linx access.',
+                [
+                    { text: 'OK', style: 'cancel' },
+                    { text: 'Settings', onPress: () => Linking.openSettings()}
+                ],
+                { cancelable: false }
+            );
+        } else {
+            navigation.navigate('SettingsProfileImage');
+        }
+    }
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={pageStyles.container}>
@@ -107,7 +125,7 @@ export default function UserName({ navigation }) {
                                         ? <Image source={{ uri: contextProfileImg }} style={styles.image} />
                                         : <Text style={styles.profileInitials}>{firstName[0]}{lastName[0]}</Text>
                                     }
-                                    <TouchableWithoutFeedback onPress={() => navigation.navigate('SettingsProfileImage')}>
+                                    <TouchableWithoutFeedback onPress={checkPermission}>
                                         <View style={styles.cameraButton}>
                                             <Ionicons name="ios-camera" size={24} color={white} />
                                         </View>
@@ -133,7 +151,11 @@ export default function UserName({ navigation }) {
                         </Form>
                     </ScrollView>
                 </LinearGradient>
-                <BarButton value={isSignUpScreen ? 'Continue' : 'Save'} doPress={doSubmit} />
+                <BarButton
+                    active={!!(firstName && lastName)}
+                    value={isSignUpScreen ? 'Continue' : 'Save'}
+                    doPress={doSubmit}
+                />
             </View>
         </TouchableWithoutFeedback>
     );

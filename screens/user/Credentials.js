@@ -141,7 +141,11 @@ export default function UserCredentials({ navigation }) {
                         </Form>
                     </ScrollView>
                 </LinearGradient>
-                <BarButton value='Continue' doPress={doContinue} />
+                <BarButton
+                    active={!!(username && email && password && passwordRetype)}
+                    value='Continue'
+                    doPress={doContinue}
+                />
             </View>
         </TouchableWithoutFeedback>
     );

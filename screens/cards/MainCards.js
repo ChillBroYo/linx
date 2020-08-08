@@ -76,12 +76,12 @@ export default function MainCardsScreen({ navigation }) {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const fadeIn = Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 750,
+        duration: 250,
         useNativeDriver: true
     });
     const fadeOut = Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 750,
+        duration: 250,
         useNativeDriver: true
     });
 

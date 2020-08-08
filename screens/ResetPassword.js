@@ -74,7 +74,11 @@ export default function ResetPassword({ navigation }) {
                     </View>
                 </SafeAreaView>
             </LinearGradient>
-            <BarButton value='Reset Password' doPress={doResetPassword} />
+            <BarButton
+                active={email && username}
+                value='Reset Password'
+                doPress={doResetPassword}
+            />
         </View>
     );
 }

@@ -1,8 +1,10 @@
 import React, { useContext, useState } from 'react';
-import { Text, View, Image, Platform } from 'react-native';
+import { Text, View, Image, Platform, Alert } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import { UserContext } from '../../contexts/UserContext';
+import { Camera } from 'expo-camera';
+import * as Linking from 'expo-linking';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
@@ -32,6 +34,22 @@ export default function ReviewProfileScreen({ navigation }) {
         return user;
     }
 
+    async function checkPermission() {
+        const { status } = await Camera.getPermissionsAsync();
+        if (status === 'denied') {
+            Alert.alert('Permission Denied',
+                'Linx currently does not have permission to access Camera. Please go into Settings to grant Linx access.',
+                [
+                    { text: 'OK', style: 'cancel' },
+                    { text: 'Settings', onPress: () => Linking.openSettings()}
+                ],
+                { cancelable: false }
+            );
+        } else {
+            navigation.navigate('TakeProfile');
+        }
+    }
+
     return (
         <View style={globalStyles.outerContainer}>
             <LinearGradient colors={['#439E73', 'rgba(254, 241, 2, 0)']} style={{height: '100%'}}>
@@ -46,7 +64,7 @@ export default function ReviewProfileScreen({ navigation }) {
                         <Image source={{ uri: photo.uri }} onLoad={() => setProfileImg(photo.uri)} style={globalStyles.imageContent} />
                     </View>
                     <View style={globalStyles.verifyContainer}>
-                        <Text style={globalStyles.verify} onPress={() => navigation.navigate('TakeProfile')}>Retake photo</Text>
+                        <Text style={globalStyles.verify} onPress={checkPermission}>Retake photo</Text>
                     </View>
                     <View style={globalStyles.emojiContainer}>
                         <View style={globalStyles.emojiSymbol}>
