@@ -22,7 +22,7 @@ const RouteConfig = {
 };
 
 const NavigatorConfig = {
-    initialRouteName: 'SignIn',
+    initialRouteName: 'IndividualChatScreen',
 };
 
 export default createAppContainer(createSwitchNavigator(RouteConfig, NavigatorConfig));

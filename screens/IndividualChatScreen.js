@@ -29,7 +29,7 @@ export default class App extends Component {
 
   async getMessages() {
     try {
-      console.log('hiya')
+      // console.log('hiya')
       let response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-conversation/?uid=${this.currentUserID}&oid=${this.props.navigation.getParam('contactID')}&token=${this.currentUserToken}&limit=1000&ts=`);
       let messages = response.data.messages;
       this.setState({
@@ -37,7 +37,7 @@ export default class App extends Component {
       }, () => this.mapMessages(this.state.startIndex, Math.min(this.state.endIndex, this.state.messages.length - 1), true)
       );
 
-      console.log('ja')
+      // console.log('ja')
     }
     catch(error) {
       alert(`An error occurred : ${error}`);
@@ -45,7 +45,7 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-      this.refreshMessages = setInterval(this.getMessages, 2000);
+      this.refreshMessages = setInterval(() => this.getMessages(), 2000);
   }
 
   componentWillUnmount() {
@@ -64,14 +64,13 @@ export default class App extends Component {
     });
   }
 
-  mapMessages(start, end, refreshing, mounted) {
-    console.log('msgs', this.state.startIndex, this.state.endIndex)
+  mapMessages(start, end, refreshing) {
+    // console.log('msgs', this.state.startIndex, this.state.endIndex)
     if (this.state.messages.length === 0) return;
     let showDate;
     const moreMessages = [];
     let lastShownMessagDate = new Date(this.formatDate(this.state.messages[end].created_at))
 
-    // console.log('map', this.state.isVisible, refreshing, 'mounted', mounted)
     if (refreshing === true) this.displayedMessages = [];
 
     for (let i = end; i >= start; i--) {
@@ -203,16 +202,17 @@ export default class App extends Component {
               {this.displayedMessages}
             </ScrollView>
           </View>
-          <View style={styles.inputContainer}>
+          <View style={{...styles.inputContainer, ...iOSPlatformBottom}}>
             <TextInput 
               style={styles.messageInput}
               onChangeText={(val) => this.setState({userInput: val})}
               value={this.state.userInput}
+              placeholder="Type your message..."
+              placeholderTextColor="#777"
               multiline
-            />
-            <TouchableOpacity style={styles.sendIconContainer} onPress={() => this.uploadMessage()}>
-              <Ionicons name="md-send" size={30} color={"black"} />
-            </TouchableOpacity>
+            >
+            </TextInput>
+            
           </View>
         </LinearGradient>
       </KeyboardAvoidingView>
@@ -247,8 +247,11 @@ function OtherMessage(props) {
   )
 }
 
-let iOSPlatformStyle = {};
-if (platform === 'ios') iOSPlatformStyle = {paddingTop: 40};
+let iOSPlatformStyle, iOSPlatformBottom;
+if (platform === 'ios') {
+  iOSPlatformStyle = {paddingTop: 40};
+  iOSPlatformBottom = {bottom: 30};
+}
 
 const contactPurple = '#7F06FE';
 const gray = '#8D99AE';
@@ -360,18 +363,22 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   inputContainer: {
-    backgroundColor: '#CCC',
+    height: 50,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    bottom: 0,
     width: '100%',
-    flexDirection: "row",
-    justifyContent: "space-around"
+    position: 'absolute',
+    shadowOffset: { height: -7 },
+    shadowColor: '#8e8e8e',
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    paddingHorizontal: '4%'
+
   },
   messageInput: {
-    borderWidth: 1,
-    borderColor: '#777',
-    padding: 8,
-    margin: 10,
-    width: '80%',
-    backgroundColor: 'white'
+
+
   },
   sendIconContainer: {
     justifyContent: "center",
