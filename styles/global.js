@@ -5,23 +5,25 @@ export const globalStyles = StyleSheet.create({
 	outerContainer: {
 	},
 	innerContainer: {
+		alignItems: 'center'
 	},
 	titleContainer: {
-		top: 40
+		top: hp(20),
+	},
+	noTitleContainer: {
+		top: hp(20),
+		height: 35
 	},
 	blackTitle: {
-		textAlign: 'center',
 		color: '#2B2D42',
 		fontSize: 35
 	},
 	whiteTitle: {
-		textAlign: 'center',
 		color: '#FFF',
 		fontSize: 35
 	},
 	paginationContainer: {
-		alignItems: 'center',
-		top: 55
+		marginVertical: hp(30)
 	},
 	paginationIcon: {
 		resizeMode: 'contain'
@@ -32,12 +34,11 @@ export const globalStyles = StyleSheet.create({
 		fontSize: 20
 	},
 	contentContainer: {
-		alignItems: 'center',
+		//alignItems: 'center',
 		backgroundColor: '#FFF',
-		width: 340,
-		height: 250,
-		top: 85,
-		left: 20,
+		width: wp(340),
+		height: hp(380),
+		padding: 30,
 		borderRadius: 10,
 		shadowColor: '#000',
 		shadowOffset: { width: 0, height: 2 },
@@ -49,23 +50,21 @@ export const globalStyles = StyleSheet.create({
 	content: {
 		fontSize: 23,
 		color: '#1B1B1B',
-		width: 285,
-		top: 30,
-		left: 10,
+		//width: 285,
+		//top: 30,
 	},
 	imageContent: {
-		width: 330,
-        height: 240,
+		width: wp(330),
+        height: hp(330),
         top: 5,
-        resizeMode: 'contain'
+        resizeMode: 'contain',
 	},
 	blankContainer: {
 		alignItems: 'center',
 		backgroundColor: '#FFF',
-		width: 280,
-		height: 40,
-		top: 65,
-		left: 50,
+		width: wp(280),
+		height: hp(40),
+		marginTop: 0,
 		borderRadius: 10,
 		shadowColor: '#000',
 		shadowOffset: { width: 0, height: 2 },
@@ -77,10 +76,9 @@ export const globalStyles = StyleSheet.create({
 	verifyContainer: {
 		alignItems: 'center',
 		backgroundColor: '#439E73',
-		width: 280,
-		height: 40,
+		width: wp(280),
+		height: hp(40),
 		top: 65,
-		left: 50,
 		borderRadius: 10,
 		shadowColor: '#000',
 		shadowOffset: { width: 0, height: 2 },
@@ -94,7 +92,6 @@ export const globalStyles = StyleSheet.create({
 		width: 280,
 		height: 40,
 		top: 65,
-		left: 50
 	},
 	verify: {
 		fontSize: 23,
@@ -104,7 +101,7 @@ export const globalStyles = StyleSheet.create({
 	emojiContainer: {
 		flexDirection: 'row',
 		justifyContent: 'space-around',
-		top: 90,
+		//marginBottom: hp(0),
 		zIndex: 3
 	},
 	emojiSymbol: {
@@ -117,6 +114,7 @@ export const globalStyles = StyleSheet.create({
 	},
 	confettiContainer: {
     	zIndex: 2,
-    	top: 175
+    	top: 175,
+    	alignItems: 'center'
   }
 });

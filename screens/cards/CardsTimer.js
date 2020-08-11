@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Text, View, Image, Animated, TouchableOpacity } from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import CountDown from 'react-native-countdown-component';
 import Emoji from 'react-native-emoji';
@@ -37,7 +38,7 @@ export default function CardsTimerScreen({ navigation, lastReaction }) {
 	return(
 		<View style={globalStyles.outerContainer}>
       		<LinearGradient colors={darkGradient} style={{height: '100%'}}>
-      			<View style={globalStyles.innerContainer}>
+      			<SafeAreaView style={globalStyles.innerContainer}>
                     <Animated.View style={[globalStyles.titleContainer, {opacity: fadeAnim}]}>
                         <CountDown until={diff} size={35} timeToShow={['H', 'M', 'S']} timeLabels={{h: null, m: null, s: null}} showSeparator={true}
                             separatorStyle={{color: '#FFF'}} digitStyle={{backgroundColor: 'transparent', width: 55, height: 35}}
@@ -67,7 +68,7 @@ export default function CardsTimerScreen({ navigation, lastReaction }) {
                             autoStart={false} ref={cannon}
                         />
                     </Animated.View>
-  				</View>
+  				</SafeAreaView>
   			</LinearGradient>
   		</View>
 	);

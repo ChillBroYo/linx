@@ -1,5 +1,6 @@
 import React, { useContext, useState, useLayoutEffect, useRef } from 'react';
-import { StyleSheet, Text, View, Image, Animated, TouchableOpacity } from 'react-native';
+import { Text, View, Image, Animated, TouchableOpacity } from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import moment from 'moment';
@@ -113,8 +114,8 @@ export default function MainCardsScreen({ navigation }) {
 	return(
 		<View style={globalStyles.outerContainer}>
       		<LinearGradient colors={darkGradient} style={{height: '100%'}}>
-      			<View style={globalStyles.innerContainer}>
-                    <View style={styles.noTitleContainer} />
+      			<SafeAreaView style={globalStyles.innerContainer}>
+                    <View style={globalStyles.noTitleContainer} />
                     <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
                         <Text style={globalStyles.subtitleText}>{(imageIndex % 15) + 1} / 15</Text>
                     </Animated.View>
@@ -139,14 +140,8 @@ export default function MainCardsScreen({ navigation }) {
                             </Animated.View>
                         </TouchableOpacity>
                     </Animated.View>
-  				</View>
+  				</SafeAreaView>
   			</LinearGradient>
   		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-    noTitleContainer: {
-        height: 35
-    }
-});

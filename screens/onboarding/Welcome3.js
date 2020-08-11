@@ -1,5 +1,6 @@
 import React, { useRef, useContext, useState } from 'react';
 import { Text, View, Image, Animated, TouchableOpacity } from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import ConfettiCannon from 'react-native-confetti-cannon';
@@ -10,7 +11,7 @@ import { scaling } from '../helpers';
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
 
-export default function ConfirmProfileScreen({ navigation }) {
+export default function WelcomeScreen3({ navigation }) {
     const emojiAnim = useRef(new Animated.Value(0)).current;
 
     const {
@@ -47,8 +48,8 @@ export default function ConfirmProfileScreen({ navigation }) {
     return(
         <View style={globalStyles.outerContainer}>
             <LinearGradient colors={darkGradient} style={{height: '100%'}}>
-                <View style={globalStyles.innerContainer}>
-                    <View style={styles.noTitleContainer} />
+                <SafeAreaView style={globalStyles.innerContainer}>
+                    <View style={globalStyles.noTitleContainer} />
                     <View style={globalStyles.paginationContainer}>
                         <Text style={globalStyles.subtitleText}>Welcome!</Text>
                     </View>
@@ -66,11 +67,11 @@ export default function ConfirmProfileScreen({ navigation }) {
                         </TouchableOpacity>
                     </View>
                     <View style={globalStyles.confettiContainer}>
-                        <ConfettiCannon count={100} origin={{ x: 175, y: 125 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
+                        <ConfettiCannon count={100} origin={{ x: 0, y: 125 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
                             autoStart={false} ref={cannon} onAnimationEnd={doCompleteOnboarding}
                         />
                     </View>
-                </View>
+                </SafeAreaView>
             </LinearGradient>
         </View>
     );

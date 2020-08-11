@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { Text, View, Image, Animated, TouchableOpacity } from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import { darkGradient } from '../../constants/Colors';
@@ -8,14 +9,14 @@ import { scaling } from '../helpers';
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
 
-export default function WelcomeScreen({ navigation }) {
+export default function WelcomeScreen2({ navigation }) {
     const emojiAnim = useRef(new Animated.Value(0)).current;
 
     return (
         <View style={globalStyles.outerContainer}>
             <LinearGradient colors={darkGradient} style={{height: '100%'}}>
-                <View style={globalStyles.innerContainer}>
-                    <View style={styles.noTitleContainer} />
+                <SafeAreaView style={globalStyles.innerContainer}>
+                    <View style={globalStyles.noTitleContainer} />
                     <View style={globalStyles.paginationContainer}>
                         <Text style={globalStyles.subtitleText}>Welcome!</Text>
                     </View>
@@ -32,7 +33,7 @@ export default function WelcomeScreen({ navigation }) {
                             </Animated.View>
                         </TouchableOpacity>
                     </View>
-                </View>
+                </SafeAreaView>
             </LinearGradient>
         </View>
     );
