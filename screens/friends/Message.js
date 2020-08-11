@@ -110,6 +110,7 @@ export default function Message({ navigation }) {
             }
 
             const res = await axios.post(API_ENDPOINT, params);
+            setNewMessage('');
         }
         catch (error) {
             console.warn('Error in sendMessage:', error);
