@@ -1,15 +1,19 @@
-import React from 'react';
-import { Text, View, Image } from 'react-native';
-import { LinearGradient} from 'expo-linear-gradient';
+import React, { useRef } from 'react';
+import { Text, View, Image, Animated, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
+import { darkGradient } from '../../constants/Colors';
+import { scaling } from '../helpers';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
 
 export default function WelcomeScreen({ navigation }) {
+    const emojiAnim = useRef(new Animated.Value(0)).current;
+
     return (
         <View style={globalStyles.outerContainer}>
-            <LinearGradient colors={['#439E73', 'rgba(254, 241, 2, 0)']} style={{height: '100%'}}>
+            <LinearGradient colors={darkGradient} style={{height: '100%'}}>
                 <View style={globalStyles.innerContainer}>
                     <View style={globalStyles.titleContainer}>
                         <Text style={globalStyles.whiteTitle}>Welcome!</Text>
@@ -22,9 +26,13 @@ export default function WelcomeScreen({ navigation }) {
                     </View>
                     <View style={globalStyles.blankContainer} />
                     <View style={globalStyles.emojiContainer}>
-                        <View style={globalStyles.emojiSymbol}>
-                            <Emoji name="+1" style={globalStyles.emojiStyle} onPress={() => navigation.navigate('Profile')} />
-                        </View>
+                        <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim)} onPressOut={() => scaling.pressOutAnim(emojiAnim)}
+                            onPress={() => navigation.navigate('Profile')} style={scaling.scalingStyle(emojiAnim)}
+                        >
+                            <Animated.View style={globalStyles.emojiSymbol}>
+                                <Emoji name="+1" style={globalStyles.emojiStyle} />
+                            </Animated.View>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </LinearGradient>
