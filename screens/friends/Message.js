@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
     Alert,
     Button,
@@ -31,33 +31,25 @@ import {
 } from '../../constants/Colors';
 import { UserContext } from "../../contexts/UserContext";
 import { getEnvVars } from '../../environment';
+import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 
 const { apiUrl } = getEnvVars();
 const platform = Platform.OS;
 
 export default function Message({ navigation }) {
     const { token, userId } = useContext(UserContext);
+    const numMessages = 50;
+    const [multiplier, setMultiplier] = useState(1);
     const [messages, setMessages] = useState(null);
     const [newMessage, setNewMessage] = useState('');
-
+    const isMountedRef = useIsMountedRef();
     const contact = navigation.getParam('contact');
 
     useEffect(() => {
-        let mounted = true;
-
         getMessages();
-
-        const intervalId = setInterval(() => {
-            if (mounted) {
-                getMessages();
-            }
-        }, 2000);
-
-        return () => {
-            mounted = false;
-            clearInterval(intervalId);
-        }
     }, []);
+
+    useInterval(getMessages, 2000);
 
     if (!contact?.id) {
         doBack();
@@ -69,7 +61,7 @@ export default function Message({ navigation }) {
     }
 
     function doProfile() {
-        navigation.navigate( 'FriendsProfile', { id: contact.id });
+        navigation.navigate('FriendsProfile', { id: contact.id });
     }
 
     async function getMessages() {
@@ -79,13 +71,14 @@ export default function Message({ navigation }) {
                 uid: userId,
                 oid: contact.id,
                 token,
-                limit: 1000,
+                limit: numMessages * multiplier,
                 ts: null,
             };
             const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
             const data = res?.data;
-            if (data?.messages) {
-                await setMessages(data.messages);
+            const messages = data?.messages;
+            if (isMountedRef.current && messages) {
+                await setMessages(messages);
             }
         }
         catch (error) {
@@ -94,7 +87,8 @@ export default function Message({ navigation }) {
     }
 
     async function sendMessage() {
-        if (!newMessage) return;
+        const messageToSend = newMessage.trim();
+        if (!messageToSend) return;
 
         try {
             const API_ENDPOINT = `${apiUrl}/${['add', 'message'].join(__DEV__ ? '_' : '-')}/`;
@@ -102,7 +96,7 @@ export default function Message({ navigation }) {
                 token,
                 uid: userId,
                 oid: contact.id,
-                msg: newMessage,
+                msg: messageToSend,
             };
             const params = new URLSearchParams();
             for (let key in reqBody) {
@@ -114,7 +108,12 @@ export default function Message({ navigation }) {
         }
         catch (error) {
             console.warn('Error in sendMessage:', error);
+            Alert.alert('Failed to send message. Please try again.');
         }
+    }
+
+    async function loadMoreMessages() {
+        setMultiplier(multiplier + 1);
     }
 
     return (
@@ -149,9 +148,15 @@ export default function Message({ navigation }) {
                 </View>
 
                 <FlatList
+                    inverted
                     data={messages}
-                    inverted={true}
+                    extraData={messages}
                     keyExtractor={item => item.message_id.toString()}
+                    onEndReachedThreshold={0.8}
+                    onEndReached={(info) => {
+                        console.log('END REACHED', info);
+                        loadMoreMessages();
+                    }}
                     renderItem={({ item }) => {
                         const {
                             message,
@@ -165,20 +170,24 @@ export default function Message({ navigation }) {
                                 <View style={[styles.messageWrapper, styles.ownMessage]}>
                                     <Text style={styles.messageText}>{message}</Text>
                                 </View>
-                            )
+                            );
                         }
                         else {
                             return (
                                 <View style={[styles.row, styles.otherMessageWrapper]}>
-                                    <Image
-                                        source={{uri: contact?.profile_picture}}
-                                        style={styles.contactIcon}
-                                    />
+                                    {contact?.profile_picture ? (
+                                        <Image
+                                            source={{uri: contact?.profile_picture}}
+                                            style={styles.contactIcon}
+                                        />
+                                    ) : (
+                                        <View style={styles.contactIcon} />
+                                    )}
                                     <View style={[styles.messageWrapper, styles.otherMessage]}>
                                         <Text style={styles.messageText}>{message}</Text>
                                     </View>
                                 </View>
-                            )
+                            );
                         }
                     }}
                 />
@@ -275,11 +284,12 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         marginLeft: 7,
         marginVertical: 7,
+        maxWidth: '90%',
     },
     otherMessage: {
         backgroundColor: '#2B2D42',
         borderTopLeftRadius: 0,
-        maxWidth: '77%',
+        flexShrink: 1,
     },
     ownMessage: {
         alignSelf: 'flex-end',
