@@ -63,7 +63,7 @@ export default function UserGender({ navigation }) {
         const user = getUserForRequest(false);
         const isSignedUp = await doSignUpUser(user);
         if (!isSignedUp) return;
-        navigation.navigate('SignIn');
+        navigation.navigate('SignIn', {data: true});
     }
 
     function doUpdate() {
@@ -137,7 +137,11 @@ export default function UserGender({ navigation }) {
                         </View>
                     </ScrollView>
                 </LinearGradient>
-                <BarButton value={isSignUpScreen ? 'Done' : 'Save'} doPress={doSubmit} />
+                <BarButton
+                    active={true}
+                    value={isSignUpScreen ? 'Done' : 'Save'}
+                    doPress={doSubmit}
+                />
             </View>
         </TouchableWithoutFeedback>
     );

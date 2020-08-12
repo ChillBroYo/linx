@@ -10,6 +10,7 @@ import {
     TextInput,
     TouchableWithoutFeedback,
     View,
+    Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -27,6 +28,8 @@ import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple, white } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
+import { Camera } from 'expo-camera';
+import * as Linking from 'expo-linking';
 
 export default function UserName({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
@@ -35,14 +38,14 @@ export default function UserName({ navigation }) {
         setFirstName: setContextFirstName,
         lastName: contextLastName,
         setLastName: setContextLastName,
-        profileImg: contextProfileImage,
+        profileImg: contextProfileImg,
         setProfileImg: setContextProfileImg,
         doUpdateUser,
         formatUserForRequest,
     } = useContext(UserContext);
     const [firstName, setFirstName] = useState(contextFirstName);
     const [lastName, setLastName] = useState(contextLastName);
-    const [profileImg, setProfileImg] = useState(contextProfileImage);
+    const [profileImg, setProfileImg] = useState(contextProfileImg);
 
     useEffect(() => {
         StatusBar.setBarStyle(isSignUpScreen ? 'light-content' : 'dark-content');
@@ -88,6 +91,22 @@ export default function UserName({ navigation }) {
         return true;
     }
 
+    async function checkPermission() {
+        const { status } = await Camera.getPermissionsAsync();
+        if (status === 'denied') {
+            Alert.alert('Permission Denied',
+                'Linx currently does not have permission to access Camera. Please go into Settings to grant Linx access.',
+                [
+                    { text: 'OK', style: 'cancel' },
+                    { text: 'Settings', onPress: () => Linking.openSettings()}
+                ],
+                { cancelable: false }
+            );
+        } else {
+            navigation.navigate('SettingsProfileImage');
+        }
+    }
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={pageStyles.container}>
@@ -101,14 +120,17 @@ export default function UserName({ navigation }) {
                         <PageHeader value={isSignUpScreen ? 'My name is' : 'Profile'} />
                         <Form>
                             {!isSignUpScreen && (
-                                <TouchableWithoutFeedback>
-                                    <View style={styles.profileImage}>
-                                        <Text style={styles.profileInitials}>{firstName[0]}{lastName[0]}</Text>
+                                <View style={styles.profileImage}>
+                                    {contextProfileImg
+                                        ? <Image source={{ uri: contextProfileImg }} style={styles.image} />
+                                        : <Text style={styles.profileInitials}>{firstName[0]}{lastName[0]}</Text>
+                                    }
+                                    <TouchableWithoutFeedback onPress={checkPermission}>
                                         <View style={styles.cameraButton}>
                                             <Ionicons name="ios-camera" size={24} color={white} />
                                         </View>
-                                    </View>
-                                </TouchableWithoutFeedback>
+                                    </TouchableWithoutFeedback>
+                                </View>
                             )}
                             <TextInput
                                 name='firstName'
@@ -129,7 +151,11 @@ export default function UserName({ navigation }) {
                         </Form>
                     </ScrollView>
                 </LinearGradient>
-                <BarButton value={isSignUpScreen ? 'Continue' : 'Save'} doPress={doSubmit} />
+                <BarButton
+                    active={!!(firstName && lastName)}
+                    value={isSignUpScreen ? 'Continue' : 'Save'}
+                    doPress={doSubmit}
+                />
             </View>
         </TouchableWithoutFeedback>
     );
@@ -160,6 +186,12 @@ const styles = StyleSheet.create({
         height: 120,
         width: 120,
         marginBottom: 40,
+    },
+    image: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        overflow: 'hidden',
     },
     profileInitials: {
         color: white,

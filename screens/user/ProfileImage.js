@@ -1,16 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useContext, useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { pageStyles } from './common';
+import { lightGradient } from '../../constants/Colors';
 import { Camera } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
-import { darkGradient } from '../../constants/Colors';
+import { UserContext } from '../../contexts/UserContext';
 
-//Import global styles used throughout app
-import { globalStyles } from '../../styles/global';
+export default function UserProfileImage({ navigation }) {
 
-export default function TakeProfileScreen({ navigation }) {
-    
     let camera = useRef();
+
+    const {
+        doUploadProfileUser,
+        formatUserForImageUpload,
+    } = useContext(UserContext);
 
     //Variables to determine if permission is granted by user to access camera
     const [hasPermission, setHasPermission] = useState(null);
@@ -29,28 +33,46 @@ export default function TakeProfileScreen({ navigation }) {
     //Case when permission has neither been approved nor denied
     if (hasPermission === null) {
         return (
-            <View style={globalStyles.outerContainer}>
-                <LinearGradient colors={darkGradient} style={{height: '100%'}} />
+            <View style={pageStyles.container}>
+                <LinearGradient colors={lightGradient} style={pageStyles.container} />
             </View>
         );
     }
 
     //Case when permission has been denied
     if (hasPermission === false) {
-        navigation.navigate('DenyProfile');
+        navigation.goBack();
     }
 
     async function snap() {
         if (camera.current) {
             let photo = await camera.current.takePictureAsync();
-            navigation.navigate('ReviewProfile', {data: photo});
+            doUploadProfile(photo.uri);
         }
+    }
+
+    async function doUploadProfile(photo) {
+        const user = getUserForImageUpload(photo);
+        const isUploadedProfile = await doUploadProfileUser(user);
+        if (!isUploadedProfile) return;
+        navigation.goBack();
+    }
+
+    function getUserForImageUpload(photo) {
+        const user = formatUserForImageUpload();
+        user.image.uri = Platform.OS === 'android' ? photo : photo.replace('file://', '');
+        return user;
     }
 
     //Case when permission has been approved
     return (
         <View style={styles.cameraContainer}>
             <Camera style={styles.camera} type={type} flashMode={'auto'} ref={camera} >
+                <View style={styles.navigationButtonContainer}>
+                    <TouchableOpacity style={styles.backButtonContainer} onPress={() => navigation.goBack()}>
+                        <Ionicons name="ios-arrow-back" style={styles.backButton} />
+                    </TouchableOpacity>
+                </View>
                 <View style={styles.cameraButtonContainer}>
                     <TouchableOpacity style={styles.takePictureContainer} onPress={snap}>
                         <Ionicons name="ios-camera" style={styles.takePicture} />
@@ -80,13 +102,26 @@ const styles = StyleSheet.create({
     camera: {
         flex: 1
     },
+    navigationButtonContainer: {
+        flex: 1,
+        backgroundColor: 'black',
+        alignItems: 'flex-start',
+    },
+    backButtonContainer: {
+        marginTop: 15,
+        marginLeft: 25
+    },
+    backButton: {
+        color: 'white',
+        fontSize: 50,
+    },
     cameraButtonContainer: {
         flex: 1,
         backgroundColor: 'black',
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'flex-end',
-        marginTop: 565
+        marginTop: 485
     },
     takePictureContainer: {
         marginLeft: 120

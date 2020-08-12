@@ -8,7 +8,9 @@ import {
     View,
 } from 'react-native';
 import { LinearGradient} from 'expo-linear-gradient';
+import { canOpenURL, openURL } from 'expo-linking';
 import BackArrow from '../components/BackArrow';
+import BarButton from '../components/BarButton';
 import {
     black,
     green,
@@ -18,13 +20,26 @@ import {
 
 export default function ResetPassword({ navigation }) {
     const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
 
-    function onBack() {
+    function doBack() {
         navigation.navigate('SignIn');
     }
 
-    function onResetPassword() {
-        // TODO: add email reset handler
+    async function doResetPassword() {
+        if (!email || !username) return;
+
+        try {
+            const subject = 'Linx: Reset Password';
+            const body = `Please reset password for the account with the following information:\n\nemail: ${email}\nusername: ${username}`;
+            const URL = `mailto:kdpnp10@gmail.com?subject=${subject}&body=${body}`;
+            const canOpenUrl = await canOpenURL(URL);
+            if (!canOpenUrl) return;
+            await openURL(URL);
+        }
+        catch (error) {
+            console.warn('Error in doResetPassword:', error);
+        }
     }
 
     return (
@@ -32,48 +47,43 @@ export default function ResetPassword({ navigation }) {
             <LinearGradient colors={['rgba(254, 241, 2, 0)', 'rgba(254, 241, 2, 0.1)']} style={styles.container}>
                 <SafeAreaView style={styles.container}>
                     <View style={styles.wrapper}>
-                        <BackArrow doPress={onBack} />
+                        <BackArrow doPress={doBack} />
                         <View style={styles.column}>
                             <Text style={styles.header}>Forgot password?</Text>
                             <View style={styles.formWrapper}>
                                 <Text style={styles.text}>
-                                    Enter your email address and we'll send you a link to reset your password
+                                    Enter your email address and username to reset your password
                                 </Text>
                                 <TextInput
                                     name='email'
                                     placeholder='Email'
                                     value={email}
                                     onChangeText={email => setEmail(email)}
+                                    keyboardType='email-address'
+                                    style={styles.input}
+                                />
+                                <TextInput
+                                    name='username'
+                                    placeholder='Username'
+                                    value={username}
+                                    onChangeText={username => setUsername(username)}
                                     style={styles.input}
                                 />
                             </View>
                         </View>
                     </View>
                 </SafeAreaView>
-                <TouchableWithoutFeedback onPress={onResetPassword}>
-                    <View style={styles.button}>
-                        <Text style={styles.buttonText}>Reset Password</Text>
-                    </View>
-                </TouchableWithoutFeedback>
             </LinearGradient>
+            <BarButton
+                active={email && username}
+                value='Reset Password'
+                doPress={doResetPassword}
+            />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    button: {
-        alignItems: 'center',
-        backgroundColor: grey,
-        justifyContent: 'center',
-        height: 66,
-        marginTop: 16,
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 20,
-        fontWeight: '600',
-        lineHeight: 27,
-    },
     column: {
         alignItems: 'center',
     },

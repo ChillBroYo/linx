@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import {
     Alert,
     Image,
@@ -7,9 +7,11 @@ import {
     StyleSheet,
     Text,
     TextInput,
+    TouchableOpacity,
     TouchableWithoutFeedback,
     View
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import { UserContext } from '../contexts/UserContext';
 import { green, white } from '../constants/Colors';
@@ -28,15 +30,17 @@ export default function SignIn({ navigation }) {
     } = useContext(UserContext);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [autoLogin, setAutoLogin] = useState(false);
 
-    useEffect(() => {
+
+    useLayoutEffect(() => {
         // reset sign up state on screen load
         // going back to sign in screen from sign up
         // going back to sign in screen after sign up completion
         resetUserContextState();
     }, []);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         registerForPushNotificationsAsync(setExpoPushToken);
 
         function handleNotification(notification) {
@@ -48,10 +52,58 @@ export default function SignIn({ navigation }) {
         return () => notificationLogListener.remove();
     }, []);
 
+    useLayoutEffect(() => {
+        getData();
+    }, []);
+
+    useLayoutEffect(() => {
+        if (autoLogin) doSignIn();
+    }, [autoLogin]);
+
+    async function storeData() {
+        try {
+            await AsyncStorage.multiSet([['@username', username], ['@password', password], ['@signin', 'true']]);
+        }
+        catch (error) {
+            console.warn('AsyncStorage store error: ', error);
+            Alert.alert('Please note you will need to sign back in upon closing the app');
+        }
+    }
+
+    async function getData() {
+        try {
+            const values = await AsyncStorage.multiGet(['@username', '@password', '@signin']);            
+            if (values[0][1] !== null && values[1][1] !== null) {
+                setUsername(values[0][1]);
+                setPassword(values[1][1]);
+                if (navigation.getParam('data') !== undefined) updateData();
+                if (navigation.getParam('data') === undefined && values[2][1] !== null) setAutoLogin(true);
+            }
+            
+        }
+        catch (error) {
+            console.warn('AsyncStorage get error: ', error);
+        }
+    }
+
+    async function updateData() {
+        try {
+            await AsyncStorage.removeItem('@signin');
+        }
+        catch (error) {
+            console.warn('AsyncStorage update error: ', error);
+        }
+    }
+
     async function doSignIn() {
         const user = { username, password };
         const isSignedIn = await doSignInUser(user);
-        if (!isSignedIn) return;
+        if (!isSignedIn) {
+            updateData();
+            setAutoLogin(false);
+            return;
+        }
+        storeData();
         navigation.navigate('Cards');
     }
 
@@ -62,6 +114,14 @@ export default function SignIn({ navigation }) {
     function onSignUp() {
         navigation.navigate('SignUp');
     }
+
+    if (autoLogin) {
+        return (
+            <View style={styles.container}>
+                <ImageBackground source={BACKGROUND_IMAGE} style={styles.background} />
+            </View>
+        )
+    };
 
     return (
         <View style={styles.container}>
@@ -84,22 +144,22 @@ export default function SignIn({ navigation }) {
                             secureTextEntry={true}
                             style={styles.input}
                         />
-                        <TouchableWithoutFeedback onPress={doSignIn}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={doSignIn}>
                             <View style={{...styles.button, ...styles.buttonColored}}>
                                 <Text style={{...styles.buttonText, color: white}}>Sign in</Text>
                             </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback onPress={onSignUp}>
+                        </TouchableOpacity>
+                        <TouchableOpacity activeOpacity={0.8} onPress={onSignUp}>
                             <View style={{...styles.button, ...styles.buttonTransparent}}>
                                 <Text style={{...styles.buttonText, color: green}}>Sign up</Text>
                             </View>
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
                     </View>
                 </SafeAreaView>
                 <TouchableWithoutFeedback onPress={onForgotPassword}>
-                    <View style={styles.forgotPassword}>
+                    <SafeAreaView style={styles.forgotPassword}>
                         <Text style={{...styles.buttonText, color: white}}>Forgot password</Text>
-                    </View>
+                    </SafeAreaView>
                 </TouchableWithoutFeedback>
             </ImageBackground>
         </View>

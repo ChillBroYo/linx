@@ -1,16 +1,19 @@
 {
   "expo": {
     "name": "Linx",
-    "slug": "Let's get linx",
+    "slug": "Lets-get-linx",
     "privacy": "public",
-    "sdkVersion": "35.0.0",
     "platforms": [
       "ios",
       "android"
     ],
-    "version": "1.0.1",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
+    "notification": {
+        "icon": "./assets/images/notification_icon.png",
+        "iosDisplayInForeground": true
+    },
     "splash": {
       "image": "./assets/images/cover_image.png",
       "resizeMode": "cover",
@@ -23,7 +26,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.samsontse.Lets-get-linx"
+    },
+    "android": {
+      "package": "com.linx.linx",
+      "versionCode": 3
     },
     "description": ""
   }

@@ -5,6 +5,13 @@ import moment from 'moment';
 import { getEnvVars } from '../environment';
 const { apiUrl } = getEnvVars();
 
+// default config for axios requests
+const DEFAULT_CONFIG = {
+    validateStatus: function (status) {
+        return (status >= 200 && status < 300) || status == 400;
+    },
+};
+
 export const UserContext = React.createContext();
 
 export const UserContextConsumer = UserContext.Consumer;
@@ -19,6 +26,7 @@ export function UserContextProvider({ children }) {
     const [userId, setUserId] = useState('');
     const [token, setToken] = useState('');
     const [isOnboarded, setIsOnboarded] = useState(false);
+    const [lastReaction, setLastReaction] = useState(moment.utc().format('YYYY-MM-DDTHH:mm:ss'));
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
@@ -27,6 +35,7 @@ export function UserContextProvider({ children }) {
     const [lastName, setLastName] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
+    const [zip, setZip] = useState('');
     const [distance, setDistance] = useState(defaultDistance);
     const [birthday, setBirthday] = useState('');
     const [ageRange, setAgeRange] = useState(defaultAgeRange);
@@ -34,19 +43,15 @@ export function UserContextProvider({ children }) {
     const [sameGender, setSameGender] = useState(false);
     const [interests, setInterests] = useState(defaultInterests);
     const [sameInterests, setSameInterests] = useState(false);
-    const [imageIndex, setImageIndex] = useState(0);
     const [imagesVisited, setImagesVisited] = useState([]);
     const [friends, setFriends] = useState([]);
-    const [createdAt, setCreatedAt] = useState('');
-    const [imageId, setImageId] = useState('');
-    const [imageCategory, setImageCategory] = useState(6);
-    const [imageLink, setImageLink] = useState('');
 
     const value = {
         expoPushToken, setExpoPushToken,
         userId, setUserId,
         token, setToken,
         isOnboarded, setIsOnboarded,
+        lastReaction, setLastReaction,
         email, setEmail,
         password, setPassword,
         username, setUsername,
@@ -55,6 +60,7 @@ export function UserContextProvider({ children }) {
         lastName, setLastName,
         city, setCity,
         state, setState,
+        zip, setZip,
         distance, setDistance,
         birthday, setBirthday,
         ageRange, setAgeRange,
@@ -62,16 +68,10 @@ export function UserContextProvider({ children }) {
         sameGender, setSameGender,
         interests, setInterests,
         sameInterests, setSameInterests,
-        imageIndex, setImageIndex,
         imagesVisited, setImagesVisited,
         friends, setFriends,
-        createdAt, setCreatedAt,
-        imageId, setImageId,
-        imageCategory, setImageCategory,
-        imageLink, setImageLink,
         setUserFromResponse,
         setUserFromProfileResponse,
-        setImageFromResponse,
         doSignInUser,
         doGetUserProfile,
         doGetImage,
@@ -80,10 +80,12 @@ export function UserContextProvider({ children }) {
         doUpdateUser,
         doCompleteOnboardingUser,
         doReactImage,
+        doUpdateImageIndex,
         formatUserForRequest,
         formatUserForImageUpload,
         formatUserForOnboarding,
         formatUserForReaction,
+        formatUserForIndex,
         resetState,
     };
 
@@ -93,12 +95,12 @@ export function UserContextProvider({ children }) {
             token,
             email,
             username,
-            profile_picture,
             info: infoJSON,
         } = res;
         const info = JSON.parse(infoJSON);
         const {
             isOnboarded,
+            lastReaction,
             birthday,
             gender,
             interests,
@@ -112,20 +114,21 @@ export function UserContextProvider({ children }) {
             sameGender,
             sameInterests,
         } = connectWith;
-        const { city, state } = location;
+        const { city, state, zip } = location;
 
         setUserId(uid);
         setToken(token);
         setIsOnboarded(Boolean(isOnboarded));
+        setLastReaction(lastReaction);
         setEmail(email);
         setUsername(username);
-        setProfileImg(profile_picture);
         setFirstName(name.first);
         setLastName(name.last);
         setBirthday(birthday);
         setAgeRange(ageRange);
         setCity(city);
         setState(state);
+        setZip(zip);
         setDistance(distance);
         setGender(gender);
         setSameGender(sameGender);
@@ -145,25 +148,13 @@ export function UserContextProvider({ children }) {
         const { user_info } = res;
         const {
             profile_picture,
-            image_index,
             images_visited,
             friends,
-            created_at,
         } = user_info;
 
         setProfileImg(profile_picture);
-        setImageIndex(image_index);
         setImagesVisited(images_visited);
         setFriends(friends);
-        setCreatedAt(created_at);
-    }
-
-    function setImageFromResponse(res) {
-        const { image_id, image_category, link } = res;
-
-        setImageId(image_id);
-        setImageCategory(image_category);
-        setImageLink(link);
     }
 
     function formatParams(user) {
@@ -209,13 +200,10 @@ export function UserContextProvider({ children }) {
         try {
             const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'update_profile' : 'update-profile'}/`;
             const params = formatParams(user);
-            const res = await axios.post(API_ENDPOINT, params);
+            const res = await axios.post(API_ENDPOINT, params, DEFAULT_CONFIG);
             const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Update failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
+            if (res.status != 200 || !data.success || data.success == 'false') {
+                return Alert.alert(data?.errmsg || 'Update failed. Please try again.');
             }
 
             if (callback) {
@@ -224,7 +212,7 @@ export function UserContextProvider({ children }) {
             Alert.alert('Your settings have been updated');
         }
         catch (error) {
-            console.error('Update failed:', error);
+            console.warn('Update failed:', error);
             Alert.alert('Update failed. Please try again');
         }
     }
@@ -233,18 +221,15 @@ export function UserContextProvider({ children }) {
         try {
             const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'sign_up' : 'sign-up'}/`;
             const params = formatParams(user);
-            const res = await axios.post(API_ENDPOINT, params);
+            const res = await axios.post(API_ENDPOINT, params, DEFAULT_CONFIG);
             const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Sign up failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
+            if (res.status != 200 || !data.success || data.success == 'false') {
+                return Alert.alert(data?.errmsg || 'Sign up failed. Please try again.');
             }
 
             return true;
         } catch (error) {
-            console.error('Sign up error:', error);
+            console.warn('Sign up error:', error);
             Alert.alert('Sign up failed. Please try again');
         }
     }
@@ -253,16 +238,18 @@ export function UserContextProvider({ children }) {
         try{
             const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'save_image' : 'save-image'}/`;
             const formData = formatFormData(user);
-            const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+            const config = {
+                ...DEFAULT_CONFIG,
+                headers: {
+                    'Content-Type': 'multipart/form-data; boundary=frontier'
+                }
+            };
             const res = await axios.post(API_ENDPOINT, formData, config);
             const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Profile upload failed. Please try again');
+            if (res.status != 200 || !data.success || data.success == 'false') {
+                return Alert.alert(data?.errmsg || 'Profile upload failed. Please try again.');
             }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
-            }
-
+            setProfileImg(data.image_url);
             return true;
         } catch (error) {
             console.warn('Profile upload error:', error);
@@ -274,18 +261,15 @@ export function UserContextProvider({ children }) {
         try {
             const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'update_profile' : 'update-profile'}/`;
             const params = formatParams(user);
-            const res = await axios.post(API_ENDPOINT, params);
+            const res = await axios.post(API_ENDPOINT, params, DEFAULT_CONFIG);
             const data = res.data;
-            if (res.status != 200) {
-                return Alert.alert('Onboarding completion failed. Please try again');
-            }
-            if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
+            if (res.status != 200 || !data.success || data.success == 'false') {
+                return Alert.alert(data?.errmsg || 'Onboarding completion failed. Please try again.');
             }
 
             return true;
         } catch (error) {
-            console.error('Onboarding completion error:', error);
+            console.warn('Onboarding completion error:', error);
             Alert.alert('Onboarding completion failed. Please try again');
         }
     }
@@ -303,10 +287,10 @@ export function UserContextProvider({ children }) {
             }
 
             setUserFromProfileResponse(data);
-            return true;
+            return {imageIndex: data.user_info.image_index};
         }
         catch (error) {
-            console.error('Get user profile error:', error);
+            console.warn('Get user profile error:', error);
             Alert.alert('Get user profile failed. Please try again');
         }
     }
@@ -324,11 +308,14 @@ export function UserContextProvider({ children }) {
                 return false;
             }
 
-            setImageFromResponse(data);
-            return true;
+            return {
+                imageId: data.image_id,
+                imageCategory: data.image_category,
+                imageLink: data.link,
+            };
         }
         catch (error) {
-            //console.error('Get image error:', error);
+            //console.warn('Get image error:', error);
             //Alert.alert('Get image failed. Please try again');
             return false;
         }
@@ -349,8 +336,28 @@ export function UserContextProvider({ children }) {
 
             return true;
         } catch (error) {
-            console.error('Reaction error:', error);
+            console.warn('Reaction error:', error);
             Alert.alert('Reaction failed. Please try again');
+        }
+    }
+
+    async function doUpdateImageIndex(user) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'update_profile' : 'update-profile'}/`;
+            const params = formatParams(user);
+            const res = await axios.post(API_ENDPOINT, params);
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Update card profile failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return true;
+        } catch (error) {
+            console.warn('Update card profile error:', error);
+            Alert.alert('Update card profile failed. Please try again');
         }
     }
 
@@ -378,7 +385,7 @@ export function UserContextProvider({ children }) {
     }
 
     function formatUserForImageUpload() {
-        const name = 'profile_' + String(userId) + '_' + String(moment().format());
+        const name = 'profile_' + String(userId) + '_' + String(moment.utc().format('YYYY-MM-DDTHH:mm:ss')) + '.jpg';
         const type = 'image/jpeg';
 
         let user = {
@@ -390,6 +397,7 @@ export function UserContextProvider({ children }) {
             user_id: userId,
             token,
             image_type: 'profile',
+            image_category: 6,
         };
 
         return user;
@@ -405,7 +413,7 @@ export function UserContextProvider({ children }) {
         return user;
     }
 
-    function formatUserForReaction(reactionType) {
+    function formatUserForReaction(reactionType, imageId) {
         let user = {
             uid: userId,
             token,
@@ -416,9 +424,20 @@ export function UserContextProvider({ children }) {
         return user;
     }
 
+    function formatUserForIndex(index) {
+        let user = {
+            user_id: userId,
+            token,
+            image_index: index,
+            info: formatUserInfo(),
+        }
+
+        return user;
+    }
+
     function formatUserInfo() {
         return {
-            birthday: birthday.trim(),
+            birthday: birthday?.trim() || '',
             connectWith: {
                 ageRange,
                 distance,
@@ -430,13 +449,15 @@ export function UserContextProvider({ children }) {
             imgUrl: profileImg,
             interests: [...interests],
             isOnboarded,
+            lastReaction,
             location: {
-                city: city.trim(),
-                state: state.trim(),
+                city: city?.trim() || '',
+                state: state?.trim() || '',
+                zip: zip?.trim() || '',
             },
             name: {
-                first: firstName.trim(),
-                last: lastName.trim(),
+                first: firstName?.trim() || '',
+                last: lastName?.trim() || '',
             },
         };
     }
@@ -446,6 +467,7 @@ export function UserContextProvider({ children }) {
         setUserId('');
         setToken('');
         setIsOnboarded(false);
+        setLastReaction(moment.utc().format('YYYY-MM-DDTHH:mm:ss'));
         setEmail('');
         setPassword('');
         setUsername('');
@@ -454,6 +476,7 @@ export function UserContextProvider({ children }) {
         setLastName('');
         setCity('');
         setState('');
+        setZip('');
         setDistance(defaultDistance);
         setBirthday('');
         setAgeRange(defaultAgeRange);

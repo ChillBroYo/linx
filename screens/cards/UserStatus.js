@@ -9,5 +9,6 @@ export default function UserStatusScreen({ navigation }) {
 	if(isOnboarded) {
 		return(<MainCardsScreen navigation={ navigation } />);
 	}
+
 	return(<WelcomeScreen navigation={ navigation } />);
 }

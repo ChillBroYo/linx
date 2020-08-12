@@ -1,38 +1,41 @@
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function TabBarIcon({ focused, name }) {
     switch (name) {
         case 'cards':
             return (
-                <Image
+                /*{<Image
                     source={( focused
                         ? require('../assets/icons/icon_selected_cards.png')
                         : require('../assets/icons/icon_gray_cards.png')
                     )}
                     style={styles.icon}
-                />
+                />}*/
+                <MaterialCommunityIcons name='cards-outline' size={50} color={focused ? '#439E73' : '#8D99AE'} />
             );
         case 'messages':
             return (
-                <Image
+                /*{<Image
                     source={( focused
                         ? require('../assets/icons/icon_selected_friends.png')
                         : require('../assets/icons/icon_gray_friends.png')
                     )}
                     style={styles.icon}
-                />
+                />}*/
+                <MaterialCommunityIcons name='message-text-outline' size={50} color={focused ? '#439E73' : '#8D99AE'} />
             );
         case 'settings':
             return (
-                <Image
+                /*{<Image
                     source={( focused
                         ? require('../assets/icons/icon_selected_settings.png')
                         : require('../assets/icons/icon_gray_settings.png')
                     )}
                     style={styles.icon}
-                />
+                />}*/
+                <MaterialCommunityIcons name='settings-outline' size={50} color={focused ? '#439E73' : '#8D99AE'} />
             );
         default:
             return null;
