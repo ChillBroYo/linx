@@ -34,6 +34,7 @@ export default function UserGender({ navigation }) {
         setGender: setContextGender,
         sameGender: contextSameGender,
         setSameGender: setContextSameGender,
+        doSignUpUser,
         doUpdateUser,
         formatUserForRequest,
     } = useContext(UserContext);
@@ -57,20 +58,27 @@ export default function UserGender({ navigation }) {
     }
 
     async function doSignUp() {
-        await doUpdateContext();
-        navigation.navigate('SignUpInterests');
+        const user = getUserForRequest(false);
+        const isSignedUp = await doSignUpUser(user);
+        if (!isSignedUp) return;
+        navigation.navigate('SignIn', {data: true});
     }
 
     async function doUpdate() {
-        const user = formatUserForRequest(true);
-        user.info.gender = gender;
-        user.info.connectWith.sameGender = sameGender;
+        const user = getUserForRequest(true);
         doUpdateUser(user, doUpdateContext);
     }
 
     async function doUpdateContext() {
         await setContextGender(gender);
         await setContextSameGender(sameGender);
+    }
+
+    function getUserForRequest(isUpdate) {
+        const user = formatUserForRequest(isUpdate);
+        user.info.gender = gender;
+        user.info.connectWith.sameGender = sameGender;
+        return user;
     }
 
     return (
@@ -112,7 +120,7 @@ export default function UserGender({ navigation }) {
                 </LinearGradient>
                 <BarButton
                     active={!!gender}
-                    value={isSignUpScreen ? 'Continue' : 'Save'}
+                    value={isSignUpScreen ? 'Done' : 'Save'}
                     doPress={doSubmit}
                 />
             </View>

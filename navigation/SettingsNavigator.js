@@ -4,7 +4,6 @@ import SettingsHome from '../screens/Settings';
 import SettingsBirthday from '../screens/user/Birthday';
 import SettingsEmail from '../screens/user/Email';
 import SettingsGender from '../screens/user/Gender';
-import SettingsInterests from '../screens/user/Interests';
 import SettingsLocation from '../screens/user/Location';
 import SettingsPassword from '../screens/user/Password';
 import SettingsProfile from '../screens/user/Profile';
@@ -17,7 +16,6 @@ const SettingsStack = createStackNavigator(
         SettingsEmail,
         SettingsGender,
         SettingsHome,
-        SettingsInterests,
         SettingsLocation,
         SettingsPassword,
         SettingsProfile,
