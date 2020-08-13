@@ -14,14 +14,15 @@ export default function WelcomeScreen1({ navigation }) {
 
     return (
         <View style={globalStyles.outerContainer}>
-            <LinearGradient colors={darkGradient} style={{height: '100%'}}>
+            <LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
                 <SafeAreaView style={globalStyles.innerContainer}>
                     <View style={globalStyles.noTitleContainer} />
                     <View style={globalStyles.paginationContainer}>
                         <Text style={globalStyles.subtitleText}>Welcome!</Text>
                     </View>
-                    <View style={globalStyles.contentContainer}>
+                    <View style={globalStyles.contentContainerImg}>
                         <Text style={globalStyles.content}>Linx connects you with like minded people for new friendships.</Text>
+                        <Image source={require('../../assets/images/welcome1.png')} style={globalStyles.imageContent} />
                     </View>
                     <View style={globalStyles.blankContainer} />
                     <View style={globalStyles.emojiContainer}>

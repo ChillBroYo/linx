@@ -113,15 +113,19 @@ export default function MainCardsScreen({ navigation }) {
 
 	return(
 		<View style={globalStyles.outerContainer}>
-      		<LinearGradient colors={darkGradient} style={{height: '100%'}}>
+      		<LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
       			<SafeAreaView style={globalStyles.innerContainer}>
                     <View style={globalStyles.noTitleContainer} />
                     <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
                         <Text style={globalStyles.subtitleText}>{(imageIndex % 15) + 1} / 15</Text>
                     </Animated.View>
-       				<View style={globalStyles.contentContainer}>
+       				<View style={globalStyles.contentContainerCard}>
                         <Animated.Image source={imageLink ? { uri: imageLink } : null} onLoad={() => fadeIn.start()}
-                            style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
+                            style={[globalStyles.cardContent, {opacity: fadeAnim}]} />
+
+                        {/*Area of screen that displayes description of card*/}
+                        {/*<Animated.Text style={[globalStyles.cardDesc, {opacity: fadeAnim}]}>Test Description</Animated.Text>*/}
+                        
        				</View>
        				<Animated.View style={[globalStyles.blankContainer, {opacity: fadeAnim}]} />
        				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>

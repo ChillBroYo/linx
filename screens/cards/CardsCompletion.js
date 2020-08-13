@@ -25,7 +25,7 @@ export default function CardsCompletionScreen({ navigation }) {
 
 	return(
 		<View style={globalStyles.outerContainer}>
-      		<LinearGradient colors={darkGradient} style={{height: '100%'}}>
+      		<LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
       			<SafeAreaView style={globalStyles.innerContainer}>
                     <Animated.View style={[globalStyles.titleContainer, {opacity: fadeAnim}]}>
                         <Text style={globalStyles.whiteTitle}>Please Wait</Text>
@@ -33,7 +33,7 @@ export default function CardsCompletionScreen({ navigation }) {
                     <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
                         <Text style={globalStyles.subtitleText}>until new cards are available</Text>
                     </Animated.View>
-       				<View style={globalStyles.contentContainer}>
+       				<View style={globalStyles.contentContainerImg}>
                         <Animated.Image source={require('../../assets/images/cards_completion.png')} onLoad={() => fadeIn.start()}
                         style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
        				</View>

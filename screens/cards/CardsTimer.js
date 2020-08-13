@@ -37,7 +37,7 @@ export default function CardsTimerScreen({ navigation, lastReaction }) {
 
 	return(
 		<View style={globalStyles.outerContainer}>
-      		<LinearGradient colors={darkGradient} style={{height: '100%'}}>
+      		<LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
       			<SafeAreaView style={globalStyles.innerContainer}>
                     <Animated.View style={[globalStyles.titleContainer, {opacity: fadeAnim}]}>
                         <CountDown until={diff} size={35} timeToShow={['H', 'M', 'S']} timeLabels={{h: null, m: null, s: null}} showSeparator={true}
@@ -48,7 +48,7 @@ export default function CardsTimerScreen({ navigation, lastReaction }) {
                     <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
                         <Text style={globalStyles.subtitleText}>until new cards are available</Text>
                     </Animated.View>
-       				<View style={globalStyles.contentContainer}>
+       				<View style={globalStyles.contentContainerImg}>
                         <Animated.Image source={require('../../assets/images/cards_completion.png')} onLoad={() => fadeIn.start()}
                             style={[globalStyles.imageContent, {opacity: fadeAnim}]}
                         />
@@ -64,7 +64,7 @@ export default function CardsTimerScreen({ navigation, lastReaction }) {
                         </TouchableOpacity>
                     </Animated.View>
                     <Animated.View style={[globalStyles.confettiContainer, {opacity: fadeAnim}]}>
-                        <ConfettiCannon count={100} origin={{ x: 175, y: 125 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
+                        <ConfettiCannon count={100} origin={{ x: 0, y: 0 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
                             autoStart={false} ref={cannon}
                         />
                     </Animated.View>

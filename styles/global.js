@@ -4,6 +4,9 @@ import {wp, hp} from './helpers';
 export const globalStyles = StyleSheet.create({
 	outerContainer: {
 	},
+	gradientContainer: {
+		height: '100%'
+	},
 	innerContainer: {
 		alignItems: 'center'
 	},
@@ -23,7 +26,7 @@ export const globalStyles = StyleSheet.create({
 		fontSize: 35
 	},
 	paginationContainer: {
-		marginVertical: hp(30)
+		marginVertical: hp(20)
 	},
 	paginationIcon: {
 		resizeMode: 'contain'
@@ -33,12 +36,41 @@ export const globalStyles = StyleSheet.create({
 		color: '#FFF',
 		fontSize: 20
 	},
-	contentContainer: {
-		//alignItems: 'center',
+	contentContainerText: {
 		backgroundColor: '#FFF',
 		width: wp(340),
 		height: hp(380),
 		padding: 30,
+		borderRadius: 10,
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+		elevation: 5,
+		zIndex: 1,
+		alignItems: 'center',
+	},
+	contentContainerImg: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: '#FFF',
+		width: wp(340),
+		height: hp(380),
+		paddingHorizontal: wp(30),
+		borderRadius: 10,
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+		elevation: 5,
+		zIndex: 1
+	},
+	contentContainerCard: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: '#FFF',
+		width: wp(340),
+		height: hp(380),
 		borderRadius: 10,
 		shadowColor: '#000',
 		shadowOffset: { width: 0, height: 2 },
@@ -50,27 +82,32 @@ export const globalStyles = StyleSheet.create({
 	content: {
 		fontSize: 23,
 		color: '#1B1B1B',
-		//width: 285,
-		//top: 30,
+		marginBottom: hp(20)
 	},
 	imageContent: {
-		width: wp(330),
-        height: hp(330),
-        top: 5,
         resizeMode: 'contain',
+	},
+	cardContent: {
+		width: wp(330),
+		height: hp(330),
+		resizeMode: 'contain'
+	},
+	cardDesc: {
+		fontSize: 20,
+		color: '#2B2D42'
 	},
 	blankContainer: {
 		alignItems: 'center',
 		backgroundColor: '#FFF',
 		width: wp(280),
 		height: hp(40),
-		marginTop: 0,
+		marginTop: -hp(20),
 		borderRadius: 10,
 		shadowColor: '#000',
 		shadowOffset: { width: 0, height: 2 },
 		shadowOpacity: 0.25,
 		shadowRadius: 3.84,
-		elevation: 5,
+		elevation: 4,
 		zIndex: 0
 	},
 	verifyContainer: {
@@ -78,7 +115,7 @@ export const globalStyles = StyleSheet.create({
 		backgroundColor: '#439E73',
 		width: wp(280),
 		height: hp(40),
-		top: 65,
+		marginTop: -hp(20),
 		borderRadius: 10,
 		shadowColor: '#000',
 		shadowOffset: { width: 0, height: 2 },
@@ -89,9 +126,9 @@ export const globalStyles = StyleSheet.create({
 	},
 	noContainer: {
 		backgroundColor: 'transparent',
-		width: 280,
-		height: 40,
-		top: 65,
+		width: wp(280),
+		height: hp(40),
+		marginTop: -hp(20)
 	},
 	verify: {
 		fontSize: 23,
@@ -100,21 +137,21 @@ export const globalStyles = StyleSheet.create({
 	},
 	emojiContainer: {
 		flexDirection: 'row',
+		alignSelf: 'stretch',
 		justifyContent: 'space-around',
-		//marginBottom: hp(0),
+		marginVertical: hp(25),
+		elevation: 7,
 		zIndex: 3
 	},
 	emojiSymbol: {
 	},
 	emojiStyle: {
-		fontSize: 80,
-		textShadowColor: 'rgba(0, 0, 0, 0.25)',
-		textShadowOffset: {width: 0, height: 4},
-		textShadowRadius: 4
+		fontSize: 80
 	},
 	confettiContainer: {
+		elevation: 6,
     	zIndex: 2,
-    	top: 175,
-    	alignItems: 'center'
+    	bottom: -80,
+    	alignSelf: 'flex-start'
   }
 });
