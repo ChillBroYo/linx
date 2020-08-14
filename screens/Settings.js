@@ -8,6 +8,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient} from 'expo-linear-gradient';
 import {
@@ -51,7 +52,8 @@ export default function Settings({ navigation }) {
         navigation.navigate('SettingsLocation');
     }
 
-    function doLogout() {
+    async function doLogout() {
+        await removeStoredData();
         navigation.navigate('SignIn', {data: true});
     }
 
@@ -61,6 +63,15 @@ export default function Settings({ navigation }) {
 
     function doProfile() {
         navigation.navigate('SettingsProfile');
+    }
+
+    async function removeStoredData() {
+        try {
+            await AsyncStorage.multiRemove(['@username', '@password', '@signin']);
+        }
+        catch (error) {
+            console.warn('AsyncStorage remove error: ', error);
+        }
     }
 
     return (
