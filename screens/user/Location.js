@@ -35,8 +35,8 @@ export default function UserLocation({ navigation }) {
     const {
         city: contextCity,
         setCity: setContextCity,
-        state: contextState,
-        setState: setContextState,
+        // state: contextState,
+        // setState: setContextState,
         zip: contextZip,
         setZip: setContextZip,
         distance: contextDistance,
@@ -45,7 +45,7 @@ export default function UserLocation({ navigation }) {
         formatUserForRequest,
     } = useContext(UserContext);
     const [city, setCity] = useState(contextCity);
-    const [state, setState] = useState(contextState);
+    // const [state, setState] = useState(contextState);
     const [zip, setZip] = useState(contextZip);
     const [distance, setDistance] = useState(contextDistance);
     const [showPicker, setShowPicker] = useState(false);
@@ -75,14 +75,14 @@ export default function UserLocation({ navigation }) {
         const user = formatUserForRequest(true);
         user.info.connectWith.distance = distance;
         user.info.location.city = city.trim();
-        user.info.location.state = state.trim();
+        // user.info.location.state = state.trim();
         user.info.location.zip = zip.trim();
         doUpdateUser(user, doUpdateContext);
     }
 
     async function doUpdateContext() {
         await setContextCity(city.trim());
-        await setContextState(state.trim());
+        // await setContextState(state.trim());
         await setContextZip(zip.trim());
         await setContextDistance(distance);
     }
@@ -91,9 +91,9 @@ export default function UserLocation({ navigation }) {
         if (!city) {
             return Alert.alert('City is empty');
         }
-        else if (!state) {
-            return Alert.alert('State is empty');
-        }
+        // else if (!state) {
+        //     return Alert.alert('State is empty');
+        // }
         else if (!zip) {
             return Alert.alert('ZIP Code is empty');
         }
@@ -148,6 +148,7 @@ export default function UserLocation({ navigation }) {
                                         onValueChange={(itemValue) => setCity(itemValue)}
                                         selectedValue={city}
                                     >
+                                        <Picker.Item label='Select an area' value='' />
                                         <Picker.Item label='San Francisco Bay Area' value='San Francisco Bay Area' />
                                         <Picker.Item label='Los Angeles Area' value='Los Angeles Area' />
                                     </Picker>
@@ -184,7 +185,7 @@ export default function UserLocation({ navigation }) {
                     </ScrollView>
                 </LinearGradient>
                 <BarButton
-                    active={!!(city && state && zip)}
+                    active={!!(city && zip)}
                     value={isSignUpScreen ? 'Continue' : 'Save'}
                     doPress={doSubmit}
                 />
