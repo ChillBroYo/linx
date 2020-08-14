@@ -8,6 +8,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient} from 'expo-linear-gradient';
 import {
@@ -29,8 +30,6 @@ export default function Settings({ navigation }) {
         ageRange,
         gender,
         sameGender,
-        interests,
-        sameInterests,
     } = useContext(UserContext);
 
     useEffect(() => {
@@ -49,15 +48,12 @@ export default function Settings({ navigation }) {
         navigation.navigate('SettingsGender');
     }
 
-    function doInterests() {
-        navigation.navigate('SettingsInterests');
-    }
-
     function doLocation() {
         navigation.navigate('SettingsLocation');
     }
 
-    function doLogout() {
+    async function doLogout() {
+        await removeStoredData();
         navigation.navigate('SignIn', {data: true});
     }
 
@@ -67,6 +63,15 @@ export default function Settings({ navigation }) {
 
     function doProfile() {
         navigation.navigate('SettingsProfile');
+    }
+
+    async function removeStoredData() {
+        try {
+            await AsyncStorage.multiRemove(['@username', '@password', '@signin']);
+        }
+        catch (error) {
+            console.warn('AsyncStorage remove error: ', error);
+        }
     }
 
     return (
@@ -112,17 +117,6 @@ export default function Settings({ navigation }) {
                                     <Text style={styles.settingHeader}>I'm a</Text>
                                     <Text style={styles.settingsText}>{gender}</Text>
                                     <Text>Connect with {sameGender ? 'people like me' : 'everyone'}</Text>
-                                </View>
-                                <Ionicons name="ios-arrow-forward" size={20} />
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <View style={styles.divider} />
-                        <TouchableWithoutFeedback onPress={doInterests}>
-                            <View style={styles.row}>
-                                <View style={styles.column}>
-                                    <Text style={styles.settingHeader}>I like</Text>
-                                    <Text>{interests.size} {interests.size == 1 ? 'thing' : 'things'}</Text>
-                                    <Text>Connect with {sameInterests ? 'people with similar interests' : 'everyone'}</Text>
                                 </View>
                                 <Ionicons name="ios-arrow-forward" size={20} />
                             </View>
