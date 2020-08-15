@@ -22,7 +22,7 @@ export default class App extends Component {
     }
     catch(error) {
       alert(`An error occurred: ${error}`);
-    }    
+    }
   }
 
   determinePronoun() {
@@ -100,9 +100,6 @@ export default class App extends Component {
               <Text style={styles.subheading}>{`${pronoun} ${isPronounThey ? "are" : "is"}`}</Text>
               <Text style={styles.infoLine}>{`${this.determineAge()} years old ${this.determineGender()}`}</Text>
               <View style={styles.separator} />
-              <Text style={styles.subheading}>{`${pronoun} ${isPronounThey ? "like" : "likes"}`}</Text>
-              <Text style={styles.infoLine}>{contactInfo.interests ? contactInfo.interests.join(", ") : ""}</Text>
-              <View style={styles.separator} />
 
               {/* TODO: Add images users both liked*/}
               {/*
@@ -115,7 +112,7 @@ export default class App extends Component {
                 }
               </ScrollView>
               */}
-            
+
             </ScrollView>
             <View style={styles.separator} />
             <TouchableOpacity onPress={goBackToChat} style={{...styles.chatBar, ...iOSPlatformBottom}}><Text style={styles.chatText}>Chat</Text></TouchableOpacity>
@@ -170,7 +167,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: '7%',
     flex: 1,
-  }, 
+  },
   chatBar: {
     backgroundColor: '#449E73',
     width: '100%',

@@ -3,6 +3,7 @@ import {
     Alert,
     Image,
     ImageBackground,
+    Modal,
     SafeAreaView,
     StyleSheet,
     Text,
@@ -13,6 +14,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
+import Loader from '../components/Loader';
 import { UserContext } from '../contexts/UserContext';
 import { green, white } from '../constants/Colors';
 import {
@@ -31,7 +33,7 @@ export default function SignIn({ navigation }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [autoLogin, setAutoLogin] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(false);
 
     useLayoutEffect(() => {
         // reset sign up state on screen load
@@ -72,14 +74,14 @@ export default function SignIn({ navigation }) {
 
     async function getData() {
         try {
-            const values = await AsyncStorage.multiGet(['@username', '@password', '@signin']);            
+            const values = await AsyncStorage.multiGet(['@username', '@password', '@signin']);
             if (values[0][1] !== null && values[1][1] !== null) {
                 setUsername(values[0][1]);
                 setPassword(values[1][1]);
                 if (navigation.getParam('data') !== undefined) updateData();
                 if (navigation.getParam('data') === undefined && values[2][1] !== null) setAutoLogin(true);
             }
-            
+
         }
         catch (error) {
             console.warn('AsyncStorage get error: ', error);
@@ -96,14 +98,17 @@ export default function SignIn({ navigation }) {
     }
 
     async function doSignIn() {
+        setIsLoading(true);
         const user = { username, password };
         const isSignedIn = await doSignInUser(user);
         if (!isSignedIn) {
             updateData();
             setAutoLogin(false);
+            setIsLoading(false);
             return;
         }
         storeData();
+        setIsLoading(false);
         navigation.navigate('Cards');
     }
 
@@ -124,45 +129,48 @@ export default function SignIn({ navigation }) {
     };
 
     return (
-        <View style={styles.container}>
-            <ImageBackground source={BACKGROUND_IMAGE} style={styles.background}>
-                <SafeAreaView style={styles.wrapper}>
-                    <View style={styles.column}>
-                        <Image source={LINX_LOGO} style={styles.header} />
-                        <TextInput
-                            placeholder='Username'
-                            value={username}
-                            onChangeText={(username) => setUsername(username)}
-                            clearButtonMode='while-editing'
-                            style={styles.input}
-                        />
-                        <TextInput
-                            placeholder='Password'
-                            value={password}
-                            onChangeText={(password) => setPassword(password)}
-                            clearButtonMode='while-editing'
-                            secureTextEntry={true}
-                            style={styles.input}
-                        />
-                        <TouchableOpacity activeOpacity={0.8} onPress={doSignIn}>
-                            <View style={{...styles.button, ...styles.buttonColored}}>
-                                <Text style={{...styles.buttonText, color: white}}>Sign in</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity activeOpacity={0.8} onPress={onSignUp}>
-                            <View style={{...styles.button, ...styles.buttonTransparent}}>
-                                <Text style={{...styles.buttonText, color: green}}>Sign up</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                </SafeAreaView>
-                <TouchableWithoutFeedback onPress={onForgotPassword}>
-                    <SafeAreaView style={styles.forgotPassword}>
-                        <Text style={{...styles.buttonText, color: white}}>Forgot password</Text>
+        <>
+            <View style={styles.container}>
+                <ImageBackground source={BACKGROUND_IMAGE} style={styles.background}>
+                    <SafeAreaView style={styles.wrapper}>
+                        <View style={styles.column}>
+                            <Image source={LINX_LOGO} style={styles.header} />
+                            <TextInput
+                                placeholder='Username'
+                                value={username}
+                                onChangeText={(username) => setUsername(username)}
+                                clearButtonMode='while-editing'
+                                style={styles.input}
+                            />
+                            <TextInput
+                                placeholder='Password'
+                                value={password}
+                                onChangeText={(password) => setPassword(password)}
+                                clearButtonMode='while-editing'
+                                secureTextEntry={true}
+                                style={styles.input}
+                            />
+                            <TouchableOpacity activeOpacity={0.8} onPress={doSignIn}>
+                                <View style={{...styles.button, ...styles.buttonColored}}>
+                                    <Text style={{...styles.buttonText, color: white}}>Sign in</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity activeOpacity={0.8} onPress={onSignUp}>
+                                <View style={{...styles.button, ...styles.buttonTransparent}}>
+                                    <Text style={{...styles.buttonText, color: green}}>Sign up</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
                     </SafeAreaView>
-                </TouchableWithoutFeedback>
-            </ImageBackground>
-        </View>
+                    <TouchableWithoutFeedback onPress={onForgotPassword}>
+                        <SafeAreaView style={styles.forgotPassword}>
+                            <Text style={{...styles.buttonText, color: white}}>Forgot password</Text>
+                        </SafeAreaView>
+                    </TouchableWithoutFeedback>
+                </ImageBackground>
+            </View>
+            <Loader visible={isLoading} />
+        </>
     );
 }
 
