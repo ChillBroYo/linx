@@ -1,12 +1,14 @@
 import React, { useContext, useState, useRef } from 'react';
 import { Text, View, Image, Platform, Alert, Animated, TouchableOpacity } from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import { UserContext } from '../../contexts/UserContext';
 import { Camera } from 'expo-camera';
 import * as Linking from 'expo-linking';
 import { darkGradient } from '../../constants/Colors';
-import { scaling } from '../helpers';
+import Loader from '../../components/Loader';
+import { scaling, popup } from '../helpers';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
@@ -24,12 +26,15 @@ export default function ReviewProfileScreen({ navigation }) {
         formatUserForImageUpload,
     } = useContext(UserContext);
     const [profileImg, setProfileImg] = useState(contextProfileImg);
+    const [isLoading, setIsLoading] = useState(false);
 
     async function doUploadProfile() {
+        setIsLoading(true);
         const user = getUserForImageUpload();
         const isUploadedProfile = await doUploadProfileUser(user);
+        setIsLoading(false);
         if (!isUploadedProfile) return;
-        navigation.navigate('ConfirmProfile');
+        navigation.navigate('Welcome1');
     }
 
     function getUserForImageUpload() {
@@ -41,11 +46,10 @@ export default function ReviewProfileScreen({ navigation }) {
     async function checkPermission() {
         const { status } = await Camera.getPermissionsAsync();
         if (status === 'denied') {
-            Alert.alert('Permission Denied',
-                'Linx currently does not have permission to access Camera. Please go into Settings to grant Linx access.',
+            Alert.alert(popup.title, popup.message,
                 [
-                    { text: 'OK', style: 'cancel' },
-                    { text: 'Settings', onPress: () => Linking.openSettings()}
+                    { text: popup.btn1Text, style: 'cancel' },
+                    { text: popup.btn2Text, onPress: () => Linking.openSettings()}
                 ],
                 { cancelable: false }
             );
@@ -55,39 +59,40 @@ export default function ReviewProfileScreen({ navigation }) {
     }
 
     return (
-        <View style={globalStyles.outerContainer}>
-            <LinearGradient colors={darkGradient} style={{height: '100%'}}>
-                <View style={globalStyles.innerContainer}>
-                    <View style={globalStyles.titleContainer}>
-                        <Text style={globalStyles.whiteTitle}>Photo</Text>
-                    </View>
-                    <View style={globalStyles.paginationContainer}>
-                        <Image source={require('../../assets/icons/pagination_two.png')} style={globalStyles.paginationIcon} />
-                    </View>
-                    <View style={globalStyles.contentContainer}>
-                        <Image source={{ uri: photo.uri }} onLoad={() => setProfileImg(photo.uri)} style={globalStyles.imageContent} />
-                    </View>
-                    <View style={globalStyles.verifyContainer}>
-                        <Text style={globalStyles.verify} onPress={checkPermission}>Retake photo</Text>
-                    </View>
-                    <View style={globalStyles.emojiContainer}>
-                        <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim1)} onPressOut={() => scaling.pressOutAnim(emojiAnim1)}
-                            onPress={() => navigation.navigate('Profile')} style={scaling.scalingStyle(emojiAnim1)}
-                        >
-                            <Animated.View style={globalStyles.emojiSymbol}>
-                                <Emoji name="-1" style={globalStyles.emojiStyle} />
-                            </Animated.View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim2)} onPressOut={() => scaling.pressOutAnim(emojiAnim2)}
-                            onPress={doUploadProfile} style={scaling.scalingStyle(emojiAnim2)}
-                        >
-                            <Animated.View style={globalStyles.emojiSymbol}>
-                                <Emoji name="+1" style={globalStyles.emojiStyle} />
-                            </Animated.View>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </LinearGradient>
-        </View>
+        <>
+            <View style={globalStyles.outerContainer}>
+                <LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
+                    <SafeAreaView style={globalStyles.innerContainer}>
+                        <View style={globalStyles.titleContainer}>
+                            <Text style={globalStyles.whiteTitle}>Photo</Text>
+                        </View>
+                        <View style={globalStyles.paginationContainer} />
+                        <View style={globalStyles.contentContainerCard}>
+                            <Image source={{ uri: photo.uri }} onLoad={() => setProfileImg(photo.uri)} style={globalStyles.cardContent} />
+                        </View>
+                        <View style={globalStyles.verifyContainer}>
+                            <Text style={globalStyles.verify} onPress={checkPermission}>Retake photo</Text>
+                        </View>
+                        <View style={globalStyles.emojiContainer}>
+                            <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim1)} onPressOut={() => scaling.pressOutAnim(emojiAnim1)}
+                                onPress={() => navigation.navigate('Profile')} style={scaling.scalingStyle(emojiAnim1)}
+                            >
+                                <Animated.View style={globalStyles.emojiSymbol}>
+                                    <Emoji name="-1" style={globalStyles.emojiStyle} />
+                                </Animated.View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim2)} onPressOut={() => scaling.pressOutAnim(emojiAnim2)}
+                                onPress={doUploadProfile} style={scaling.scalingStyle(emojiAnim2)}
+                            >
+                                <Animated.View style={globalStyles.emojiSymbol}>
+                                    <Emoji name="+1" style={globalStyles.emojiStyle} />
+                                </Animated.View>
+                            </TouchableOpacity>
+                        </View>
+                    </SafeAreaView>
+                </LinearGradient>
+            </View>
+            <Loader visible={isLoading} />
+        </>
     );
 }

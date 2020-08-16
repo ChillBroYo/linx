@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Camera } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
@@ -49,58 +49,30 @@ export default function TakeProfileScreen({ navigation }) {
 
     //Case when permission has been approved
     return (
-        <View style={styles.cameraContainer}>
-            <Camera style={styles.camera} type={type} flashMode={'auto'} ref={camera} >
-                <View style={styles.cameraButtonContainer}>
-                    <TouchableOpacity style={styles.takePictureContainer} onPress={snap}>
-                        <Ionicons name="ios-camera" style={styles.takePicture} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.flipCameraContainer}
-                        onPress={() => {
-                            setType(type == Camera.Constants.Type.back
-                                ? Camera.Constants.Type.front
-                                : Camera.Constants.Type.back
-                            )
-                        }}
-                    >
-                        <Ionicons name="ios-reverse-camera" style={styles.flipCamera} />
-                    </TouchableOpacity>
-                </View>
-            </Camera>
+        <View style={globalStyles.cameraContainer}>
+            <View style={globalStyles.navigationButtonContainer}>
+                <TouchableOpacity style={globalStyles.backButtonContainer} onPress={() => navigation.goBack()}>
+                    <Ionicons name="ios-arrow-back" style={globalStyles.backButton} />
+                </TouchableOpacity>
+            </View>
+            <Camera style={globalStyles.camera} type={type} ref={camera} />
+            <View style={globalStyles.cameraButtonContainer}>
+                <View style={globalStyles.noIcon} />
+                <TouchableOpacity style={globalStyles.takePictureContainer} onPress={snap}>
+                    <Ionicons name="ios-camera" style={globalStyles.takePicture} />
+                </TouchableOpacity>
+                {<TouchableOpacity
+                    style={globalStyles.flipCameraContainer}
+                    onPress={() => {
+                        setType(type == Camera.Constants.Type.back
+                            ? Camera.Constants.Type.front
+                            : Camera.Constants.Type.back
+                        )
+                    }}
+                >
+                    <Ionicons name="ios-reverse-camera" style={globalStyles.flipCamera} />
+                </TouchableOpacity>}
+            </View>
         </View>
     );
 }
-
-//Styling of screen
-const styles = StyleSheet.create({
-    cameraContainer: {
-        flex: 1
-    },
-    camera: {
-        flex: 1
-    },
-    cameraButtonContainer: {
-        flex: 1,
-        backgroundColor: 'black',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'flex-end',
-        marginTop: 565
-    },
-    takePictureContainer: {
-        marginLeft: 120
-    },
-    takePicture: {
-        fontSize: 100,
-        marginBottom: 0,
-        color: 'white',
-    },
-    flipCameraContainer: {
-    },
-    flipCamera: {
-        fontSize: 50,
-        marginBottom: 10,
-        color: 'white',
-    },
-});

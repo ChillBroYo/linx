@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import WelcomeScreen1 from '../onboarding/Welcome1';
+import ProfileScreen from '../onboarding/Profile';
 import MainCardsScreen from './MainCards';
 import { UserContext } from '../../contexts/UserContext';
 
@@ -10,5 +10,5 @@ export default function UserStatusScreen({ navigation }) {
 		return(<MainCardsScreen navigation={ navigation } />);
 	}
 
-	return(<WelcomeScreen1 navigation={ navigation } />);
+	return(<ProfileScreen navigation={ navigation } />);
 }

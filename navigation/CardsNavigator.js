@@ -1,16 +1,9 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation';
-
-/*
-import WelcomeScreen from '../screens/onboarding/Welcome';
 import ProfileScreen from '../screens/onboarding/Profile';
 import TakeProfileScreen from '../screens/onboarding/TakeProfile';
 import ReviewProfileScreen from '../screens/onboarding/ReviewProfile';
-import ConfirmProfileScreen from '../screens/onboarding/ConfirmProfile';
 import DenyProfileScreen from '../screens/onboarding/DenyProfile';
-import ConfirmDenialScreen from '../screens/onboarding/ConfirmDenial';
-*/
-
 import WelcomeScreen1 from '../screens/onboarding/Welcome1';
 import WelcomeScreen2 from '../screens/onboarding/Welcome2';
 import WelcomeScreen3 from '../screens/onboarding/Welcome3';
@@ -20,18 +13,11 @@ import TabBarIcon from '../components/TabBarIcon';
 
 const CardsStack = createStackNavigator(
     {
-        /*
-        ConfirmDenial: ConfirmDenialScreen,
-        ConfirmProfile: ConfirmProfileScreen,
-        DenyProfile: DenyProfileScreen,
-        MainCards: MainCardsScreen,
+        UserStatus: UserStatusScreen,
         Profile: ProfileScreen,
-        ReviewProfile: ReviewProfileScreen,
         TakeProfile: TakeProfileScreen,
-        UserStatus: UserStatusScreen,
-        Welcome: WelcomeScreen,
-        */
-        UserStatus: UserStatusScreen,
+        ReviewProfile: ReviewProfileScreen,
+        DenyProfile: DenyProfileScreen,
         Welcome1: WelcomeScreen1,
         Welcome2: WelcomeScreen2,
         Welcome3: WelcomeScreen3,

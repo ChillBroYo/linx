@@ -26,7 +26,8 @@ export const globalStyles = StyleSheet.create({
 		fontSize: 35
 	},
 	paginationContainer: {
-		marginVertical: hp(20)
+		marginVertical: hp(20),
+		height: 20
 	},
 	paginationIcon: {
 		resizeMode: 'contain'
@@ -40,7 +41,8 @@ export const globalStyles = StyleSheet.create({
 		backgroundColor: '#FFF',
 		width: wp(340),
 		height: hp(380),
-		padding: 30,
+		paddingTop: hp(45),
+		paddingHorizontal: wp(30),
 		borderRadius: 10,
 		shadowColor: '#000',
 		shadowOffset: { width: 0, height: 2 },
@@ -80,7 +82,7 @@ export const globalStyles = StyleSheet.create({
 		zIndex: 1
 	},
 	content: {
-		fontSize: 23,
+		fontSize: 22,
 		color: '#1B1B1B',
 		marginBottom: hp(20)
 	},
@@ -112,10 +114,12 @@ export const globalStyles = StyleSheet.create({
 	},
 	verifyContainer: {
 		alignItems: 'center',
+		justifyContent: 'center',
 		backgroundColor: '#439E73',
 		width: wp(280),
 		height: hp(40),
 		marginTop: -hp(20),
+		paddingVertical: hp(7),
 		borderRadius: 10,
 		shadowColor: '#000',
 		shadowOffset: { width: 0, height: 2 },
@@ -131,9 +135,8 @@ export const globalStyles = StyleSheet.create({
 		marginTop: -hp(20)
 	},
 	verify: {
-		fontSize: 23,
-		color: '#FFF',
-		top: 5
+		fontSize: 20,
+		color: '#FFF'
 	},
 	emojiContainer: {
 		flexDirection: 'row',
@@ -153,5 +156,45 @@ export const globalStyles = StyleSheet.create({
     	zIndex: 2,
     	bottom: -80,
     	alignSelf: 'flex-start'
-  }
+  	},
+  	cameraContainer: {
+        flex: 1
+    },
+    navigationButtonContainer: {
+        flex: 1,
+        backgroundColor: 'black',
+        justifyContent: 'center'
+    },
+    backButtonContainer: {
+        marginLeft: hp(35)
+    },
+    backButton: {
+        color: 'white',
+        fontSize: 50,
+    },
+    camera: {
+        flex: 5
+    },
+    cameraButtonContainer: {
+        flex: 1,
+        backgroundColor: 'black',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center'
+    },
+    noIcon: {
+    	width: 50
+    },
+    takePictureContainer: {
+    },
+    takePicture: {
+        fontSize: 100,
+        color: 'white',
+    },
+    flipCameraContainer: {
+    },
+    flipCamera: {
+        fontSize: 50,
+        color: 'white',
+    }
 });
