@@ -22,7 +22,7 @@ export default class App extends Component {
     }
     catch(error) {
       alert(`An error occurred: ${error}`);
-    }    
+    }
   }
 
   determinePronoun() {
@@ -79,6 +79,14 @@ export default class App extends Component {
     const pronoun = this.determinePronoun();
     const isPronounThey = pronoun === "They" ? true : false;
 
+    //Variable which will contain list of common images users reacted to
+    /*
+    const commonImgs = ['https://linx-images.s3-us-west-2.amazonaws.com/g0.png',
+    'https://linx-images.s3-us-west-2.amazonaws.com/g1.png',
+    'https://linx-images.s3-us-west-2.amazonaws.com/g2.png',
+    'https://linx-images.s3-us-west-2.amazonaws.com/g3.png'];
+    */
+
     return (
       <View>
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
@@ -92,10 +100,21 @@ export default class App extends Component {
               <Text style={styles.subheading}>{`${pronoun} ${isPronounThey ? "are" : "is"}`}</Text>
               <Text style={styles.infoLine}>{`${this.determineAge()} years old ${this.determineGender()}`}</Text>
               <View style={styles.separator} />
-              <Text style={styles.subheading}>{`${pronoun} ${isPronounThey ? "like" : "likes"}`}</Text>
-              <Text style={styles.infoLine}>{contactInfo.interests ? contactInfo.interests.join(", ") : ""}</Text>
-              <View style={styles.separator} />
+
+              {/* TODO: Add images users both liked*/}
+              {/*
+              <Text style={styles.subheading}>You both liked</Text>
+              <ScrollView horizontal={true}>
+                {
+                  commonImgs.map((url, index) => {
+                    return(<Image source={{ uri: url }} style={styles.image} />)
+                  })
+                }
+              </ScrollView>
+              */}
+
             </ScrollView>
+            <View style={styles.separator} />
             <TouchableOpacity onPress={goBackToChat} style={{...styles.chatBar, ...iOSPlatformBottom}}><Text style={styles.chatText}>Chat</Text></TouchableOpacity>
           </View>
         </LinearGradient>
@@ -148,7 +167,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: '7%',
     flex: 1,
-  }, 
+  },
   chatBar: {
     backgroundColor: '#449E73',
     width: '100%',
@@ -164,8 +183,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '700',
     letterSpacing: 1
+  },
+  image: {
+    width: 150,
+    height: 150,
+    marginHorizontal: 5,
   }
-
-
 });
 

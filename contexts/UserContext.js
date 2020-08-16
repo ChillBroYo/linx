@@ -20,7 +20,6 @@ export function UserContextProvider({ children }) {
     // default values
     const defaultDistance = 25;
     const defaultAgeRange = [23, 29];
-    const defaultInterests = new Set();
 
     const [expoPushToken, setExpoPushToken] = useState('');
     const [userId, setUserId] = useState('');
@@ -41,8 +40,6 @@ export function UserContextProvider({ children }) {
     const [ageRange, setAgeRange] = useState(defaultAgeRange);
     const [gender, setGender] = useState('');
     const [sameGender, setSameGender] = useState(false);
-    const [interests, setInterests] = useState(defaultInterests);
-    const [sameInterests, setSameInterests] = useState(false);
     const [imagesVisited, setImagesVisited] = useState([]);
     const [friends, setFriends] = useState([]);
 
@@ -66,8 +63,6 @@ export function UserContextProvider({ children }) {
         ageRange, setAgeRange,
         gender, setGender,
         sameGender, setSameGender,
-        interests, setInterests,
-        sameInterests, setSameInterests,
         imagesVisited, setImagesVisited,
         friends, setFriends,
         setUserFromResponse,
@@ -105,7 +100,6 @@ export function UserContextProvider({ children }) {
             lastReaction,
             birthday,
             gender,
-            interests,
             connectWith,
             location,
             name,
@@ -114,7 +108,6 @@ export function UserContextProvider({ children }) {
             ageRange,
             distance,
             sameGender,
-            sameInterests,
         } = connectWith;
         const { city, state, zip } = location;
 
@@ -134,9 +127,6 @@ export function UserContextProvider({ children }) {
         setDistance(distance);
         setGender(gender);
         setSameGender(sameGender);
-        setInterests(new Set(interests));
-        setSameInterests(sameInterests);
-        setFriends(JSON.parse(friends));
 
         // update existing users with expo push token
         if (!info.expoPushToken && expoPushToken) {
@@ -378,10 +368,6 @@ export function UserContextProvider({ children }) {
             delete user.password;
             user.user_id = userId;
             user.token = token;
-            // TODO: fields below need to be updated
-            // user.image_index = 0;
-            // user.images_visited = [];
-            // user.friends = [];
         }
 
         return user;
@@ -445,12 +431,10 @@ export function UserContextProvider({ children }) {
                 ageRange,
                 distance,
                 sameGender,
-                sameInterests,
             },
             expoPushToken,
             gender,
             imgUrl: profileImg,
-            interests: [...interests],
             isOnboarded,
             lastReaction,
             location: {
@@ -485,8 +469,6 @@ export function UserContextProvider({ children }) {
         setAgeRange(defaultAgeRange);
         setGender('');
         setSameGender(false);
-        setInterests(defaultInterests);
-        setSameInterests(false);
     }
 
     return (

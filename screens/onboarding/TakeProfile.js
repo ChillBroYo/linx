@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { LinearGradient} from 'expo-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Camera } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
+import { darkGradient } from '../../constants/Colors';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
@@ -29,7 +30,7 @@ export default function TakeProfileScreen({ navigation }) {
     if (hasPermission === null) {
         return (
             <View style={globalStyles.outerContainer}>
-                <LinearGradient colors={['#439E73', 'rgba(254, 241, 2, 0)']} style={{height: '100%'}} />
+                <LinearGradient colors={darkGradient} style={{height: '100%'}} />
             </View>
         );
     }

@@ -1,15 +1,19 @@
-import React, { useContext, useState } from 'react';
-import { Text, View, Image, Platform, Alert } from 'react-native';
-import { LinearGradient} from 'expo-linear-gradient';
+import React, { useContext, useState, useRef } from 'react';
+import { Text, View, Image, Platform, Alert, Animated, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import { UserContext } from '../../contexts/UserContext';
 import { Camera } from 'expo-camera';
 import * as Linking from 'expo-linking';
+import { darkGradient } from '../../constants/Colors';
+import { scaling } from '../helpers';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
 
 export default function ReviewProfileScreen({ navigation }) {
+    const emojiAnim1 = useRef(new Animated.Value(0)).current;
+    const emojiAnim2 = useRef(new Animated.Value(0)).current;
 
     const photo = navigation.getParam('data');
 
@@ -52,7 +56,7 @@ export default function ReviewProfileScreen({ navigation }) {
 
     return (
         <View style={globalStyles.outerContainer}>
-            <LinearGradient colors={['#439E73', 'rgba(254, 241, 2, 0)']} style={{height: '100%'}}>
+            <LinearGradient colors={darkGradient} style={{height: '100%'}}>
                 <View style={globalStyles.innerContainer}>
                     <View style={globalStyles.titleContainer}>
                         <Text style={globalStyles.whiteTitle}>Photo</Text>
@@ -67,12 +71,20 @@ export default function ReviewProfileScreen({ navigation }) {
                         <Text style={globalStyles.verify} onPress={checkPermission}>Retake photo</Text>
                     </View>
                     <View style={globalStyles.emojiContainer}>
-                        <View style={globalStyles.emojiSymbol}>
-                            <Emoji name="-1" style={globalStyles.emojiStyle} onPress={() => navigation.navigate('Profile')} />
-                        </View>
-                        <View style={globalStyles.emojiSymbol}>
-                            <Emoji name="+1" style={globalStyles.emojiStyle} onPress={doUploadProfile} />
-                        </View>
+                        <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim1)} onPressOut={() => scaling.pressOutAnim(emojiAnim1)}
+                            onPress={() => navigation.navigate('Profile')} style={scaling.scalingStyle(emojiAnim1)}
+                        >
+                            <Animated.View style={globalStyles.emojiSymbol}>
+                                <Emoji name="-1" style={globalStyles.emojiStyle} />
+                            </Animated.View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim2)} onPressOut={() => scaling.pressOutAnim(emojiAnim2)}
+                            onPress={doUploadProfile} style={scaling.scalingStyle(emojiAnim2)}
+                        >
+                            <Animated.View style={globalStyles.emojiSymbol}>
+                                <Emoji name="+1" style={globalStyles.emojiStyle} />
+                            </Animated.View>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </LinearGradient>

@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import {wp, hp} from './helpers';
 
 export const globalStyles = StyleSheet.create({
 	outerContainer: {
