@@ -22,10 +22,11 @@ import {
 } from '../../constants/Colors';
 import { UserContext } from "../../contexts/UserContext";
 import { getEnvVars } from '../../environment';
+import { useInterval, useIsMountedRef } from '../../helpers/hooks';
+
 const { apiUrl } = getEnvVars();
 
 export default function Messages({ navigation }) {
-    let isMounted = useRef(null);
     const {
         friends,
         token,
@@ -34,26 +35,16 @@ export default function Messages({ navigation }) {
     const [friendsList, setFriendsList] = useState(null);
     const [messagesCount, setMessagesCount] = useState(null);
     const [messages, setMessages] = useState(null);
+    const isMountedRef = useIsMountedRef();
 
     useEffect(() => {
-        isMounted.current = true;
-
         getMessagesCount();
-
-        const intervalId = setInterval(() => {
-            if (isMounted.current) {
-                getMessagesCount();
-            }
-        }, 5000);
-
-        return () => {
-            isMounted.current = false;
-            clearInterval(intervalId);
-        }
     }, []);
 
+    useInterval(getMessagesCount, 5000);
+
     useEffect(() => {
-        if (!friends) return;
+        if (!friends.length) return;
 
         for (let id of friends) {
             getProfile(id);
@@ -78,7 +69,7 @@ export default function Messages({ navigation }) {
             }
             const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
             const data = res?.data;
-            if (data?.users) {
+            if (isMountedRef.current && data?.users) {
                 await setMessagesCount(data.users);
             }
         }
@@ -99,7 +90,7 @@ export default function Messages({ navigation }) {
             };
             const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
             const data = res?.data;
-            if (data?.messages?.[0]) {
+            if (isMountedRef.current && data?.messages?.[0]) {
                 await setMessages({
                     ...(messages || {}),
                     [oid]: data.messages[0],
@@ -120,7 +111,7 @@ export default function Messages({ navigation }) {
             };
             const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
             const data = res?.data?.user_info;
-            if (data?.info) {
+            if (isMountedRef.current && data?.info) {
                 const info = JSON.parse(data.info);
                 const name = info.name;
                 await setFriendsList({
@@ -142,7 +133,7 @@ export default function Messages({ navigation }) {
             <SafeAreaView style={styles.headerWrapper}>
                 <Text style={styles.header}>Messages</Text>
             </SafeAreaView>
-            {!friends ? (
+            {!friends.length ? (
                 <View style={styles.loadingWrapper}>
                     <Text>You have no messages right now</Text>
                 </View>

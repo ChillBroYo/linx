@@ -127,6 +127,7 @@ export function UserContextProvider({ children }) {
         setDistance(distance);
         setGender(gender);
         setSameGender(sameGender);
+        setFriends(JSON.parse(friends));
 
         // update existing users with expo push token
         if (!info.expoPushToken && expoPushToken) {
