@@ -30,10 +30,9 @@ import {
     purple,
 } from '../../constants/Colors';
 import { UserContext } from "../../contexts/UserContext";
-import { getEnvVars } from '../../environment';
+import getApiEndpoint from '../../helpers/apiEndpoint';
 import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 
-const { apiUrl } = getEnvVars();
 const platform = Platform.OS;
 
 export default function Message({ navigation }) {
@@ -66,7 +65,7 @@ export default function Message({ navigation }) {
 
     async function getMessages() {
         try {
-            const API_ENDPOINT = `${apiUrl}/${['get', 'conversation'].join(__DEV__ ? '_' : '-')}`;
+            const API_ENDPOINT = getApiEndpoint(['get', 'conversation']);
             const queryParams = {
                 uid: userId,
                 oid: contact.id,
@@ -91,7 +90,7 @@ export default function Message({ navigation }) {
         if (!messageToSend) return;
 
         try {
-            const API_ENDPOINT = `${apiUrl}/${['add', 'message'].join(__DEV__ ? '_' : '-')}/`;
+            const API_ENDPOINT = getApiEndpoint(['add', 'message']);
             const reqBody = {
                 token,
                 uid: userId,

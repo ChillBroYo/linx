@@ -20,11 +20,9 @@ import {
     lightGradient,
     purple,
 } from '../../constants/Colors';
-import { UserContext } from "../../contexts/UserContext";
-import { getEnvVars } from '../../environment';
+import { UserContext } from '../../contexts/UserContext';
+import getApiEndpoint from '../../helpers/apiEndpoint';
 import { useInterval, useIsMountedRef } from '../../helpers/hooks';
-
-const { apiUrl } = getEnvVars();
 
 export default function Messages({ navigation }) {
     const {
@@ -61,12 +59,12 @@ export default function Messages({ navigation }) {
 
     async function getMessagesCount() {
         try {
-            const API_ENDPOINT = `${apiUrl}/${['get', 'conversation', 'list'].join(__DEV__ ? '_' : '-')}`;
+            const API_ENDPOINT = getApiEndpoint(['get', 'conversation', 'list']);
             const queryParams = {
                 uid: userId,
                 token,
                 limit: 1,
-            }
+            };
             const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
             const data = res?.data;
             if (isMountedRef.current && data?.users) {
@@ -80,7 +78,7 @@ export default function Messages({ navigation }) {
 
     async function getLastMessage(oid) {
         try {
-            const API_ENDPOINT = `${apiUrl}/${['get', 'conversation'].join(__DEV__ ? '_' : '-')}`;
+            const API_ENDPOINT = getApiEndpoint(['get', 'conversation']);
             const queryParams = {
                 uid: userId,
                 oid,
@@ -104,7 +102,7 @@ export default function Messages({ navigation }) {
 
     async function getProfile(uid) {
         try {
-            const API_ENDPOINT = `${apiUrl}/${['get', 'profile'].join(__DEV__ ? '_' : '-')}`;
+            const API_ENDPOINT = getApiEndpoint(['get', 'profile']);
             const queryParams = {
                 uid,
                 key: 123,

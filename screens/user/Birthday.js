@@ -9,7 +9,6 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { TextInputMask } from 'react-native-masked-text';
@@ -27,8 +26,6 @@ import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
-import { getEnvVars } from '../../environment';
-const { apiUrl } = getEnvVars();
 
 export default function UserBirthday({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);

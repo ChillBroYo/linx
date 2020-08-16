@@ -13,7 +13,6 @@ import {
     View
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import axios from 'axios';
 import Loader from '../components/Loader';
 import { UserContext } from '../contexts/UserContext';
 import { green, white } from '../constants/Colors';
@@ -21,8 +20,6 @@ import {
     addNotificationListener,
     registerForPushNotificationsAsync
 } from '../helpers/notifications';
-import { getEnvVars } from '../environment';
-const { apiUrl } = getEnvVars();
 
 export default function SignIn({ navigation }) {
     const {
