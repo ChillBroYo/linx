@@ -124,6 +124,7 @@ export default function MainCardsScreen({ navigation }) {
                             style={[globalStyles.cardContent, {opacity: fadeAnim}]} />
 
                         {/*Area of screen that displayes description of card*/}
+                        {/*Need to wait for cards to have descriptions before implementing*/}
                         {/*<Animated.Text style={[globalStyles.cardDesc, {opacity: fadeAnim}]}>Test Description</Animated.Text>*/}
                         
        				</View>

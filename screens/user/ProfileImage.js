@@ -12,7 +12,6 @@ import { UserContext } from '../../contexts/UserContext';
 import { globalStyles } from '../../styles/global';
 
 export default function UserProfileImage({ navigation }) {
-
     const [isLoading, setIsLoading] = useState(false);
 
     let camera = useRef();
@@ -87,7 +86,7 @@ export default function UserProfileImage({ navigation }) {
                     <TouchableOpacity style={globalStyles.takePictureContainer} onPress={snap}>
                         <Ionicons name="ios-camera" style={globalStyles.takePicture} />
                     </TouchableOpacity>
-                    {<TouchableOpacity
+                    <TouchableOpacity
                         style={globalStyles.flipCameraContainer}
                         onPress={() => {
                             setType(type == Camera.Constants.Type.back
@@ -97,7 +96,7 @@ export default function UserProfileImage({ navigation }) {
                         }}
                     >
                         <Ionicons name="ios-reverse-camera" style={globalStyles.flipCamera} />
-                    </TouchableOpacity>}
+                    </TouchableOpacity>
                 </View>
             </View>
             <Loader visible={isLoading} />

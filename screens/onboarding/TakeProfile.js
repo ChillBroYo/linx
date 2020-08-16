@@ -61,7 +61,7 @@ export default function TakeProfileScreen({ navigation }) {
                 <TouchableOpacity style={globalStyles.takePictureContainer} onPress={snap}>
                     <Ionicons name="ios-camera" style={globalStyles.takePicture} />
                 </TouchableOpacity>
-                {<TouchableOpacity
+                <TouchableOpacity
                     style={globalStyles.flipCameraContainer}
                     onPress={() => {
                         setType(type == Camera.Constants.Type.back
@@ -71,7 +71,7 @@ export default function TakeProfileScreen({ navigation }) {
                     }}
                 >
                     <Ionicons name="ios-reverse-camera" style={globalStyles.flipCamera} />
-                </TouchableOpacity>}
+                </TouchableOpacity>
             </View>
         </View>
     );
