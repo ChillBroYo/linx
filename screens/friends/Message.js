@@ -7,7 +7,6 @@ import {
     Image,
     KeyboardAvoidingView,
     Platform,
-    SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
@@ -15,6 +14,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import InView from "react-native-component-inview";
 import axios from 'axios';
 import moment from 'moment';
@@ -32,8 +32,6 @@ import {
 import { UserContext } from "../../contexts/UserContext";
 import getApiEndpoint from '../../helpers/apiEndpoint';
 import { useInterval, useIsMountedRef } from '../../helpers/hooks';
-
-const platform = Platform.OS;
 
 export default function Message({ navigation }) {
     const { token, userId } = useContext(UserContext);
@@ -122,7 +120,7 @@ export default function Message({ navigation }) {
         >
             <LinearGradient colors={lightGradient} style={styles.container}>
                 <View style={styles.banner}>
-                    <SafeAreaView style={styles.row}>
+                    <SafeAreaView edges={['top']} style={styles.row}>
                         <View style={styles.sideWrapper}>
                             <BackArrow doPress={doBack} />
                         </View>
@@ -192,7 +190,7 @@ export default function Message({ navigation }) {
                 />
 
                 <View style={styles.inputWrapper}>
-                    <SafeAreaView style={styles.row}>
+                    <SafeAreaView edges={['bottom']} style={styles.row}>
                         <TextInput
                             multiline
                             placeholder='Type your message'

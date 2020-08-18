@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
-    SafeAreaView,
     ScrollView,
     StatusBar,
     Text,
@@ -12,6 +11,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { TextInputMask } from 'react-native-masked-text';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
     Form,
     formStyles,
@@ -109,7 +109,7 @@ export default function UserBirthday({ navigation }) {
                 {isSignUpScreen && <TopBar />}
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
                     {isSignUpScreen && <ProgressBar step={4} totalSteps={TOTAL_STEPS} />}
-                    <SafeAreaView>
+                    <SafeAreaView edges={['top']}>
                         <BackArrow doPress={doBack} />
                     </SafeAreaView>
                     <ScrollView style={pageStyles.container}>

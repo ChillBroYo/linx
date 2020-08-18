@@ -3,7 +3,6 @@ import {
     Alert,
     Button,
     Image,
-    SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
@@ -11,6 +10,7 @@ import {
     TouchableHighlight,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import qs from 'query-string';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -128,7 +128,7 @@ export default function Messages({ navigation }) {
 
     return (
         <LinearGradient colors={lightGradient} style={styles.container}>
-            <SafeAreaView style={styles.headerWrapper}>
+            <SafeAreaView edges={['top']} style={styles.headerWrapper}>
                 <Text style={styles.header}>Messages</Text>
             </SafeAreaView>
             {!friends.length ? (

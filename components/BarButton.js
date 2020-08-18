@@ -4,13 +4,13 @@ import {
     Text,
     TouchableOpacity,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { grey, white } from '../constants/Colors';
-import { SafeAreaView } from 'react-navigation';
 
 export default function BarButton({ active, value, doPress }) {
     return (
         <TouchableOpacity activeOpacity={0.8} onPress={doPress}>
-            <SafeAreaView style={[styles.button, active ? styles.buttonActive : null]}>
+            <SafeAreaView edges={['bottom']} style={[styles.button, active ? styles.buttonActive : null]}>
                 <Text style={styles.text}>{value}</Text>
             </SafeAreaView>
         </TouchableOpacity>

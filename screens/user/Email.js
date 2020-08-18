@@ -2,13 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
-    SafeAreaView,
     ScrollView,
     StatusBar,
     TextInput,
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
     Form,
@@ -65,7 +65,7 @@ export default function UserEmail({ navigation }) {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={pageStyles.container}>
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
-                    <SafeAreaView>
+                    <SafeAreaView edges={['top']}>
                         <BackArrow doPress={doBack} />
                     </SafeAreaView>
                     <ScrollView style={pageStyles.container}>

@@ -2,13 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
-    SafeAreaView,
     ScrollView,
     StatusBar,
     TextInput,
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
     Form,
@@ -97,7 +97,7 @@ export default function UserCredentials({ navigation }) {
                 <TopBar />
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
                     <ProgressBar step={1} totalSteps={TOTAL_STEPS} />
-                    <SafeAreaView>
+                    <SafeAreaView edges={['top']}>
                         <BackArrow doPress={doBack} />
                     </SafeAreaView>
                     <ScrollView style={pageStyles.container}>

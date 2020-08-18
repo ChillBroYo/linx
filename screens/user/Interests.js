@@ -3,7 +3,6 @@ import {
     Alert,
     FlatList,
     Keyboard,
-    SafeAreaView,
     ScrollView,
     StatusBar,
     StyleSheet,
@@ -12,6 +11,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -109,7 +109,7 @@ export default function UserGender({ navigation }) {
                 {isSignUpScreen && <TopBar />}
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
                     {isSignUpScreen && <ProgressBar step={6} totalSteps={TOTAL_STEPS} />}
-                    <SafeAreaView>
+                    <SafeAreaView edges={['top']}>
                         <BackArrow doPress={doBack} />
                     </SafeAreaView>
                     <ScrollView style={pageStyles.container}>
