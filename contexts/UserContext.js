@@ -70,6 +70,7 @@ export function UserContextProvider({ children }) {
         doSignInUser,
         doGetUserProfile,
         doGetImage,
+        doValidateZip,
         doSignUpUser,
         doUploadProfileUser,
         doUpdateUser,
@@ -205,6 +206,26 @@ export function UserContextProvider({ children }) {
         catch (error) {
             console.warn('Update failed:', error);
             Alert.alert('Update failed. Please try again');
+        }
+    }
+
+    async function doValidateZip(zip) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'is_valid_linx_zip' : 'is-valid-linx-zip'}`;
+            const res = await axios.get(API_ENDPOINT, { params: zip });
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Validate zip code failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return Boolean(data.is_valid);
+        }
+        catch (error) {
+            console.warn('Validate zip code error:', error);
+            Alert.alert('Validate zip code failed. Please try again');
         }
     }
 
