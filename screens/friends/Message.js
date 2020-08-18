@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
     Alert,
-    Button,
-    Dimensions,
     FlatList,
     Image,
     KeyboardAvoidingView,

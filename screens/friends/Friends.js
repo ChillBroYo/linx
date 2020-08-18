@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
     Alert,
-    Button,
+    FlatList,
     Image,
     ScrollView,
     StyleSheet,
@@ -10,7 +10,7 @@ import {
     TouchableHighlight,
     View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import axios from 'axios';
 import qs from 'query-string';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -20,60 +20,60 @@ import {
     lightGradient,
     purple,
 } from '../../constants/Colors';
+import Loader from '../../components/Loader';
 import { UserContext } from '../../contexts/UserContext';
 import getApiEndpoint from '../../helpers/apiEndpoint';
 import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 
 export default function Messages({ navigation }) {
+    const insets = useSafeAreaInsets();
     const {
-        friends,
         token,
         userId,
     } = useContext(UserContext);
-    const [friendsList, setFriendsList] = useState(null);
-    const [messagesCount, setMessagesCount] = useState(null);
-    const [messages, setMessages] = useState(null);
     const isMountedRef = useIsMountedRef();
+    const [loading, setLoading] = useState(true);
+    const [friends, setFriends] = useState(null);
 
     useEffect(() => {
-        getMessagesCount();
+        (async () => {
+            await getData();
+            await setLoading(false);
+        })();
     }, []);
 
-    useInterval(getMessagesCount, 5000);
+    useInterval(getData, 5000);
 
-    useEffect(() => {
-        if (!friends.length) return;
+    async function getData() {
+        const friendsList = [];
+        const userFriends = await getFriends();
+        if (!userFriends) return;
 
-        for (let id of friends) {
-            getProfile(id);
+        for (let id of userFriends) {
+            const friend = {};
+            const friendData = await getProfile(id);
+            const friendInfo = JSON.parse(friendData.info);
+            const lastMessage = await getLastMessage(id);
+
+            friend.id = id;
+            friend.name = friendInfo.name;
+            friend.profile_picture = friendData.profile_picture;
+            friend.lastMessage = lastMessage;
+
+            friendsList.push(friend);
         }
-    }, [friends]);
 
-    useEffect(() => {
-        if (!messagesCount) return;
+        if (isMountedRef.current) {
+            await setFriends(friendsList);
+        }
+    }
 
-        for (let id in messagesCount) {
-            getLastMessage(id);
-        }
-    }, [messagesCount]);
+    async function getFriends() {
+        if (!userId) return;
 
-    async function getMessagesCount() {
-        try {
-            const API_ENDPOINT = getApiEndpoint(['get', 'conversation', 'list']);
-            const queryParams = {
-                uid: userId,
-                token,
-                limit: 1,
-            };
-            const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
-            const data = res?.data;
-            if (isMountedRef.current && data?.users) {
-                await setMessagesCount(data.users);
-            }
-        }
-        catch (error) {
-            console.warn('error in getMessagesCount:', error);
-        }
+        const user = await getProfile(userId);
+        const userFriends = JSON.parse(user.friends);
+        return userFriends;
     }
 
     async function getLastMessage(oid) {
@@ -88,12 +88,7 @@ export default function Messages({ navigation }) {
             };
             const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
             const data = res?.data;
-            if (isMountedRef.current && data?.messages?.[0]) {
-                await setMessages({
-                    ...(messages || {}),
-                    [oid]: data.messages[0],
-                });
-            }
+            return data?.messages?.[0];
         }
         catch (error) {
             console.warn('error in getLastMessage:', error);
@@ -109,17 +104,7 @@ export default function Messages({ navigation }) {
             };
             const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
             const data = res?.data?.user_info;
-            if (isMountedRef.current && data?.info) {
-                const info = JSON.parse(data.info);
-                const name = info.name;
-                await setFriendsList({
-                    ...(friendsList || {}),
-                    [uid]: {
-                        name,
-                        profile_picture: data?.profile_picture,
-                    },
-                });
-            }
+            return data;
         }
         catch (error) {
             console.warn('error in getProfile:', error);
@@ -128,68 +113,70 @@ export default function Messages({ navigation }) {
 
     return (
         <LinearGradient colors={lightGradient} style={styles.container}>
-            <SafeAreaView edges={['top']} style={styles.headerWrapper}>
+            <View style={[styles.headerWrapper, {marginTop: insets.top || 40}]}>
                 <Text style={styles.header}>Messages</Text>
-            </SafeAreaView>
-            {!friends.length ? (
+            </View>
+            <Loader visible={loading} />
+            {loading === false && friends === null ? (
                 <View style={styles.loadingWrapper}>
                     <Text>You have no messages right now</Text>
                 </View>
             ) : (
-                <ScrollView contentContainerStyle={styles.scrollable}>
-                    {friends?.map((id, i) => {
-                        const user = friendsList?.[id];
-
-                        return (
-                            <React.Fragment key={id}>
-                                {i !== 0 && (
-                                    <View style={styles.dividerWrapper}>
-                                    <View style={styles.divider} />
+                <FlatList
+                    data={friends}
+                    extraData={friends}
+                    keyExtractor={item => item.id.toString()}
+                    renderItem={({ item: friend }) => (
+                        <TouchableHighlight
+                            activeOpacity={1}
+                            underlayColor='none'
+                            onPress={() => navigation.navigate('FriendsMessage', {
+                                contact: {
+                                    id: friend.id,
+                                    name: friend.name,
+                                    profile_picture: friend.profile_picture
+                                }
+                            })}
+                            style={styles.userWrapper}
+                        >
+                            <>
+                                {friend?.profile_picture ? (
+                                    <Image
+                                        source={{ uri: friend.profile_picture }}
+                                        style={styles.userIcon}
+                                    />
+                                ) : (
+                                    <View style={styles.userIcon}>
+                                        <Text style={styles.userInitials}>
+                                            {friend?.name?.first?.[0]}
+                                            {friend?.name?.last?.[0]}
+                                        </Text>
                                     </View>
                                 )}
-                                <TouchableHighlight
-                                    activeOpacity={1}
-                                    underlayColor='none'
-                                    onPress={() => navigation.navigate(
-                                        'FriendsMessage',
-                                        { contact: { ...user, id } }
-                                    )}
-                                    style={styles.userWrapper}
-                                >
-                                    <>
-                                        <View style={styles.userIcon}>
-                                            {user?.profile_picture ? (
-                                                <Image
-                                                    source={{uri: user?.profile_picture}}
-                                                    style={styles.userIcon}
-                                                />
-                                            ) : (
-                                                <Text style={styles.userInitials}>
-                                                    {user?.name?.first?.[0]}
-                                                    {user?.name?.last?.[0]}
-                                                </Text>
-                                            )}
-                                        </View>
-                                        <View style={styles.messageWrapper}>
-                                            <Text
-                                                numberOfLines={1}
-                                                style={styles.userName}
-                                            >
-                                                {user?.name?.first} {user?.name?.last}
-                                            </Text>
-                                            <Text
-                                                numberOfLines={1}
-                                                style={styles.message}
-                                            >
-                                                {messages?.[id]?.message}
-                                            </Text>
-                                        </View>
-                                    </>
-                                </TouchableHighlight>
-                            </React.Fragment>
-                        )
-                    })}
-                </ScrollView>
+                                <View style={styles.messageWrapper}>
+                                    <Text
+                                        numberOfLines={1}
+                                        style={styles.userName}
+                                    >
+                                        {friend?.name?.first} {friend?.name?.last}
+                                    </Text>
+                                    <Text
+                                        numberOfLines={1}
+                                        style={styles.message}
+                                    >
+                                        {friend?.lastMessage?.message}
+                                    </Text>
+                                </View>
+                            </>
+                        </TouchableHighlight>
+                    )}
+                    ItemSeparatorComponent={() => (
+                        <View style={styles.dividerWrapper}>
+                            <View style={styles.divider} />
+                        </View>
+                    )}
+                    contentContainerStyle={styles.scrollable}
+                />
             )}
         </LinearGradient>
     );
@@ -202,7 +189,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     divider: {
-        borderBottomColor: black,
+        borderBottomColor: grey,
         borderBottomWidth: 1,
         flex: 1,
     },
@@ -218,14 +205,13 @@ const styles = StyleSheet.create({
     headerWrapper: {
         alignItems: 'center',
         marginBottom: 20,
-        marginTop: 40,
     },
     loadingWrapper: {
         alignItems: 'center',
         marginTop: 30,
     },
     message: {
-        fontSize: 20,
+        fontSize: 16,
     },
     messageWrapper: {
         flex: 1,
@@ -252,7 +238,8 @@ const styles = StyleSheet.create({
         textTransform: 'capitalize',
     },
     userName: {
-        fontSize: 24,
+        fontSize: 22,
+        marginBottom: 4,
     },
     userWrapper: {
         alignItems: 'center',
