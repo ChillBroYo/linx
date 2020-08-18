@@ -5,7 +5,6 @@ import {
     Image,
     KeyboardAvoidingView,
     Platform,
-    ScrollView,
     StyleSheet,
     Text,
     TextInput,
@@ -32,19 +31,19 @@ import getApiEndpoint from '../../helpers/apiEndpoint';
 import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 
 export default function Message({ navigation }) {
+    const isMountedRef = useIsMountedRef();
+    const flatListRef = useRef(null);
     const { token, userId } = useContext(UserContext);
-    const numMessages = 50;
     const [multiplier, setMultiplier] = useState(1);
     const [messages, setMessages] = useState(null);
     const [newMessage, setNewMessage] = useState('');
-    const isMountedRef = useIsMountedRef();
     const contact = navigation.getParam('contact');
 
     useEffect(() => {
         getMessages();
     }, []);
 
-    useInterval(getMessages, 2000);
+    useInterval(getMessages, 1000);
 
     if (!contact?.id) {
         doBack();
@@ -66,14 +65,13 @@ export default function Message({ navigation }) {
                 uid: userId,
                 oid: contact.id,
                 token,
-                limit: numMessages * multiplier,
+                limit: 50 * multiplier,
                 ts: null,
             };
             const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
             const data = res?.data;
-            const messages = data?.messages;
-            if (isMountedRef.current && messages) {
-                await setMessages(messages);
+            if (isMountedRef.current && data?.messages) {
+                await setMessages(data.messages);
             }
         }
         catch (error) {
@@ -98,8 +96,8 @@ export default function Message({ navigation }) {
                 params.append(key, reqBody[key]);
             }
 
-            const res = await axios.post(API_ENDPOINT, params);
-            setNewMessage('');
+            await axios.post(API_ENDPOINT, params);
+            await setNewMessage('');
         }
         catch (error) {
             console.warn('Error in sendMessage:', error);
@@ -137,19 +135,18 @@ export default function Message({ navigation }) {
                             </TouchableOpacity>
                         </View>
 
-                        <View style={styles.sideWrapper}>
-                        </View>
+                        <View style={styles.sideWrapper} />
                     </SafeAreaView>
                 </View>
 
                 <FlatList
+                    ref={flatListRef}
                     inverted
                     data={messages}
                     extraData={messages}
                     keyExtractor={item => item.message_id.toString()}
                     onEndReachedThreshold={0.8}
-                    onEndReached={(info) => {
-                        console.log('END REACHED', info);
+                    onEndReached={({ distanceFromEnd }) => {
                         loadMoreMessages();
                     }}
                     renderItem={({ item }) => {
@@ -176,7 +173,12 @@ export default function Message({ navigation }) {
                                             style={styles.contactIcon}
                                         />
                                     ) : (
-                                        <View style={styles.contactIcon} />
+                                        <View style={styles.contactIcon}>
+                                            <Text style={styles.contactInitials}>
+                                                {contact?.name?.first?.[0]}
+                                                {contact?.name?.last?.[0]}
+                                            </Text>
+                                        </View>
                                     )}
                                     <View style={[styles.messageWrapper, styles.otherMessage]}>
                                         <Text style={styles.messageText}>{message}</Text>
@@ -229,6 +231,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 12,
     },
     contactIcon: {
+        alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor:'#f0f0f0',
         borderColor: grey,
         borderRadius: 25,
@@ -236,6 +240,11 @@ const styles = StyleSheet.create({
         marginRight: 10,
         height: 50,
         width: 50,
+    },
+    contactInitials: {
+        color: black,
+        fontSize: 20,
+        textTransform: 'capitalize',
     },
     contactInfoText: {
         color: 'white',
@@ -266,7 +275,7 @@ const styles = StyleSheet.create({
 
     messageText: {
         color: 'white',
-        fontSize: 20,
+        fontSize: 16,
     },
     messageWrapper: {
         borderRadius: 20,
