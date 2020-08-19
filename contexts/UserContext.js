@@ -239,8 +239,11 @@ export function UserContextProvider({ children }) {
                 return Alert.alert(data?.errmsg || 'Sign up failed. Please try again.');
             }
 
+            setUserId(data.uid);
+            setToken(data.token);
             return true;
-        } catch (error) {
+        }
+        catch (error) {
             console.warn('Sign up error:', error);
             Alert.alert('Sign up failed. Please try again');
         }
@@ -263,7 +266,8 @@ export function UserContextProvider({ children }) {
             }
             setProfileImg(data.image_url);
             return true;
-        } catch (error) {
+        }
+        catch (error) {
             console.warn('Profile upload error:', error);
             Alert.alert('Profile upload failed. Please try again');
         }
@@ -280,7 +284,8 @@ export function UserContextProvider({ children }) {
             }
 
             return true;
-        } catch (error) {
+        }
+        catch (error) {
             console.warn('Onboarding completion error:', error);
             Alert.alert('Onboarding completion failed. Please try again');
         }
@@ -313,7 +318,6 @@ export function UserContextProvider({ children }) {
             const res = await axios.get(API_ENDPOINT, { params: image });
             const data = res.data;
             if (res.status != 200) {
-                //return Alert.alert('Get image failed. Please try again');
                 return false;
             }
             if (data.success == 'false') {
@@ -327,8 +331,6 @@ export function UserContextProvider({ children }) {
             };
         }
         catch (error) {
-            //console.warn('Get image error:', error);
-            //Alert.alert('Get image failed. Please try again');
             return false;
         }
     }
@@ -347,7 +349,8 @@ export function UserContextProvider({ children }) {
             }
 
             return true;
-        } catch (error) {
+        }
+        catch (error) {
             console.warn('Reaction error:', error);
             Alert.alert('Reaction failed. Please try again');
         }
@@ -367,7 +370,8 @@ export function UserContextProvider({ children }) {
             }
 
             return true;
-        } catch (error) {
+        }
+        catch (error) {
             console.warn('Update card profile error:', error);
             Alert.alert('Update card profile failed. Please try again');
         }

@@ -75,13 +75,13 @@ export default function SignIn({ navigation }) {
     async function getData() {
         try {
             const values = await AsyncStorage.multiGet(['@username', '@password', '@signin']);
-            if (values[0][1] !== null && values[1][1] !== null) {
+            if (values[0][1] !== null) {
                 setUsername(values[0][1]);
-                setPassword(values[1][1]);
-                if (navigation.getParam('data') !== undefined) updateData();
-                if (navigation.getParam('data') === undefined && values[2][1] !== null) setAutoLogin(true);
-            }
-
+                if (values[1][1] !== null && values[2][1] !== null) {
+                    setPassword(values[1][1]);
+                    setAutoLogin(true);
+                };
+            };
         }
         catch (error) {
             console.warn('AsyncStorage get error: ', error);
@@ -90,7 +90,7 @@ export default function SignIn({ navigation }) {
 
     async function updateData() {
         try {
-            await AsyncStorage.removeItem('@signin');
+            await AsyncStorage.multiRemove(['@password', '@signin']);
         }
         catch (error) {
             console.warn('AsyncStorage update error: ', error);

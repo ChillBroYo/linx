@@ -10,6 +10,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
     Form,
@@ -38,6 +39,8 @@ export default function UserGender({ navigation }) {
         doSignUpUser,
         doUpdateUser,
         formatUserForRequest,
+        username: contextUsername,
+        password: contextPassword
     } = useContext(UserContext);
     const genderOptions = ['woman', 'man', 'other'];
     const [gender, setGender] = useState(contextGender);
@@ -61,11 +64,23 @@ export default function UserGender({ navigation }) {
 
     async function doSignUp() {
         setIsLoading(true);
+        await doUpdateContext();
         const user = getUserForRequest(false);
         const isSignedUp = await doSignUpUser(user);
         setIsLoading(false);
         if (!isSignedUp) return;
-        navigation.navigate('SignIn', {data: true});
+        storeData();
+        navigation.navigate('Cards');
+    }
+
+    async function storeData() {
+        try {
+            await AsyncStorage.multiSet([['@username', contextUsername], ['@password', contextPassword], ['@signin', 'true']]);
+        }
+        catch (error) {
+            console.warn('AsyncStorage store error: ', error);
+            Alert.alert('Please note you will need to sign back in upon closing the app');
+        }
     }
 
     async function doUpdate() {

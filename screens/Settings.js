@@ -54,7 +54,7 @@ export default function Settings({ navigation }) {
 
     async function doLogout() {
         await removeStoredData();
-        navigation.navigate('SignIn', {data: true});
+        navigation.navigate('SignIn');
     }
 
     function doPassword() {
@@ -67,7 +67,7 @@ export default function Settings({ navigation }) {
 
     async function removeStoredData() {
         try {
-            await AsyncStorage.multiRemove(['@username', '@password', '@signin']);
+            await AsyncStorage.multiRemove(['@password', '@signin']);
         }
         catch (error) {
             console.warn('AsyncStorage remove error: ', error);
