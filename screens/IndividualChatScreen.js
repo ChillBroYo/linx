@@ -172,7 +172,12 @@ export default class App extends Component {
     }
 
     const contactPressHandler = () => {
-      this.props.navigation.navigate('MessagesProfile', {contactID: this.props.navigation.getParam('contactID')})
+      this.props.navigation.navigate('MessagesProfile',
+        {
+          currentUserID: navigation.getParam('currentUserID'),
+          currentUserToken: navigation.getParam('currentUserToken'),
+          contactID: navigation.getParam('contactID')
+        })
     }
 
     return (

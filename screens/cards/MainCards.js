@@ -35,6 +35,10 @@ export default function MainCardsScreen({ navigation }) {
 
     let reactionTime = '';
 
+    useLayoutEffect(() => {
+        performGetProfile();
+    }, []);
+
     async function performGetProfile() {
         const user = { uid: userId, key: 123 };
         const result = await doGetUserProfile(user);
@@ -47,11 +51,10 @@ export default function MainCardsScreen({ navigation }) {
     }
 
     useLayoutEffect(() => {
-        performGetProfile();
-    }, []);
+        if(imageIndex != -1) performGetImage();
+    }, [imageIndex]);
 
     async function performGetImage() {
-
         if(imageIndex % 15 == 0 && imageIndex != 0) {
             const diff = timeDifference(lastReaction);
             if(diff < 24 * 60 * 60) {
@@ -71,10 +74,6 @@ export default function MainCardsScreen({ navigation }) {
             setImageLink(result.imageLink);
         };
     }
-
-    useLayoutEffect(() => {
-        if(imageIndex != -1) performGetImage();
-    }, [imageIndex]);
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const fadeIn = Animated.timing(fadeAnim, fadeInVals);

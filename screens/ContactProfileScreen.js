@@ -2,12 +2,17 @@ import React, { Component } from 'react';
 import { Text,  Alert, Button, Image, Platform, ScrollView, TextInput, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
+import { UserContext } from '../contexts/UserContext';
 
 const platform = Platform.OS;
 
 export default class App extends Component {
+  static contextType = UserContext;
+
   constructor(props) {
     super(props);
+    this.userId = props.navigation.getParam('currentUserID') || 2;
+    this.token = props.navigation.getParam('currentUserToken') || '43985ece-e49d-477f-b843-3a5501799ef7';
     this.contactID = this.props.navigation.getParam('contactID') || 1;
     this.state = {
       contactInfo: {}
@@ -16,8 +21,10 @@ export default class App extends Component {
 
   async componentDidMount() {
     try {
-      const response = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-profile/?uid=${this.contactID}&key=123`);
-      const contactInfo = JSON.parse(response.data.user_info.info);
+      const response1 = await axios(`https://1g3l9sc0l0.execute-api.us-east-1.amazonaws.com/dev/get-profile/?uid=${this.contactID}&key=123`);
+      const contactInfo = JSON.parse(response1.data.user_info.info);
+      const response2 = await axios(`https://api.linx-services.com/common-images-between-users?user_id=${this.userId}&oid=${this.contactID}&token=${this.token}`);
+      contactInfo.imgs = response2.data.images_urls;
       this.setState({ contactInfo })
     }
     catch(error) {
@@ -79,14 +86,6 @@ export default class App extends Component {
     const pronoun = this.determinePronoun();
     const isPronounThey = pronoun === "They" ? true : false;
 
-    //Variable which will contain list of common images users reacted to
-    /*
-    const commonImgs = ['https://linx-images.s3-us-west-2.amazonaws.com/g0.png',
-    'https://linx-images.s3-us-west-2.amazonaws.com/g1.png',
-    'https://linx-images.s3-us-west-2.amazonaws.com/g2.png',
-    'https://linx-images.s3-us-west-2.amazonaws.com/g3.png'];
-    */
-
     return (
       <View>
         <LinearGradient colors={['#FFF', '#FFFEEB']} style={{height: '100%'}}>
@@ -100,21 +99,15 @@ export default class App extends Component {
               <Text style={styles.subheading}>{`${pronoun} ${isPronounThey ? "are" : "is"}`}</Text>
               <Text style={styles.infoLine}>{`${this.determineAge()} years old ${this.determineGender()}`}</Text>
               <View style={styles.separator} />
-
-              {/* TODO: Add images users both liked*/}
-              {/*
               <Text style={styles.subheading}>You both liked</Text>
               <ScrollView horizontal={true}>
-                {
-                  commonImgs.map((url, index) => {
+                {contactInfo.imgs == null ? null :
+                  contactInfo.imgs.map((url, index) => {
                     return(<Image source={{ uri: url }} style={styles.image} />)
                   })
                 }
               </ScrollView>
-              */}
-
             </ScrollView>
-            <View style={styles.separator} />
             <TouchableOpacity onPress={goBackToChat} style={{...styles.chatBar, ...iOSPlatformBottom}}><Text style={styles.chatText}>Chat</Text></TouchableOpacity>
           </View>
         </LinearGradient>
@@ -188,6 +181,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginHorizontal: 5,
+    resizeMode: 'contain'
   }
 });
 
