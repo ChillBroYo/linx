@@ -25,15 +25,18 @@ import {
     grey,
     lightGradient,
     purple,
+    white,
 } from '../../constants/Colors';
 import { UserContext } from "../../contexts/UserContext";
 import getApiEndpoint from '../../helpers/apiEndpoint';
 import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 
 export default function Message({ navigation }) {
+    const insets = useSafeAreaInsets();
     const isMountedRef = useIsMountedRef();
     const flatListRef = useRef(null);
     const { token, userId } = useContext(UserContext);
+    const [flatListScrollY, setFlatListScrollY] = useState(0);
     const [multiplier, setMultiplier] = useState(1);
     const [messages, setMessages] = useState(null);
     const [newMessage, setNewMessage] = useState('');
@@ -73,6 +76,7 @@ export default function Message({ navigation }) {
             if (isMountedRef.current && data?.messages) {
                 await setMessages(data.messages);
             }
+            scrollToBottom();
         }
         catch (error) {
             console.warn('Error in getMessages:', error);
@@ -107,6 +111,11 @@ export default function Message({ navigation }) {
 
     async function loadMoreMessages() {
         setMultiplier(multiplier + 1);
+    }
+
+    function scrollToBottom() {
+        if (flatListScrollY != 0) return;
+        flatListRef.current.scrollToIndex({ index: 0 });
     }
 
     return (
@@ -148,6 +157,9 @@ export default function Message({ navigation }) {
                     onEndReachedThreshold={0.8}
                     onEndReached={({ distanceFromEnd }) => {
                         loadMoreMessages();
+                    }}
+                    onScroll={(e) => {
+                        setFlatListScrollY(e.nativeEvent.contentOffset.y);
                     }}
                     renderItem={({ item }) => {
                         const {
@@ -218,7 +230,7 @@ const styles = StyleSheet.create({
     },
 
     banner: {
-        backgroundColor: 'white',
+        backgroundColor: white,
         paddingVertical: 6,
         shadowColor: grey,
         shadowOpacity: 0.5,
@@ -247,7 +259,7 @@ const styles = StyleSheet.create({
         textTransform: 'capitalize',
     },
     contactInfoText: {
-        color: 'white',
+        color: white,
         fontSize: 20,
         fontWeight: '600',
     },
@@ -274,8 +286,12 @@ const styles = StyleSheet.create({
     },
 
     messageText: {
-        color: 'white',
+        color: white,
         fontSize: 16,
+    },
+    messageTs: {
+        color: grey,
+        fontSize: 8,
     },
     messageWrapper: {
         borderRadius: 20,
@@ -305,12 +321,12 @@ const styles = StyleSheet.create({
     },
 
     input: {
-        backgroundColor: 'white',
+        backgroundColor: white,
         flex: 1,
         maxHeight: 150,
     },
     inputWrapper: {
-        backgroundColor: 'white',
+        backgroundColor: white,
         padding: 7,
         shadowColor: grey,
         shadowOpacity: 0.5,
