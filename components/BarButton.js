@@ -3,16 +3,25 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
+    View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { grey, white } from '../constants/Colors';
 
 export default function BarButton({ active, value, doPress }) {
+    const insets = useSafeAreaInsets();
+
     return (
         <TouchableOpacity activeOpacity={0.8} onPress={doPress}>
-            <SafeAreaView edges={['bottom']} style={[styles.button, active ? styles.buttonActive : null]}>
+            <View
+                style={[
+                    styles.button,
+                    active ? styles.buttonActive : null,
+                    { paddingBottom: Math.max(insets.bottom, 12) }
+                ]}
+            >
                 <Text style={styles.text}>{value}</Text>
-            </SafeAreaView>
+            </View>
         </TouchableOpacity>
     );
 }
@@ -23,7 +32,7 @@ const styles = StyleSheet.create({
         backgroundColor: grey,
         justifyContent: 'center',
         minHeight: 48,
-        paddingVertical: 12,
+        paddingTop: 12,
     },
     buttonActive: {
         backgroundColor: '#439E73',
