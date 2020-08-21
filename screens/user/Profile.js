@@ -197,6 +197,6 @@ const styles = StyleSheet.create({
         color: white,
         fontSize: 40,
         lineHeight: 54,
-        textTransform: 'capitalize',
+        textTransform: 'uppercase',
     },
 });
