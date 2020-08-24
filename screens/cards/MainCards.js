@@ -32,6 +32,7 @@ export default function MainCardsScreen({ navigation }) {
     const [imageId, setImageId] = useState(-1);
     const [imageCategory, setImageCategory] = useState(6);
     const [imageLink, setImageLink] = useState('');
+    const [imageMessage, setImageMessage] = useState('');
 
     let reactionTime = '';
 
@@ -72,6 +73,7 @@ export default function MainCardsScreen({ navigation }) {
             setImageId(result.imageId);
             setImageCategory(result.imageCategory);
             setImageLink(result.imageLink);
+            setImageMessage(result.imageMessage);
         };
     }
 
@@ -122,9 +124,10 @@ export default function MainCardsScreen({ navigation }) {
                         <Animated.Image source={imageLink ? { uri: imageLink } : null} onLoad={() => fadeIn.start()}
                             style={[globalStyles.cardContent, {opacity: fadeAnim}]} />
 
-                        {/*Area of screen that displayes description of card*/}
-                        {/*Need to wait for cards to have descriptions before implementing*/}
-                        {/*<Animated.Text style={[globalStyles.cardDesc, {opacity: fadeAnim}]}>Test Description</Animated.Text>*/}
+                        {(imageMessage && imageMessage != null)
+                            ? <Animated.Text style={[globalStyles.cardDesc, {opacity: fadeAnim}]}>imageMessage</Animated.Text>
+                            : null
+                        }
                         
        				</View>
        				<Animated.View style={[globalStyles.blankContainer, {opacity: fadeAnim}]} />

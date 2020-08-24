@@ -328,6 +328,7 @@ export function UserContextProvider({ children }) {
                 imageId: data.image_id,
                 imageCategory: data.image_category,
                 imageLink: data.link,
+                imageMessage: data.message
             };
         }
         catch (error) {
