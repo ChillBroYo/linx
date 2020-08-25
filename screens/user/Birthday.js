@@ -2,17 +2,16 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
-    SafeAreaView,
     ScrollView,
     StatusBar,
     Text,
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { TextInputMask } from 'react-native-masked-text';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
     Form,
     formStyles,
@@ -27,8 +26,6 @@ import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
-import { getEnvVars } from '../../environment';
-const { apiUrl } = getEnvVars();
 
 export default function UserBirthday({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
@@ -112,7 +109,7 @@ export default function UserBirthday({ navigation }) {
                 {isSignUpScreen && <TopBar />}
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
                     {isSignUpScreen && <ProgressBar step={4} totalSteps={TOTAL_STEPS} />}
-                    <SafeAreaView>
+                    <SafeAreaView edges={['top']}>
                         <BackArrow doPress={doBack} />
                     </SafeAreaView>
                     <ScrollView style={pageStyles.container}>

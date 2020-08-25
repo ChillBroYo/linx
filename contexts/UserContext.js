@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Alert } from 'react-native';
 import axios from 'axios';
 import moment from 'moment';
-import { getEnvVars } from '../environment';
-const { apiUrl } = getEnvVars();
+import getApiEndpoint from '../helpers/apiEndpoint';
 
 // default config for axios requests
 const DEFAULT_CONFIG = {
@@ -90,6 +89,8 @@ export function UserContextProvider({ children }) {
             token,
             email,
             username,
+            profile_picture,
+            friends,
             info: infoJSON,
         } = res;
         const info = JSON.parse(infoJSON);
@@ -125,6 +126,7 @@ export function UserContextProvider({ children }) {
         setDistance(distance);
         setGender(gender);
         setSameGender(sameGender);
+        setFriends(JSON.parse(friends));
 
         // update existing users with expo push token
         if (!info.expoPushToken && expoPushToken) {
@@ -145,7 +147,7 @@ export function UserContextProvider({ children }) {
 
         setProfileImg(profile_picture);
         setImagesVisited(images_visited);
-        setFriends(friends);
+        setFriends(JSON.parse(friends));
     }
 
     function formatParams(user) {
@@ -168,7 +170,7 @@ export function UserContextProvider({ children }) {
 
     async function doSignInUser(user) {
         try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'sign_in' : 'sign-in'}`;
+            const API_ENDPOINT = getApiEndpoint(['sign', 'in']);
             const res = await axios.get(API_ENDPOINT, { params: user });
             const data = res.data;
             if (res.status != 200) {
@@ -189,7 +191,7 @@ export function UserContextProvider({ children }) {
 
     async function doUpdateUser(user, callback) {
         try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'update_profile' : 'update-profile'}/`;
+            const API_ENDPOINT = getApiEndpoint(['update', 'profile']);
             const params = formatParams(user);
             const res = await axios.post(API_ENDPOINT, params, DEFAULT_CONFIG);
             const data = res.data;
@@ -210,7 +212,7 @@ export function UserContextProvider({ children }) {
 
     async function doSignUpUser(user) {
         try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'sign_up' : 'sign-up'}/`;
+            const API_ENDPOINT = getApiEndpoint(['sign', 'up']);
             const params = formatParams(user);
             const res = await axios.post(API_ENDPOINT, params, DEFAULT_CONFIG);
             const data = res.data;
@@ -227,7 +229,7 @@ export function UserContextProvider({ children }) {
 
     async function doUploadProfileUser(user) {
         try{
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'save_image' : 'save-image'}/`;
+            const API_ENDPOINT = getApiEndpoint(['save', 'image']);
             const formData = formatFormData(user);
             const config = {
                 ...DEFAULT_CONFIG,
@@ -250,7 +252,7 @@ export function UserContextProvider({ children }) {
 
     async function doCompleteOnboardingUser(user) {
         try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'update_profile' : 'update-profile'}/`;
+            const API_ENDPOINT = getApiEndpoint(['update', 'profile']);
             const params = formatParams(user);
             const res = await axios.post(API_ENDPOINT, params, DEFAULT_CONFIG);
             const data = res.data;
@@ -267,7 +269,7 @@ export function UserContextProvider({ children }) {
 
     async function doGetUserProfile(user) {
         try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'get_profile' : 'get-profile'}`;
+            const API_ENDPOINT = getApiEndpoint(['get', 'profile']);
             const res = await axios.get(API_ENDPOINT, { params: user });
             const data = res.data;
             if (res.status != 200) {
@@ -288,7 +290,7 @@ export function UserContextProvider({ children }) {
 
     async function doGetImage(image) {
         try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'get_image' : 'get-image'}`;
+            const API_ENDPOINT = getApiEndpoint(['get', 'image']);
             const res = await axios.get(API_ENDPOINT, { params: image });
             const data = res.data;
             if (res.status != 200) {
@@ -314,7 +316,7 @@ export function UserContextProvider({ children }) {
 
     async function doReactImage(user) {
         try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'react_to_image' : 'react-to-image'}/`;
+            const API_ENDPOINT = getApiEndpoint(['react', 'to', 'image']);
             const params = formatParams(user);
             const res = await axios.post(API_ENDPOINT, params);
             const data = res.data;
@@ -334,7 +336,7 @@ export function UserContextProvider({ children }) {
 
     async function doUpdateImageIndex(user) {
         try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'update_profile' : 'update-profile'}/`;
+            const API_ENDPOINT = getApiEndpoint(['update', 'profile']);
             const params = formatParams(user);
             const res = await axios.post(API_ENDPOINT, params);
             const data = res.data;

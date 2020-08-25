@@ -5,12 +5,12 @@ import {
     Text,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
     black,
     grey,
     purple,
 } from '../../constants/Colors';
-import { SafeAreaView } from 'react-navigation';
 
 export function Form({ children }) {
     return <View style={formStyles.form}>{children}</View>;
@@ -86,7 +86,7 @@ const progressBarStyles = StyleSheet.create({
 
 export function TopBar() {
     return (
-        <SafeAreaView style={topBarStyles.topBar} />
+        <SafeAreaView edges={['top']} style={topBarStyles.topBar} />
     );
 }
 
