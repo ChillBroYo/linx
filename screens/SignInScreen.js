@@ -103,6 +103,7 @@ export default function SignIn({ navigation }) {
         const isSignedIn = await doSignInUser(user);
         if (!isSignedIn) {
             updateData();
+            setPassword('');
             setAutoLogin(false);
             setIsLoading(false);
             return;
