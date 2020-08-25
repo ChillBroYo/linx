@@ -15,7 +15,6 @@ import { scaling } from '../helpers';
 import { globalStyles } from '../../styles/global';
 
 export default function CardsTimerScreen({ navigation, lastReaction }) {
-
     const [timerOver, setTimerOver] = useState(false);
 
     let cannon = useRef();
@@ -65,7 +64,7 @@ export default function CardsTimerScreen({ navigation, lastReaction }) {
                     </Animated.View>
                     <Animated.View style={[globalStyles.confettiContainer, {opacity: fadeAnim}]}>
                         <ConfettiCannon count={100} origin={{ x: 0, y: 0 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
-                            autoStart={false} ref={cannon}
+                            autoStart={false} ref={cannon} onAnimationStart={() => setCounter(counter + 1)}
                         />
                     </Animated.View>
   				</SafeAreaView>

@@ -4,7 +4,6 @@ import {
     Image,
     ImageBackground,
     Modal,
-    SafeAreaView,
     StyleSheet,
     Text,
     TextInput,
@@ -12,8 +11,8 @@ import {
     TouchableWithoutFeedback,
     View
 } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage';
-import axios from 'axios';
 import Loader from '../components/Loader';
 import { UserContext } from '../contexts/UserContext';
 import { green, white } from '../constants/Colors';
@@ -21,10 +20,9 @@ import {
     addNotificationListener,
     registerForPushNotificationsAsync
 } from '../helpers/notifications';
-import { getEnvVars } from '../environment';
-const { apiUrl } = getEnvVars();
 
 export default function SignIn({ navigation }) {
+    const insets = useSafeAreaInsets();
     const {
         setExpoPushToken,
         doSignInUser,
@@ -133,7 +131,7 @@ export default function SignIn({ navigation }) {
         <>
             <View style={styles.container}>
                 <ImageBackground source={BACKGROUND_IMAGE} style={styles.background}>
-                    <SafeAreaView style={styles.wrapper}>
+                    <SafeAreaView edges={['top']} style={styles.wrapper}>
                         <View style={styles.column}>
                             <Image source={LINX_LOGO} style={styles.header} />
                             <TextInput
@@ -164,9 +162,9 @@ export default function SignIn({ navigation }) {
                         </View>
                     </SafeAreaView>
                     <TouchableWithoutFeedback onPress={onForgotPassword}>
-                        <SafeAreaView style={styles.forgotPassword}>
+                        <View style={[styles.forgotPassword, {paddingBottom: insets.bottom || 28}]}>
                             <Text style={{...styles.buttonText, color: white}}>Forgot password</Text>
-                        </SafeAreaView>
+                        </View>
                     </TouchableWithoutFeedback>
                 </ImageBackground>
             </View>
@@ -211,7 +209,6 @@ const styles = StyleSheet.create({
     forgotPassword: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 28,
     },
     header: {
         marginBottom: 32,

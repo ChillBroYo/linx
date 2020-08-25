@@ -15,7 +15,7 @@ export default function TabBarIcon({ focused, name }) {
                 />}*/
                 <MaterialCommunityIcons name='cards-outline' size={50} color={focused ? '#439E73' : '#8D99AE'} />
             );
-        case 'messages':
+        case 'friends':
             return (
                 /*{<Image
                     source={( focused

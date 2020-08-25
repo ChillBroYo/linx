@@ -12,7 +12,6 @@ import { scaling } from '../helpers';
 import { globalStyles } from '../../styles/global';
 
 export default function CardsCompletionScreen({ navigation }) {
-
     let cannon = useRef();
     function shootCannon() {
         cannon.current.start();
@@ -49,7 +48,8 @@ export default function CardsCompletionScreen({ navigation }) {
                     </Animated.View>
                     <Animated.View style={[globalStyles.confettiContainer, {opacity: fadeAnim}]}>
                         <ConfettiCannon count={100} origin={{ x: 0, y: 0 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
-                        autoStart={false} ref={cannon} />
+                            autoStart={false} ref={cannon}
+                        />
                     </Animated.View>
   				</SafeAreaView>
   			</LinearGradient>

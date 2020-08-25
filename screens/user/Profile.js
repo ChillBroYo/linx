@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
-    SafeAreaView,
     ScrollView,
     StatusBar,
     StyleSheet,
@@ -12,6 +11,7 @@ import {
     View,
     Image,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -113,7 +113,7 @@ export default function UserName({ navigation }) {
                 {isSignUpScreen && <TopBar />}
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
                     {isSignUpScreen && <ProgressBar step={2} totalSteps={TOTAL_STEPS} />}
-                    <SafeAreaView>
+                    <SafeAreaView edges={['top']}>
                         <BackArrow doPress={doBack} />
                     </SafeAreaView>
                     <ScrollView style={pageStyles.container}>
@@ -197,6 +197,6 @@ const styles = StyleSheet.create({
         color: white,
         fontSize: 40,
         lineHeight: 54,
-        textTransform: 'capitalize',
+        textTransform: 'uppercase',
     },
 });

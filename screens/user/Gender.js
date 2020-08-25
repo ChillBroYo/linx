@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
     Keyboard,
-    SafeAreaView,
     ScrollView,
     StatusBar,
     StyleSheet,
@@ -11,6 +10,7 @@ import {
     View,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
     Form,
@@ -107,7 +107,7 @@ export default function UserGender({ navigation }) {
                     {isSignUpScreen && <TopBar />}
                     <LinearGradient colors={lightGradient} style={pageStyles.container}>
                         {isSignUpScreen && <ProgressBar step={5} totalSteps={TOTAL_STEPS} />}
-                        <SafeAreaView>
+                        <SafeAreaView edges={['top']}>
                             <BackArrow doPress={doBack} />
                         </SafeAreaView>
                         <ScrollView style={pageStyles.container}>

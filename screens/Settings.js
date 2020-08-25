@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react';
 import {
-    SafeAreaView,
     ScrollView,
     StatusBar,
     StyleSheet,
@@ -8,6 +7,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient} from 'expo-linear-gradient';
@@ -77,7 +77,7 @@ export default function Settings({ navigation }) {
     return (
         <View style={styles.container}>
             <LinearGradient colors={lightGradient} style={styles.container}>
-                <SafeAreaView style={styles.mainWrapper}>
+                <SafeAreaView edges={['top']} style={styles.mainWrapper}>
                     <ScrollView showsVerticalScrollIndicator={false}>
                         <Text style={styles.screenHeader}>Settings</Text>
                         <TouchableWithoutFeedback onPress={doProfile}>

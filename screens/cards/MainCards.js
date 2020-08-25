@@ -123,12 +123,10 @@ export default function MainCardsScreen({ navigation }) {
        				<View style={globalStyles.contentContainerCard}>
                         <Animated.Image source={imageLink ? { uri: imageLink } : null} onLoad={() => fadeIn.start()}
                             style={[globalStyles.cardContent, {opacity: fadeAnim}]} />
-
                         {(imageMessage && imageMessage != null)
-                            ? <Animated.Text style={[globalStyles.cardDesc, {opacity: fadeAnim}]}>imageMessage</Animated.Text>
+                            ? <Animated.Text style={[globalStyles.cardDesc, {opacity: fadeAnim}]}>{imageMessage}</Animated.Text>
                             : null
                         }
-                        
        				</View>
        				<Animated.View style={[globalStyles.blankContainer, {opacity: fadeAnim}]} />
        				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>

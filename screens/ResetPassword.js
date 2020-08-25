@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import {
-    SafeAreaView,
     StyleSheet,
     Text,
     TextInput,
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient} from 'expo-linear-gradient';
 import { canOpenURL, openURL } from 'expo-linking';
 import BackArrow from '../components/BackArrow';
@@ -45,7 +45,7 @@ export default function ResetPassword({ navigation }) {
     return (
         <View style={styles.container}>
             <LinearGradient colors={['rgba(254, 241, 2, 0)', 'rgba(254, 241, 2, 0.1)']} style={styles.container}>
-                <SafeAreaView style={styles.container}>
+                <SafeAreaView edges={['top']} style={styles.container}>
                     <View style={styles.wrapper}>
                         <BackArrow doPress={doBack} />
                         <View style={styles.column}>
