@@ -32,7 +32,6 @@ import getApiEndpoint from '../../helpers/apiEndpoint';
 import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 
 export default function Message({ navigation }) {
-    const insets = useSafeAreaInsets();
     const isMountedRef = useIsMountedRef();
     const flatListRef = useRef(null);
     const { token, userId } = useContext(UserContext);

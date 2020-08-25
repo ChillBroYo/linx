@@ -1,11 +1,12 @@
 import React, { useRef } from 'react';
 import { Text, View, Image, Alert, Animated, TouchableOpacity } from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import { Camera } from 'expo-camera';
 import * as Linking from 'expo-linking';
 import { darkGradient } from '../../constants/Colors';
-import { scaling } from '../helpers';
+import { scaling, popup } from '../helpers';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
@@ -17,11 +18,10 @@ export default function DenyProfileScreen({ navigation }) {
     async function checkPermission() {
         const { status } = await Camera.getPermissionsAsync();
         if (status === 'denied') {
-            Alert.alert('Permission Denied',
-                'Linx currently does not have permission to access Camera. Please go into Settings to grant Linx access.',
+            Alert.alert(popup.title, popup.message,
                 [
-                    { text: 'OK', style: 'cancel' },
-                    { text: 'Settings', onPress: () => Linking.openSettings()}
+                    { text: popup.btn1Text, style: 'cancel' },
+                    { text: popup.btn2Text, onPress: () => Linking.openSettings()}
                 ],
                 { cancelable: false }
             );
@@ -32,16 +32,14 @@ export default function DenyProfileScreen({ navigation }) {
 
     return(
         <View style={globalStyles.outerContainer}>
-            <LinearGradient colors={darkGradient} style={{height: '100%'}}>
-                <View style={globalStyles.innerContainer}>
+            <LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
+                <SafeAreaView style={globalStyles.innerContainer}>
                     <View style={globalStyles.titleContainer}>
                         <Text style={globalStyles.whiteTitle}>Are you real?</Text>
                     </View>
-                    <View style={globalStyles.paginationContainer}>
-                        <Image source={require('../../assets/icons/pagination_two.png')} style={globalStyles.paginationIcon} />
-                    </View>
-                    <View style={globalStyles.contentContainer}>
-                        <Text style={globalStyles.content}>Are you sure you don't want to verify that you are a real person?
+                    <View style={globalStyles.paginationContainer} />
+                    <View style={globalStyles.contentContainerText}>
+                        <Text style={globalStyles.content}>Are you sure you don't want to verify that you are a real person? {'\n'}{'\n'}
                         This will limit who you will be able to connect with.</Text>
                     </View>
                     <View style={globalStyles.verifyContainer}>
@@ -56,14 +54,14 @@ export default function DenyProfileScreen({ navigation }) {
                             </Animated.View>
                         </TouchableOpacity>
                         <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim2)} onPressOut={() => scaling.pressOutAnim(emojiAnim2)}
-                            onPress={() => navigation.navigate('ConfirmDenial')} style={scaling.scalingStyle(emojiAnim2)}
+                            onPress={() => navigation.navigate('Welcome1')} style={scaling.scalingStyle(emojiAnim2)}
                         >
                             <Animated.View style={globalStyles.emojiSymbol}>
                                 <Emoji name="+1" style={globalStyles.emojiStyle} />
                             </Animated.View>
                         </TouchableOpacity>
                     </View>
-                </View>
+                </SafeAreaView>
             </LinearGradient>
         </View>
     );

@@ -69,6 +69,7 @@ export function UserContextProvider({ children }) {
         doSignInUser,
         doGetUserProfile,
         doGetImage,
+        doValidateZip,
         doSignUpUser,
         doUploadProfileUser,
         doUpdateUser,
@@ -210,6 +211,26 @@ export function UserContextProvider({ children }) {
         }
     }
 
+    async function doValidateZip(zip) {
+        try {
+            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'is_valid_linx_zip' : 'is-valid-linx-zip'}`;
+            const res = await axios.get(API_ENDPOINT, { params: zip });
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Validate zip code failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return Boolean(data.is_valid);
+        }
+        catch (error) {
+            console.warn('Validate zip code error:', error);
+            Alert.alert('Validate zip code failed. Please try again');
+        }
+    }
+
     async function doSignUpUser(user) {
         try {
             const API_ENDPOINT = getApiEndpoint(['sign', 'up']);
@@ -220,8 +241,11 @@ export function UserContextProvider({ children }) {
                 return Alert.alert(data?.errmsg || 'Sign up failed. Please try again.');
             }
 
+            setUserId(data.uid);
+            setToken(data.token);
             return true;
-        } catch (error) {
+        }
+        catch (error) {
             console.warn('Sign up error:', error);
             Alert.alert('Sign up failed. Please try again');
         }
@@ -244,7 +268,8 @@ export function UserContextProvider({ children }) {
             }
             setProfileImg(data.image_url);
             return true;
-        } catch (error) {
+        }
+        catch (error) {
             console.warn('Profile upload error:', error);
             Alert.alert('Profile upload failed. Please try again');
         }
@@ -261,7 +286,8 @@ export function UserContextProvider({ children }) {
             }
 
             return true;
-        } catch (error) {
+        }
+        catch (error) {
             console.warn('Onboarding completion error:', error);
             Alert.alert('Onboarding completion failed. Please try again');
         }
@@ -294,7 +320,6 @@ export function UserContextProvider({ children }) {
             const res = await axios.get(API_ENDPOINT, { params: image });
             const data = res.data;
             if (res.status != 200) {
-                //return Alert.alert('Get image failed. Please try again');
                 return false;
             }
             if (data.success == 'false') {
@@ -305,11 +330,10 @@ export function UserContextProvider({ children }) {
                 imageId: data.image_id,
                 imageCategory: data.image_category,
                 imageLink: data.link,
+                imageMessage: data.message
             };
         }
         catch (error) {
-            //console.warn('Get image error:', error);
-            //Alert.alert('Get image failed. Please try again');
             return false;
         }
     }
@@ -328,7 +352,8 @@ export function UserContextProvider({ children }) {
             }
 
             return true;
-        } catch (error) {
+        }
+        catch (error) {
             console.warn('Reaction error:', error);
             Alert.alert('Reaction failed. Please try again');
         }
@@ -348,7 +373,8 @@ export function UserContextProvider({ children }) {
             }
 
             return true;
-        } catch (error) {
+        }
+        catch (error) {
             console.warn('Update card profile error:', error);
             Alert.alert('Update card profile failed. Please try again');
         }

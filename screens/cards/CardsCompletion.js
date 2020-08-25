@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { Text, View, Image, Animated, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import SafeAreaView from 'react-native-safe-area-view';
 import Emoji from 'react-native-emoji';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import { darkGradient } from '../../constants/Colors';
@@ -11,7 +12,6 @@ import { scaling } from '../helpers';
 import { globalStyles } from '../../styles/global';
 
 export default function CardsCompletionScreen({ navigation }) {
-
     let cannon = useRef();
     function shootCannon() {
         cannon.current.start();
@@ -24,15 +24,15 @@ export default function CardsCompletionScreen({ navigation }) {
 
 	return(
 		<View style={globalStyles.outerContainer}>
-      		<LinearGradient colors={darkGradient} style={{height: '100%'}}>
-      			<View style={globalStyles.innerContainer}>
+      		<LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
+      			<SafeAreaView style={globalStyles.innerContainer}>
                     <Animated.View style={[globalStyles.titleContainer, {opacity: fadeAnim}]}>
                         <Text style={globalStyles.whiteTitle}>Please Wait</Text>
                     </Animated.View>
                     <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
                         <Text style={globalStyles.subtitleText}>until new cards are available</Text>
                     </Animated.View>
-       				<View style={globalStyles.contentContainer}>
+       				<View style={globalStyles.contentContainerImg}>
                         <Animated.Image source={require('../../assets/images/cards_completion.png')} onLoad={() => fadeIn.start()}
                         style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
        				</View>
@@ -47,10 +47,11 @@ export default function CardsCompletionScreen({ navigation }) {
                         </TouchableOpacity>
                     </Animated.View>
                     <Animated.View style={[globalStyles.confettiContainer, {opacity: fadeAnim}]}>
-                        <ConfettiCannon count={100} origin={{ x: 175, y: 125 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
-                        autoStart={false} ref={cannon} />
+                        <ConfettiCannon count={100} origin={{ x: 0, y: 0 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
+                            autoStart={false} ref={cannon}
+                        />
                     </Animated.View>
-  				</View>
+  				</SafeAreaView>
   			</LinearGradient>
   		</View>
 	);

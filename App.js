@@ -3,8 +3,8 @@ import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import AppNavigator from './navigation/AppNavigator';
 import { UserContextProvider } from './contexts/UserContext';
@@ -14,21 +14,23 @@ export default function App(props) {
 
     if (!isLoadingComplete && !props.skipLoadingScreen) {
         return (
-            <AppLoading
-                startAsync={loadResourcesAsync}
-                onError={handleLoadingError}
-                onFinish={() => handleFinishLoading(setLoadingComplete)}
-            />
+            <SafeAreaProvider>
+                <AppLoading
+                    startAsync={loadResourcesAsync}
+                    onError={handleLoadingError}
+                    onFinish={() => handleFinishLoading(setLoadingComplete)}
+                />
+            </SafeAreaProvider>
         );
     } else {
         return (
             <SafeAreaProvider>
-            <UserContextProvider>
-                <View style={styles.container}>
-                    <StatusBar barStyle="light-content" />
-                    <AppNavigator />
-                </View>
-            </UserContextProvider>
+                <UserContextProvider>
+                    <View style={styles.container}>
+                        <StatusBar barStyle="light-content" />
+                        <AppNavigator />
+                    </View>
+                </UserContextProvider>
             </SafeAreaProvider>
         );
     }

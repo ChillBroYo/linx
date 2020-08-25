@@ -1,5 +1,6 @@
 import React, { useContext, useState, useLayoutEffect, useRef } from 'react';
-import { StyleSheet, Text, View, Image, Animated, TouchableOpacity } from 'react-native';
+import { Text, View, Image, Animated, TouchableOpacity } from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import moment from 'moment';
@@ -31,8 +32,13 @@ export default function MainCardsScreen({ navigation }) {
     const [imageId, setImageId] = useState(-1);
     const [imageCategory, setImageCategory] = useState(6);
     const [imageLink, setImageLink] = useState('');
+    const [imageMessage, setImageMessage] = useState('');
 
     let reactionTime = '';
+
+    useLayoutEffect(() => {
+        performGetProfile();
+    }, []);
 
     async function performGetProfile() {
         const user = { uid: userId, key: 123 };
@@ -46,11 +52,10 @@ export default function MainCardsScreen({ navigation }) {
     }
 
     useLayoutEffect(() => {
-        performGetProfile();
-    }, []);
+        if(imageIndex != -1) performGetImage();
+    }, [imageIndex]);
 
     async function performGetImage() {
-
         if(imageIndex % 15 == 0 && imageIndex != 0) {
             const diff = timeDifference(lastReaction);
             if(diff < 24 * 60 * 60) {
@@ -68,12 +73,9 @@ export default function MainCardsScreen({ navigation }) {
             setImageId(result.imageId);
             setImageCategory(result.imageCategory);
             setImageLink(result.imageLink);
+            setImageMessage(result.imageMessage);
         };
     }
-
-    useLayoutEffect(() => {
-        if(imageIndex != -1) performGetImage();
-    }, [imageIndex]);
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const fadeIn = Animated.timing(fadeAnim, fadeInVals);
@@ -112,15 +114,19 @@ export default function MainCardsScreen({ navigation }) {
 
 	return(
 		<View style={globalStyles.outerContainer}>
-      		<LinearGradient colors={darkGradient} style={{height: '100%'}}>
-      			<View style={globalStyles.innerContainer}>
-                    <View style={styles.noTitleContainer} />
+      		<LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
+      			<SafeAreaView style={globalStyles.innerContainer}>
+                    <View style={globalStyles.noTitleContainer} />
                     <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
                         <Text style={globalStyles.subtitleText}>{(imageIndex % 15) + 1} / 15</Text>
                     </Animated.View>
-       				<View style={globalStyles.contentContainer}>
+       				<View style={globalStyles.contentContainerCard}>
                         <Animated.Image source={imageLink ? { uri: imageLink } : null} onLoad={() => fadeIn.start()}
-                            style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
+                            style={[globalStyles.cardContent, {opacity: fadeAnim}]} />
+                        {(imageMessage && imageMessage != null)
+                            ? <Animated.Text style={[globalStyles.cardDesc, {opacity: fadeAnim}]}>{imageMessage}</Animated.Text>
+                            : null
+                        }
        				</View>
        				<Animated.View style={[globalStyles.blankContainer, {opacity: fadeAnim}]} />
        				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
@@ -139,14 +145,8 @@ export default function MainCardsScreen({ navigation }) {
                             </Animated.View>
                         </TouchableOpacity>
                     </Animated.View>
-  				</View>
+  				</SafeAreaView>
   			</LinearGradient>
   		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-    noTitleContainer: {
-        height: 35
-    }
-});

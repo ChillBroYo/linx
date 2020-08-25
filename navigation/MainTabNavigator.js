@@ -1,12 +1,11 @@
 import React from 'react';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
-
 import HomeScreen from '../screens/newHomeScreen';
 import CardsStack from './CardsNavigator';
 import FriendsStack from './FriendsNavigator';
 import SettingsStack from './SettingsNavigator';
 import TabBarIcon from '../components/TabBarIcon';
-
+import { hp } from '../styles/helpers';
 
 // BOTTOM TAB
 const BottomTabRouteConfig = {
@@ -26,7 +25,7 @@ const BottomTabNavigatorConfig = {
     }),
     tabBarOptions: {
         showLabel: false,
-        style: { height: 100 },
+        style: { height: hp(100) },
     },
 };
 

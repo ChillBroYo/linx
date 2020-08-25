@@ -1,13 +1,18 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
+import { Text, TouchableOpacity, View, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { pageStyles } from './common';
 import { lightGradient } from '../../constants/Colors';
+import Loader from '../../components/Loader';
 import { Camera } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import { UserContext } from '../../contexts/UserContext';
 
+//Import global styles used throughout app
+import { globalStyles } from '../../styles/global';
+
 export default function UserProfileImage({ navigation }) {
+    const [isLoading, setIsLoading] = useState(false);
 
     let camera = useRef();
 
@@ -52,8 +57,10 @@ export default function UserProfileImage({ navigation }) {
     }
 
     async function doUploadProfile(photo) {
+        setIsLoading(true);
         const user = getUserForImageUpload(photo);
         const isUploadedProfile = await doUploadProfileUser(user);
+        setIsLoading(false);
         if (!isUploadedProfile) return;
         navigation.goBack();
     }
@@ -66,19 +73,21 @@ export default function UserProfileImage({ navigation }) {
 
     //Case when permission has been approved
     return (
-        <View style={styles.cameraContainer}>
-            <Camera style={styles.camera} type={type} flashMode={'auto'} ref={camera} >
-                <View style={styles.navigationButtonContainer}>
-                    <TouchableOpacity style={styles.backButtonContainer} onPress={() => navigation.goBack()}>
-                        <Ionicons name="ios-arrow-back" style={styles.backButton} />
+        <>
+            <View style={globalStyles.cameraContainer}>
+                <View style={globalStyles.navigationButtonContainer}>
+                    <TouchableOpacity style={globalStyles.backButtonContainer} onPress={() => navigation.goBack()}>
+                        <Ionicons name="ios-arrow-back" style={globalStyles.backButton} />
                     </TouchableOpacity>
                 </View>
-                <View style={styles.cameraButtonContainer}>
-                    <TouchableOpacity style={styles.takePictureContainer} onPress={snap}>
-                        <Ionicons name="ios-camera" style={styles.takePicture} />
+                <Camera style={globalStyles.camera} type={type} ref={camera} />
+                <View style={globalStyles.cameraButtonContainer}>
+                    <View style={globalStyles.noIcon} />
+                    <TouchableOpacity style={globalStyles.takePictureContainer} onPress={snap}>
+                        <Ionicons name="ios-camera" style={globalStyles.takePicture} />
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={styles.flipCameraContainer}
+                        style={globalStyles.flipCameraContainer}
                         onPress={() => {
                             setType(type == Camera.Constants.Type.back
                                 ? Camera.Constants.Type.front
@@ -86,56 +95,11 @@ export default function UserProfileImage({ navigation }) {
                             )
                         }}
                     >
-                        <Ionicons name="ios-reverse-camera" style={styles.flipCamera} />
+                        <Ionicons name="ios-reverse-camera" style={globalStyles.flipCamera} />
                     </TouchableOpacity>
                 </View>
-            </Camera>
-        </View>
+            </View>
+            <Loader visible={isLoading} />
+        </>
     );
 }
-
-//Styling of screen
-const styles = StyleSheet.create({
-    cameraContainer: {
-        flex: 1
-    },
-    camera: {
-        flex: 1
-    },
-    navigationButtonContainer: {
-        flex: 1,
-        backgroundColor: 'black',
-        alignItems: 'flex-start',
-    },
-    backButtonContainer: {
-        marginTop: 15,
-        marginLeft: 25
-    },
-    backButton: {
-        color: 'white',
-        fontSize: 50,
-    },
-    cameraButtonContainer: {
-        flex: 1,
-        backgroundColor: 'black',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'flex-end',
-        marginTop: 485
-    },
-    takePictureContainer: {
-        marginLeft: 120
-    },
-    takePicture: {
-        fontSize: 100,
-        marginBottom: 0,
-        color: 'white',
-    },
-    flipCameraContainer: {
-    },
-    flipCamera: {
-        fontSize: 50,
-        marginBottom: 10,
-        color: 'white',
-    },
-});

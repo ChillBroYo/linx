@@ -41,6 +41,7 @@ export default function UserLocation({ navigation }) {
         setZip: setContextZip,
         distance: contextDistance,
         setDistance: setContextDistance,
+        doValidateZip,
         doUpdateUser,
         formatUserForRequest,
     } = useContext(UserContext);
@@ -61,8 +62,20 @@ export default function UserLocation({ navigation }) {
         navigation.goBack();
     }
 
-    function doSubmit() {
+    async function doSubmit() {
         if (!validateForm()) return;
+
+        const result = await doCheckZip();
+        if (!result) {
+            return Alert.alert('Outside ZIP Code',
+                'Linx is currently not available within the ZIP code you have entered. You can still sign up and react to cards. \
+                Once Linx is in your area, we will match you up with friends in your area.',
+                [
+                    { text: 'OK', style: 'cancel', onPress: () => isSignUpScreen ? doSignUp() : doUpdate() },
+                ]
+            );
+        };
+
         isSignUpScreen ? doSignUp() : doUpdate();
     }
 
@@ -108,7 +121,13 @@ export default function UserLocation({ navigation }) {
 
     function validateZipCode() {
         const zipCodeRegex = /^\d{5}(?:[-\s]\d{4})?$/;
-        return zipCodeRegex.test(zip);
+        return zipCodeRegex.test(zip.trim());
+    }
+
+    async function doCheckZip() {
+        const mainZip = { zip: zip.trim(), key: 123 };
+        const result = await doValidateZip(mainZip);
+        if (typeof result == 'boolean') return result;
     }
 
     return (

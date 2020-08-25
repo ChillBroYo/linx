@@ -31,3 +31,10 @@ export const scaling = {
         }).start();
     },
 };
+
+export const popup = {
+    title: 'Permission Denied',
+    message: 'Linx currently does not have permission to access Camera. Please go into Settings to grant Linx access.',
+    btn1Text: 'OK',
+    btn2Text: 'Settings'
+};

@@ -47,7 +47,7 @@ export default function Profile({ navigation }) {
     }, []);
 
     useEffect(() => {
-        getCommonImages();
+        getCommonImages(friendId);
     }, [friend]);
 
     if (!friendId) {
@@ -86,10 +86,10 @@ export default function Profile({ navigation }) {
 
     async function getCommonImages(oid) {
         try {
-            const API_ENDPOINT = getApiEndpoint(['common', 'images', 'betwee', 'users']);
+            const API_ENDPOINT = getApiEndpoint(['common', 'images', 'between', 'users']);
             const queryParams = {
                 token,
-                userId,
+                user_id: userId,
                 oid,
             };
             const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
@@ -176,23 +176,11 @@ export default function Profile({ navigation }) {
                                 You both liked
                             </Text>
                             <ScrollView horizontal contentContainerStyle={{ marginVertical: 10 }}>
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
-                                <View style={styles.imageWrapper} />
+                                {commonImages == null ? null
+                                    : commonImages.map((url, index) => {
+                                        return(<Image source={{ uri: url }} style={styles.imageWrapper} />)
+                                    })
+                                }
                             </ScrollView>
                         </View>
                     </View>
@@ -267,12 +255,17 @@ const styles = StyleSheet.create({
     sectionText: {
         fontSize: 20,
     },
-
     imageWrapper: {
-        height: 250,
-        width: 250,
-        backgroundColor: purple,
+        height: 190,
+        width: 190,
         marginBottom: 8,
         marginRight: 8,
+
+        /*
+        At the moment, all images appear in uniform size. As a result, some images may be cut off due to the size restraints placed.
+        If we wish to update so that all images appear in their entirety, the below line can be commented out. When commended out,
+        this will have images resize within the container as needed so that the entire image shows.
+        */
+        //resizeMode: 'contain'
     },
 });
