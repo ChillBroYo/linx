@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     },
     wrapper: {
         alignItems: 'center',
-        flex: 1,
+        flexGrow: 1,
         justifyContent: 'space-between',
     },
 });
