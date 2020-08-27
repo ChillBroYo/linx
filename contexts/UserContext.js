@@ -213,7 +213,7 @@ export function UserContextProvider({ children }) {
 
     async function doValidateZip(zip) {
         try {
-            const API_ENDPOINT = `${apiUrl}/${__DEV__ ? 'is_valid_linx_zip' : 'is-valid-linx-zip'}`;
+            const API_ENDPOINT = getApiEndpoint(['is', 'valid', 'linx', 'zip']);
             const res = await axios.get(API_ENDPOINT, { params: zip });
             const data = res.data;
             if (res.status != 200) {
