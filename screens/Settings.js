@@ -30,6 +30,7 @@ export default function Settings({ navigation }) {
         ageRange,
         gender,
         sameGender,
+        doLogoutUser,
     } = useContext(UserContext);
 
     useEffect(() => {
@@ -54,6 +55,7 @@ export default function Settings({ navigation }) {
 
     async function doLogout() {
         await removeStoredData();
+        doLogoutUser();
         navigation.navigate('SignIn');
     }
 
