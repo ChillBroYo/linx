@@ -32,7 +32,7 @@ export default function ResetPassword({ navigation }) {
         try {
             const subject = 'Linx: Reset Password';
             const body = `Please reset password for the account with the following information:\n\nemail: ${email}\nusername: ${username}`;
-            const URL = `mailto:kdpnp10@gmail.com?subject=${subject}&body=${body}`;
+            const URL = `mailto:webmaster@linx-services.com?subject=${subject}&body=${body}`;
             const canOpenUrl = await canOpenURL(URL);
             if (!canOpenUrl) return;
             await openURL(URL);

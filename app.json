@@ -30,7 +30,8 @@
     },
     "android": {
       "package": "com.linx.linx",
-      "versionCode": 3
+      "versionCode": 3,
+      "googleServicesFile": "./google-services.json"
     },
     "description": ""
   }

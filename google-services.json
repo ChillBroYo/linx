@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "73394403855",
+    "firebase_url": "https://linx-da19a.firebaseio.com",
+    "project_id": "linx-da19a",
+    "storage_bucket": "linx-da19a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:73394403855:android:d59f77d02ca4069361c17a",
+        "android_client_info": {
+          "package_name": "com.linx.linx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "73394403855-ojsgij4aqsqbcbo51r2uivosa5blqn8d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl2TAVTFvUX8iDENhOTSbJh-CpC7LntxA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "73394403855-ojsgij4aqsqbcbo51r2uivosa5blqn8d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
