@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Alert } from 'react-native';
+import { Notifications } from 'expo';
 import axios from 'axios';
 import moment from 'moment';
 import getApiEndpoint from '../helpers/apiEndpoint';
@@ -66,6 +67,7 @@ export function UserContextProvider({ children }) {
         friends, setFriends,
         setUserFromResponse,
         setUserFromProfileResponse,
+        doLogoutUser,
         doSignInUser,
         doGetUserProfile,
         doGetImage,
@@ -81,10 +83,11 @@ export function UserContextProvider({ children }) {
         formatUserForOnboarding,
         formatUserForReaction,
         formatUserForIndex,
+        formatUserForLogout,
         resetState,
     };
 
-    function setUserFromResponse(res) {
+    async function setUserFromResponse(res) {
         const {
             uid,
             token,
@@ -129,13 +132,15 @@ export function UserContextProvider({ children }) {
         setSameGender(sameGender);
         setFriends(JSON.parse(friends));
 
-        // update existing users with expo push token
-        if (!info.expoPushToken && expoPushToken) {
-            info.expoPushToken = expoPushToken;
-            // TODO: fix update call error
-            // only important for backwards compatibility
-            // doUpdateUser({ info });
-        }
+        // force update push token on every sign in
+        // push token is unique every time the app is installed on a device
+        const user = res;
+        info.expoPushToken = await Notifications.getExpoPushTokenAsync();
+        user.info = JSON.stringify(info);
+        user.user_id = user.uid;
+        delete user.uid;
+        console.log({ user });
+        doUpdateUser(user, null, true);
     }
 
     function setUserFromProfileResponse(res) {
@@ -190,7 +195,7 @@ export function UserContextProvider({ children }) {
         }
     }
 
-    async function doUpdateUser(user, callback) {
+    async function doUpdateUser(user, callback, silent = false) {
         try {
             const API_ENDPOINT = getApiEndpoint(['update', 'profile']);
             const params = formatParams(user);
@@ -203,7 +208,10 @@ export function UserContextProvider({ children }) {
             if (callback) {
                 await callback();
             }
-            Alert.alert('Your settings have been updated');
+
+            if (!silent) {
+                Alert.alert('Your settings have been updated');
+            }
         }
         catch (error) {
             console.warn('Update failed:', error);
@@ -399,6 +407,19 @@ export function UserContextProvider({ children }) {
         return user;
     }
 
+    function doLogoutUser() {
+        const user = formatUserForLogout();
+        doUpdateUser(user, null, true);
+    }
+
+    function formatUserForLogout() {
+        return {
+            user_id: userId,
+            token,
+            info: formatUserInfo(true),
+        };
+    }
+
     function formatUserForImageUpload() {
         const name = 'profile_' + String(userId) + '_' + String(moment.utc().format('YYYY-MM-DDTHH:mm:ss')) + '.jpg';
         const type = 'image/jpeg';
@@ -450,7 +471,7 @@ export function UserContextProvider({ children }) {
         return user;
     }
 
-    function formatUserInfo() {
+    function formatUserInfo(isLogout = false) {
         return {
             birthday: birthday?.trim() || '',
             connectWith: {
@@ -458,7 +479,7 @@ export function UserContextProvider({ children }) {
                 distance,
                 sameGender,
             },
-            expoPushToken,
+            expoPushToken: !isLogout ? expoPushToken : '',
             gender,
             imgUrl: profileImg,
             isOnboarded,
