@@ -149,8 +149,25 @@ export default function Profile({ navigation }) {
         );
     }
 
-    function doRemoveFriend() {
-        console.log('removing friend');
+    async function doRemoveFriend() {
+        try {
+            const API_ENDPOINT = getApiEndpoint(['remove', 'friend']);
+            const params = new URLSearchParams();
+            params.append('token', token);
+            params.append('user_id', userId);
+            params.append('other_id', friendId);
+            const res = await axios.post(API_ENDPOINT, params);
+            const data = res.data;
+
+            if (!res.status != 200) {
+                return Alert.alert(data?.errmsg || 'Error while trying to remove friend. Please try again.');
+            }
+
+            navigation.navigate('FriendsHome');
+        }
+        catch (error) {
+            console.warn('error in doRemoveFriend:', error);
+        }
     }
 
     return (
