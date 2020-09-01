@@ -4,6 +4,7 @@ import SafeAreaView from 'react-native-safe-area-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import moment from 'moment';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import CardsCompletionScreen from './CardsCompletion';
 import CardsTimerScreen from './CardsTimer';
 import { getSymbols, timeDifference, fadeInVals, fadeOutVals } from './helpers';
@@ -112,11 +113,15 @@ export default function MainCardsScreen({ navigation }) {
 
     const symbols = getSymbols(imageCategory);
 
-	return(
+	return (
 		<View style={globalStyles.outerContainer}>
       		<LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
       			<SafeAreaView style={globalStyles.innerContainer}>
-                    <View style={globalStyles.noTitleContainer} />
+                    <Animated.View style={[globalStyles.titleContainer, {opacity: fadeAnim}]}>
+                        <MaterialCommunityIcons name='flag-variant' size={25} color='#FFF'
+                            onPress={() => navigation.navigate('ReportImage', {imageId, imageIndex, onGoBack: () => fadeOut.start(updateStates)})}
+                        />
+                    </Animated.View>
                     <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
                         <Text style={globalStyles.subtitleText}>{(imageIndex % 15) + 1} / 15</Text>
                     </Animated.View>

@@ -7,7 +7,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.10",
+    "version": "1.0.11",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "notification": {
@@ -32,10 +32,10 @@
       "package": "com.linx.linx",
       "versionCode": 6,
       "googleServicesFile": "./google-services.json",
-      "adaptiveIcon": {
+      /*"adaptiveIcon": {
       	"foregroundImage": "./assets/images/icon_foreground.png",
       	"backgroundColor": "#8002FE"
-      }
+      }*/
     },
     "description": ""
   }

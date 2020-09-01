@@ -9,6 +9,7 @@ import WelcomeScreen2 from '../screens/onboarding/Welcome2';
 import WelcomeScreen3 from '../screens/onboarding/Welcome3';
 import MainCardsScreen from '../screens/cards/MainCards';
 import UserStatusScreen from '../screens/cards/UserStatus';
+import ReportImageScreen from '../screens/cards/ReportImage';
 import TabBarIcon from '../components/TabBarIcon';
 
 const CardsStack = createStackNavigator(
@@ -22,6 +23,7 @@ const CardsStack = createStackNavigator(
         Welcome2: WelcomeScreen2,
         Welcome3: WelcomeScreen3,
         MainCards: MainCardsScreen,
+        ReportImage: ReportImageScreen
     },
     {
         headerMode: 'none',
@@ -31,7 +33,7 @@ const CardsStack = createStackNavigator(
             const currentRoute = routes[routes.length - 1];
             return {
                 tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name='cards' />,
-                tabBarVisible: currentRoute.routeName != 'TakeProfile',
+                tabBarVisible: currentRoute.routeName != 'TakeProfile' && currentRoute.routeName != 'ReportImage',
             };
         },
     },
