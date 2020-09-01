@@ -132,6 +132,27 @@ export default function Profile({ navigation }) {
         }
     }
 
+    function confirmRemoveFriend() {
+        Alert.alert(
+            'Remove friend?',
+            'This cannot be undone.',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Confirm',
+                    onPress: doRemoveFriend,
+                }
+            ],
+        );
+    }
+
+    function doRemoveFriend() {
+        console.log('removing friend');
+    }
+
     return (
         <View style={styles.container}>
             <LinearGradient colors={lightGradient} style={styles.container}>
@@ -185,6 +206,11 @@ export default function Profile({ navigation }) {
                         </View>
                     </View>
                 </ScrollView>
+                <View style={styles.removeFriendWrapper}>
+                    <TouchableOpacity onPress={confirmRemoveFriend}>
+                        <Text style={styles.removeFriend}>Remove friend</Text>
+                    </TouchableOpacity>
+                </View>
             </LinearGradient>
             <BarButton
                 active={true}
@@ -255,6 +281,20 @@ const styles = StyleSheet.create({
     sectionText: {
         fontSize: 20,
     },
+
+    removeFriendWrapper: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    removeFriend: {
+        color: grey,
+        fontSize: 20,
+        fontStyle: 'italic',
+        lineHeight: 27,
+        marginVertical: 20,
+        textAlign: 'center',
+    },
+
     imageWrapper: {
         height: 190,
         width: 190,
