@@ -86,6 +86,10 @@ export default function MainCardsScreen({ navigation }) {
     const emojiAnim2 = useRef(new Animated.Value(0)).current;
 
     function updateStates() {
+        if (!reactionTime) {
+            reactionTime = moment.utc().format('YYYY-MM-DDTHH:mm:ss');
+        };
+        
         setLastReaction(reactionTime);
         setImageIndex(imageIndex + 1);
     }
