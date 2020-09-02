@@ -132,6 +132,44 @@ export default function Profile({ navigation }) {
         }
     }
 
+    function confirmRemoveFriend() {
+        Alert.alert(
+            'Remove friend?',
+            'This cannot be undone.',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Confirm',
+                    onPress: doRemoveFriend,
+                },
+            ],
+        );
+    }
+
+    async function doRemoveFriend() {
+        try {
+            const API_ENDPOINT = getApiEndpoint(['remove', 'friend']);
+            const params = new URLSearchParams();
+            params.append('token', token);
+            params.append('user_id', userId);
+            params.append('oid', friendId);
+            const res = await axios.post(API_ENDPOINT, params);
+            const data = res.data;
+
+            if (res.status != 200) {
+                return Alert.alert(data?.errmsg || 'Error while trying to remove friend. Please try again.');
+            }
+
+            navigation.navigate('FriendsHome');
+        }
+        catch (error) {
+            console.warn('error in doRemoveFriend:', error);
+        }
+    }
+
     return (
         <View style={styles.container}>
             <LinearGradient colors={lightGradient} style={styles.container}>
@@ -185,6 +223,11 @@ export default function Profile({ navigation }) {
                         </View>
                     </View>
                 </ScrollView>
+                <View style={styles.removeFriendWrapper}>
+                    <TouchableOpacity onPress={confirmRemoveFriend}>
+                        <Text style={styles.removeFriend}>Remove friend</Text>
+                    </TouchableOpacity>
+                </View>
             </LinearGradient>
             <BarButton
                 active={true}
@@ -255,6 +298,20 @@ const styles = StyleSheet.create({
     sectionText: {
         fontSize: 20,
     },
+
+    removeFriendWrapper: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    removeFriend: {
+        color: grey,
+        fontSize: 20,
+        fontStyle: 'italic',
+        lineHeight: 27,
+        marginVertical: 20,
+        textAlign: 'center',
+    },
+
     imageWrapper: {
         height: 190,
         width: 190,

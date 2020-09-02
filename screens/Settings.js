@@ -1,13 +1,15 @@
 import React, { useContext, useEffect } from 'react';
 import {
+    Alert,
     ScrollView,
     StatusBar,
     StyleSheet,
     Text,
-    TouchableWithoutFeedback,
+    TouchableOpacity,
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient} from 'expo-linear-gradient';
@@ -18,9 +20,12 @@ import {
     purple,
 } from '../constants/Colors';
 import { UserContext } from '../contexts/UserContext';
+import getApiEndpoint from '../helpers/apiEndpoint';
 
 export default function Settings({ navigation }) {
     const {
+        token,
+        userId,
         email,
         city,
         state,
@@ -37,8 +42,46 @@ export default function Settings({ navigation }) {
         StatusBar.setBarStyle('dark-content');
     }, []);
 
+    function confirmDeleteAccount() {
+        Alert.alert(
+            'Are you sure you want to delete your account?',
+            'This cannot be undone.',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Confirm',
+                    onPress: doDeleteAccount,
+                },
+            ],
+        );
+    }
+
     function doBirthday() {
         navigation.navigate('SettingsBirthday');
+    }
+
+    async function doDeleteAccount() {
+        try {
+            const API_ENDPOINT = getApiEndpoint(['delete', 'account']);
+            const params = new URLSearchParams();
+            params.append('token', token);
+            params.append('user_id', userId);
+            const res = await axios.post(API_ENDPOINT, params);
+            const data = res.data;
+
+            if (res.status != 200) {
+                return Alert.alert(data?.errmsg || 'Error while trying to delete account. Please try again.');
+            }
+
+            await removeStoredData();
+            navigation.navigate('SignIn');
+        }
+        catch (error) {
+            console.warn('error in doDeleteAccount:', error);
+        }
     }
 
     function doEmail() {
@@ -82,16 +125,16 @@ export default function Settings({ navigation }) {
                 <SafeAreaView edges={['top']} style={styles.mainWrapper}>
                     <ScrollView showsVerticalScrollIndicator={false}>
                         <Text style={styles.screenHeader}>Settings</Text>
-                        <TouchableWithoutFeedback onPress={doProfile}>
+                        <TouchableOpacity onPress={doProfile}>
                             <View style={styles.row}>
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>Profile</Text>
                                 </View>
                                 <Ionicons name="ios-arrow-forward" size={20} />
                             </View>
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
                         <View style={styles.divider} />
-                        <TouchableWithoutFeedback onPress={doLocation}>
+                        <TouchableOpacity onPress={doLocation}>
                             <View style={styles.row}>
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>I live in</Text>
@@ -100,9 +143,9 @@ export default function Settings({ navigation }) {
                                 </View>
                                 <Ionicons name="ios-arrow-forward" size={20} />
                             </View>
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
                         <View style={styles.divider} />
-                        <TouchableWithoutFeedback onPress={doBirthday}>
+                        <TouchableOpacity onPress={doBirthday}>
                             <View style={styles.row}>
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>My birthday is</Text>
@@ -111,9 +154,9 @@ export default function Settings({ navigation }) {
                                 </View>
                                 <Ionicons name="ios-arrow-forward" size={20} />
                             </View>
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
                         <View style={styles.divider} />
-                        <TouchableWithoutFeedback onPress={doGender}>
+                        <TouchableOpacity onPress={doGender}>
                             <View style={styles.row}>
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>I'm a</Text>
@@ -122,9 +165,9 @@ export default function Settings({ navigation }) {
                                 </View>
                                 <Ionicons name="ios-arrow-forward" size={20} />
                             </View>
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
                         <View style={styles.divider} />
-                        <TouchableWithoutFeedback onPress={doEmail}>
+                        <TouchableOpacity onPress={doEmail}>
                             <View style={styles.row}>
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>Account email</Text>
@@ -132,23 +175,23 @@ export default function Settings({ navigation }) {
                                 </View>
                                 <Ionicons name="ios-arrow-forward" size={20} />
                             </View>
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
                         <View style={styles.divider} />
-                        <TouchableWithoutFeedback onPress={doPassword}>
+                        <TouchableOpacity onPress={doPassword}>
                             <View style={styles.row}>
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>Change password</Text>
                                 </View>
                                 <Ionicons name="ios-arrow-forward" size={20} />
                             </View>
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
                         <View style={styles.divider} />
-                        <TouchableWithoutFeedback onPress={doLogout}>
+                        <TouchableOpacity onPress={doLogout}>
                             <Text style={styles.boldText}>Sign out</Text>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={confirmDeleteAccount}>
                             <Text style={styles.italicText}>Delete account</Text>
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
                     </ScrollView>
                 </SafeAreaView>
             </LinearGradient>
