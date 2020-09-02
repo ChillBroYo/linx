@@ -31,11 +31,7 @@
     "android": {
       "package": "com.linx.linx",
       "versionCode": 6,
-      "googleServicesFile": "./google-services.json",
-      /*"adaptiveIcon": {
-      	"foregroundImage": "./assets/images/icon_foreground.png",
-      	"backgroundColor": "#8002FE"
-      }*/
+      "googleServicesFile": "./google-services.json"
     },
     "description": ""
   }
