@@ -144,7 +144,7 @@ export default function Profile({ navigation }) {
                 {
                     text: 'Confirm',
                     onPress: doRemoveFriend,
-                }
+                },
             ],
         );
     }
@@ -155,11 +155,11 @@ export default function Profile({ navigation }) {
             const params = new URLSearchParams();
             params.append('token', token);
             params.append('user_id', userId);
-            params.append('other_id', friendId);
+            params.append('oid', friendId);
             const res = await axios.post(API_ENDPOINT, params);
             const data = res.data;
 
-            if (!res.status != 200) {
+            if (res.status != 200) {
                 return Alert.alert(data?.errmsg || 'Error while trying to remove friend. Please try again.');
             }
 
