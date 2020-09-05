@@ -2,14 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
+    Linking,
     ScrollView,
     StatusBar,
+    StyleSheet,
+    Text,
     TextInput,
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialIcons } from '@expo/vector-icons';
 import {
     Form,
     formStyles,
@@ -21,7 +25,7 @@ import {
 } from './common';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
-import { lightGradient } from '../../constants/Colors';
+import { black, purple, lightGradient } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
 
 export default function UserCredentials({ navigation }) {
@@ -34,6 +38,7 @@ export default function UserCredentials({ navigation }) {
     const [password, setPassword] = useState('');
     const [passwordRetype, setPasswordRetype] = useState('');
     const [username, setUsername] = useState('');
+    const [isChecked, setIsChecked] = useState(false);
 
     useEffect(() => {
         StatusBar.setBarStyle('light-content');
@@ -66,7 +71,10 @@ export default function UserCredentials({ navigation }) {
             return Alert.alert('Password is empty');
         }
         else if (password !== passwordRetype) {
-            return Alert.alert("Passwords do not match");
+            return Alert.alert('Passwords do not match');
+        }
+        else if (!isChecked) {
+            return Alert.alert('Please agree to our terms and conditions to continue');
         }
         else {
             if (!validateUsername()) {
@@ -89,6 +97,17 @@ export default function UserCredentials({ navigation }) {
     function validateUsername() {
         // TODO: check if username is already in DB
         return true;
+    }
+
+    async function openEULA() {
+        const url = 'https://www.getlinxnow.com/terms-conditions';
+        const isSupported = await Linking.canOpenURL(url);
+
+        if (!isSupported) {
+            return Alert.alert('Unable to open Terms and Conditions');
+        }
+
+        await Linking.openURL(url);
     }
 
     return (
@@ -138,11 +157,29 @@ export default function UserCredentials({ navigation }) {
                                 secureTextEntry
                                 style={formStyles.input}
                             />
+                            <View style={styles.eulaContainer}>
+                                <TouchableWithoutFeedback onPress={() => setIsChecked(!isChecked)}>
+                                    <MaterialIcons
+                                        name={isChecked ? 'check-box' : 'check-box-outline-blank'}
+                                        size={28}
+                                        color={isChecked ? purple : black}
+                                    />
+                                </TouchableWithoutFeedback>
+                                <Text style={styles.eulaText}>
+                                    By signing up, I agree to the{' '}
+                                    <Text
+                                        onPress={openEULA}
+                                        style={styles.eulaLink}
+                                    >
+                                        terms and conditions
+                                    </Text>
+                                </Text>
+                            </View>
                         </Form>
                     </ScrollView>
                 </LinearGradient>
                 <BarButton
-                    active={!!(username && email && password && passwordRetype)}
+                    active={!!(username && email && password && passwordRetype && isChecked)}
                     value='Continue'
                     doPress={doContinue}
                 />
@@ -150,3 +187,20 @@ export default function UserCredentials({ navigation }) {
         </TouchableWithoutFeedback>
     );
 }
+
+const styles = StyleSheet.create({
+    eulaContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    eulaText: {
+        marginLeft: 5,
+    },
+    eulaLink: {
+        color: purple,
+        textDecorationColor: purple,
+        textDecorationLine: 'underline',
+        textDecorationStyle: 'solid',
+    },
+});
