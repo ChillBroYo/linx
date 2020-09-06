@@ -2,14 +2,19 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
+    Modal,
     ScrollView,
     StatusBar,
+    StyleSheet,
+    Text,
     TextInput,
+    TouchableOpacity,
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialIcons } from '@expo/vector-icons';
 import {
     Form,
     formStyles,
@@ -21,10 +26,12 @@ import {
 } from './common';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
-import { lightGradient } from '../../constants/Colors';
+import TermsConditions from '../../components/TermsConditions';
+import { black, purple, white, lightGradient } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
 
 export default function UserCredentials({ navigation }) {
+    const insets = useSafeAreaInsets();
     const {
         setEmail: setContextEmail,
         setPassword: setContextPassword,
@@ -34,6 +41,8 @@ export default function UserCredentials({ navigation }) {
     const [password, setPassword] = useState('');
     const [passwordRetype, setPasswordRetype] = useState('');
     const [username, setUsername] = useState('');
+    const [isChecked, setIsChecked] = useState(false);
+    const [showTermsConditions, setShowTermsConditions] = useState(false);
 
     useEffect(() => {
         StatusBar.setBarStyle('light-content');
@@ -66,7 +75,10 @@ export default function UserCredentials({ navigation }) {
             return Alert.alert('Password is empty');
         }
         else if (password !== passwordRetype) {
-            return Alert.alert("Passwords do not match");
+            return Alert.alert('Passwords do not match');
+        }
+        else if (!isChecked) {
+            return Alert.alert('Please agree to our terms and conditions to continue');
         }
         else {
             if (!validateUsername()) {
@@ -138,11 +150,42 @@ export default function UserCredentials({ navigation }) {
                                 secureTextEntry
                                 style={formStyles.input}
                             />
+                            <View style={styles.eulaContainer}>
+                                <TouchableWithoutFeedback onPress={() => setIsChecked(!isChecked)}>
+                                    <MaterialIcons
+                                        name={isChecked ? 'check-box' : 'check-box-outline-blank'}
+                                        size={28}
+                                        color={isChecked ? purple : black}
+                                    />
+                                </TouchableWithoutFeedback>
+                                <Text style={styles.eulaText}>
+                                    By signing up, I agree to the{' '}
+                                    <Text
+                                        onPress={() => setShowTermsConditions(true)}
+                                        style={styles.eulaLink}
+                                    >
+                                        terms and conditions
+                                    </Text>
+                                </Text>
+                                <Modal animationType='fade' transparent={true} visible={showTermsConditions}>
+                                    <View style={[styles.modalContainer, { marginBottom: insets.bottom + 8, marginTop: insets.top + 8 }]}>
+                                        <ScrollView>
+                                            <TermsConditions />
+                                        </ScrollView>
+                                        <TouchableOpacity
+                                            onPress={() => setShowTermsConditions(false)}
+                                            style={styles.modalButton}
+                                        >
+                                            <Text>Close</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </Modal>
+                            </View>
                         </Form>
                     </ScrollView>
                 </LinearGradient>
                 <BarButton
-                    active={!!(username && email && password && passwordRetype)}
+                    active={!!(username && email && password && passwordRetype && isChecked)}
                     value='Continue'
                     doPress={doContinue}
                 />
@@ -150,3 +193,41 @@ export default function UserCredentials({ navigation }) {
         </TouchableWithoutFeedback>
     );
 }
+
+const styles = StyleSheet.create({
+    eulaContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    eulaText: {
+        marginLeft: 5,
+    },
+    eulaLink: {
+        color: purple,
+        textDecorationColor: purple,
+        textDecorationLine: 'underline',
+        textDecorationStyle: 'solid',
+    },
+
+    modalContainer: {
+        backgroundColor: white,
+        borderRadius: 12,
+        flex: 1,
+        margin: 10,
+        padding: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    modalButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 8,
+    },
+});
