@@ -2,16 +2,17 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
-    Linking,
+    Modal,
     ScrollView,
     StatusBar,
     StyleSheet,
     Text,
     TextInput,
+    TouchableOpacity,
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
 import {
@@ -25,10 +26,12 @@ import {
 } from './common';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
-import { black, purple, lightGradient } from '../../constants/Colors';
+import TermsConditions from '../../components/TermsConditions';
+import { black, purple, white, lightGradient } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
 
 export default function UserCredentials({ navigation }) {
+    const insets = useSafeAreaInsets();
     const {
         setEmail: setContextEmail,
         setPassword: setContextPassword,
@@ -39,6 +42,7 @@ export default function UserCredentials({ navigation }) {
     const [passwordRetype, setPasswordRetype] = useState('');
     const [username, setUsername] = useState('');
     const [isChecked, setIsChecked] = useState(false);
+    const [showTermsConditions, setShowTermsConditions] = useState(false);
 
     useEffect(() => {
         StatusBar.setBarStyle('light-content');
@@ -99,17 +103,6 @@ export default function UserCredentials({ navigation }) {
         return true;
     }
 
-    async function openEULA() {
-        const url = 'https://www.getlinxnow.com/terms-conditions';
-        const isSupported = await Linking.canOpenURL(url);
-
-        if (!isSupported) {
-            return Alert.alert('Unable to open Terms and Conditions');
-        }
-
-        await Linking.openURL(url);
-    }
-
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={pageStyles.container}>
@@ -168,12 +161,25 @@ export default function UserCredentials({ navigation }) {
                                 <Text style={styles.eulaText}>
                                     By signing up, I agree to the{' '}
                                     <Text
-                                        onPress={openEULA}
+                                        onPress={() => setShowTermsConditions(true)}
                                         style={styles.eulaLink}
                                     >
                                         terms and conditions
                                     </Text>
                                 </Text>
+                                <Modal animationType='fade' transparent={true} visible={showTermsConditions}>
+                                    <View style={[styles.modalContainer, { marginBottom: insets.bottom + 8, marginTop: insets.top + 8 }]}>
+                                        <ScrollView>
+                                            <TermsConditions />
+                                        </ScrollView>
+                                        <TouchableOpacity
+                                            onPress={() => setShowTermsConditions(false)}
+                                            style={styles.modalButton}
+                                        >
+                                            <Text>Close</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </Modal>
                             </View>
                         </Form>
                     </ScrollView>
@@ -202,5 +208,26 @@ const styles = StyleSheet.create({
         textDecorationColor: purple,
         textDecorationLine: 'underline',
         textDecorationStyle: 'solid',
+    },
+
+    modalContainer: {
+        backgroundColor: white,
+        borderRadius: 12,
+        flex: 1,
+        margin: 10,
+        padding: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    modalButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 8,
     },
 });
