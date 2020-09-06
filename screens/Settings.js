@@ -1,6 +1,7 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     Alert,
+    Modal,
     ScrollView,
     StatusBar,
     StyleSheet,
@@ -8,21 +9,24 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient} from 'expo-linear-gradient';
+import TermsConditions from '../components/TermsConditions';
 import {
     black,
     grey,
     lightGradient,
     purple,
+    white,
 } from '../constants/Colors';
 import { UserContext } from '../contexts/UserContext';
 import getApiEndpoint from '../helpers/apiEndpoint';
 
 export default function Settings({ navigation }) {
+    const insets = useSafeAreaInsets();
     const {
         token,
         userId,
@@ -37,6 +41,7 @@ export default function Settings({ navigation }) {
         sameGender,
         doLogoutUser,
     } = useContext(UserContext);
+    const [showTermsConditions, setShowTermsConditions] = useState(false);
 
     useEffect(() => {
         StatusBar.setBarStyle('dark-content');
@@ -186,6 +191,14 @@ export default function Settings({ navigation }) {
                             </View>
                         </TouchableOpacity>
                         <View style={styles.divider} />
+                        <TouchableOpacity onPress={() => setShowTermsConditions(true)}>
+                            <View style={styles.row}>
+                                <View style={styles.column}>
+                                    <Text style={styles.settingHeader}>Terms and conditions</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                        <View style={styles.divider} />
                         <TouchableOpacity onPress={doLogout}>
                             <Text style={styles.boldText}>Sign out</Text>
                         </TouchableOpacity>
@@ -195,6 +208,19 @@ export default function Settings({ navigation }) {
                     </ScrollView>
                 </SafeAreaView>
             </LinearGradient>
+            <Modal animationType='fade' transparent={true} visible={showTermsConditions}>
+                <View style={[styles.modalContainer, { marginBottom: insets.bottom + 8, marginTop: insets.top + 8 }]}>
+                    <ScrollView>
+                        <TermsConditions />
+                    </ScrollView>
+                    <TouchableOpacity
+                        onPress={() => setShowTermsConditions(false)}
+                        style={styles.modalButton}
+                    >
+                        <Text>Close</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
         </View>
     );
 }
@@ -256,5 +282,26 @@ const styles = StyleSheet.create({
     },
     settingsText: {
         textTransform: 'capitalize',
+    },
+
+    modalContainer: {
+        backgroundColor: white,
+        borderRadius: 12,
+        flex: 1,
+        margin: 10,
+        padding: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    modalButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 8,
     },
 });
