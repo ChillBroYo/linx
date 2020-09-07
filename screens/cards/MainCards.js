@@ -35,8 +35,6 @@ export default function MainCardsScreen({ navigation }) {
     const [imageLink, setImageLink] = useState('');
     const [imageMessage, setImageMessage] = useState('');
 
-    let reactionTime = '';
-
     useLayoutEffect(() => {
         performGetProfile();
     }, []);
@@ -86,10 +84,7 @@ export default function MainCardsScreen({ navigation }) {
     const emojiAnim2 = useRef(new Animated.Value(0)).current;
 
     function updateStates() {
-        if (!reactionTime) {
-            reactionTime = moment.utc().format('YYYY-MM-DDTHH:mm:ss');
-        };
-        
+        const reactionTime = moment.utc().format('YYYY-MM-DDTHH:mm:ss');     
         setLastReaction(reactionTime);
         setImageIndex(imageIndex + 1);
     }
@@ -104,7 +99,7 @@ export default function MainCardsScreen({ navigation }) {
     function getUserForReaction(reaction) {
         const react = formatUserForReaction(reaction, imageId);
         const user = formatUserForIndex(imageIndex + 1);
-        reactionTime = moment.utc().format('YYYY-MM-DDTHH:mm:ss');
+        const reactionTime = moment.utc().format('YYYY-MM-DDTHH:mm:ss');
         user.info.lastReaction = reactionTime;
         return [react, user];
     }

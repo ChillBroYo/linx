@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
-import {wp, hp} from './helpers';
+import {wp, hp, stdHeight} from './helpers';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export const globalStyles = StyleSheet.create({
 	outerContainer: {
@@ -15,19 +16,19 @@ export const globalStyles = StyleSheet.create({
 	},
 	noTitleContainer: {
 		top: hp(20),
-		height: 35
+		height: RFValue(35, stdHeight)
 	},
 	blackTitle: {
 		color: '#2B2D42',
-		fontSize: 35
+		fontSize: RFValue(35, stdHeight)
 	},
 	whiteTitle: {
 		color: '#FFF',
-		fontSize: 35
+		fontSize: RFValue(35, stdHeight)
 	},
 	paginationContainer: {
 		marginVertical: hp(20),
-		height: 20
+		height: RFValue(20, stdHeight)
 	},
 	paginationIcon: {
 		resizeMode: 'contain'
@@ -35,7 +36,7 @@ export const globalStyles = StyleSheet.create({
 	subtitleText: {
 		textAlign: 'center',
 		color: '#FFF',
-		fontSize: 20
+		fontSize: RFValue(20, stdHeight)
 	},
 	contentContainerText: {
 		backgroundColor: '#FFF',
@@ -82,7 +83,7 @@ export const globalStyles = StyleSheet.create({
 		zIndex: 1
 	},
 	content: {
-		fontSize: 22,
+		fontSize: RFValue(22, stdHeight),
 		color: '#1B1B1B',
 		marginBottom: hp(20)
 	},
@@ -95,7 +96,7 @@ export const globalStyles = StyleSheet.create({
 		resizeMode: 'contain'
 	},
 	cardDesc: {
-		fontSize: 20,
+		fontSize: RFValue(20, stdHeight),
 		color: '#2B2D42'
 	},
 	blankContainer: {
@@ -135,7 +136,7 @@ export const globalStyles = StyleSheet.create({
 		marginTop: -hp(20)
 	},
 	verify: {
-		fontSize: 20,
+		fontSize: RFValue(20, stdHeight),
 		color: '#FFF'
 	},
 	emojiContainer: {
@@ -149,12 +150,12 @@ export const globalStyles = StyleSheet.create({
 	emojiSymbol: {
 	},
 	emojiStyle: {
-		fontSize: 80
+		fontSize: RFValue(80, stdHeight)
 	},
 	confettiContainer: {
 		elevation: 6,
     	zIndex: 2,
-    	bottom: -80,
+    	bottom: RFValue(-80, stdHeight),
     	alignSelf: 'flex-start'
   	},
   	cameraContainer: {
@@ -170,7 +171,7 @@ export const globalStyles = StyleSheet.create({
     },
     backButton: {
         color: 'white',
-        fontSize: 50,
+        fontSize: RFValue(50, stdHeight),
     },
     camera: {
         flex: 5
@@ -183,18 +184,18 @@ export const globalStyles = StyleSheet.create({
         alignItems: 'center'
     },
     noIcon: {
-    	width: 50
+    	width: RFValue(50, stdHeight)
     },
     takePictureContainer: {
     },
     takePicture: {
-        fontSize: 100,
+        fontSize: RFValue(100, stdHeight),
         color: 'white',
     },
     flipCameraContainer: {
     },
     flipCamera: {
-        fontSize: 50,
+        fontSize: RFValue(50, stdHeight),
         color: 'white',
     }
 });
