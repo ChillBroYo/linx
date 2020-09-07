@@ -175,7 +175,7 @@ export default function Messages({ navigation }) {
                             <View style={styles.divider} />
                         </View>
                     )}
-                    contentContainerStyle={styles.scrollable}
+                    contentContainerStyle={{alignItems: 'center'}}
                 />
             )}
         </LinearGradient>
