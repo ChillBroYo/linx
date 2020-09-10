@@ -155,7 +155,7 @@ export const globalStyles = StyleSheet.create({
 	confettiContainer: {
 		elevation: 6,
     	zIndex: 2,
-    	bottom: RFValue(-80, stdHeight),
+    	bottom: -RFValue(80, stdHeight),
     	alignSelf: 'flex-start'
   	},
   	cameraContainer: {
