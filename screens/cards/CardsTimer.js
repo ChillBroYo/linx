@@ -63,7 +63,7 @@ export default function CardsTimerScreen({ navigation, lastReaction }) {
                         </TouchableOpacity>
                     </Animated.View>
                     <Animated.View style={[globalStyles.confettiContainer, {opacity: fadeAnim}]}>
-                        <ConfettiCannon count={100} origin={{ x: 0, y: 0 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
+                        <ConfettiCannon count={50} origin={{ x: 0, y: 0 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
                             autoStart={false} ref={cannon}
                         />
                     </Animated.View>
