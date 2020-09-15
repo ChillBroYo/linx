@@ -37,7 +37,9 @@ export default function DenyProfileScreen({ navigation }) {
                     <View style={globalStyles.titleContainer}>
                         <Text style={globalStyles.whiteTitle}>Are you real?</Text>
                     </View>
-                    <View style={globalStyles.paginationContainer} />
+                    <View style={globalStyles.paginationContainer}>
+                        <Text style={globalStyles.transparentText}>Replace Text Here</Text>
+                    </View>
                     <View style={globalStyles.contentContainerText}>
                         <Text style={globalStyles.content}>Are you sure you don't want to verify that you are a real person? {'\n'}{'\n'}
                         This will limit who you will be able to connect with.</Text>

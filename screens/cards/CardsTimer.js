@@ -10,12 +10,15 @@ import { timeDifference } from './helpers';
 import { darkGradient } from '../../constants/Colors';
 import { fadeInVals, fadeOutVals } from './helpers';
 import { scaling } from '../helpers';
+import { wp, hp, stdHeight } from '../../styles/helpers';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
 
 export default function CardsTimerScreen({ navigation, lastReaction }) {
     const [timerOver, setTimerOver] = useState(false);
+    const [counter, setCounter] = useState(0);
 
     let cannon = useRef();
     function shootCannon() {
@@ -39,8 +42,8 @@ export default function CardsTimerScreen({ navigation, lastReaction }) {
       		<LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
       			<SafeAreaView style={globalStyles.innerContainer}>
                     <Animated.View style={[globalStyles.titleContainer, {opacity: fadeAnim}]}>
-                        <CountDown until={diff} size={35} timeToShow={['H', 'M', 'S']} timeLabels={{h: null, m: null, s: null}} showSeparator={true}
-                            separatorStyle={{color: '#FFF'}} digitStyle={{backgroundColor: 'transparent', width: 55, height: 35}}
+                        <CountDown until={diff} size={RFValue(30, stdHeight)} timeToShow={['H', 'M', 'S']} timeLabels={{h: null, m: null, s: null}} showSeparator={true}
+                            separatorStyle={{color: '#FFF'}} digitStyle={{backgroundColor: 'transparent', width: wp(55), height: hp(35)}}
                             digitTxtStyle={{color: '#FFF', fontWeight: 'normal'}} onFinish={() => fadeOut.start(() => setTimerOver(true))}
                         />
                     </Animated.View>
@@ -52,7 +55,9 @@ export default function CardsTimerScreen({ navigation, lastReaction }) {
                             style={[globalStyles.imageContent, {opacity: fadeAnim}]}
                         />
        				</View>
-       				<View style={globalStyles.noContainer} />
+       				<View style={globalStyles.noContainer}>
+                        <Text style={globalStyles.transparentVerify}>Enter Verify Here</Text>
+                    </View>
        				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
                         <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim)} onPressOut={() => scaling.pressOutAnim(emojiAnim)}
                             onPress={shootCannon} style={scaling.scalingStyle(emojiAnim)}

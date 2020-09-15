@@ -11,6 +11,8 @@ import { getSymbols, timeDifference, fadeInVals, fadeOutVals } from './helpers';
 import { UserContext } from '../../contexts/UserContext';
 import { darkGradient } from '../../constants/Colors';
 import { scaling } from '../helpers';
+import { stdHeight } from '../../styles/helpers';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
@@ -116,8 +118,8 @@ export default function MainCardsScreen({ navigation }) {
 		<View style={globalStyles.outerContainer}>
       		<LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
       			<SafeAreaView style={globalStyles.innerContainer}>
-                    <Animated.View style={[globalStyles.titleContainer, {opacity: fadeAnim}]}>
-                        <MaterialCommunityIcons name='flag-variant' size={25} color='#FFF'
+                    <Animated.View style={[globalStyles.iconContainer, {opacity: fadeAnim}]}>
+                        <MaterialCommunityIcons name='flag-variant' size={RFValue(25, stdHeight)} color='#FFF'
                             onPress={() => navigation.navigate('ReportImage', {imageId, imageIndex, onGoBack: () => fadeOut.start(updateStates)})}
                         />
                     </Animated.View>
@@ -132,7 +134,9 @@ export default function MainCardsScreen({ navigation }) {
                             : null
                         }
        				</View>
-       				<Animated.View style={[globalStyles.blankContainer, {opacity: fadeAnim}]} />
+       				<Animated.View style={[globalStyles.blankContainer, {opacity: fadeAnim}]}>
+                        <Text style={globalStyles.transparentVerify}>Enter Verify Here</Text>
+                    </Animated.View>
        				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
                         <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim1)} onPressOut={() => scaling.pressOutAnim(emojiAnim1)}
                             onPress={() => doReaction(1)} style={scaling.scalingStyle(emojiAnim1)}

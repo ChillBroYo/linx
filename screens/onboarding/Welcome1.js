@@ -16,7 +16,9 @@ export default function WelcomeScreen1({ navigation }) {
         <View style={globalStyles.outerContainer}>
             <LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
                 <SafeAreaView style={globalStyles.innerContainer}>
-                    <View style={globalStyles.noTitleContainer} />
+                    <View style={globalStyles.titleContainer}>
+                        <Text style={globalStyles.transparentTitle}>Replace Title Here</Text>
+                    </View>
                     <View style={globalStyles.paginationContainer}>
                         <Text style={globalStyles.subtitleText}>Welcome!</Text>
                     </View>
@@ -24,7 +26,9 @@ export default function WelcomeScreen1({ navigation }) {
                         <Text style={globalStyles.content}>Linx connects you with like minded people for new friendships.</Text>
                         <Image source={require('../../assets/images/welcome1.png')} style={globalStyles.imageContent} />
                     </View>
-                    <View style={globalStyles.blankContainer} />
+                    <View style={globalStyles.blankContainer}>
+                        <Text style={globalStyles.transparentVerify} >Enter Verify Here</Text>
+                    </View>
                     <View style={globalStyles.emojiContainer}>
                         <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim)} onPressOut={() => scaling.pressOutAnim(emojiAnim)}
                             onPress={() => navigation.navigate('Welcome2')} style={scaling.scalingStyle(emojiAnim)}

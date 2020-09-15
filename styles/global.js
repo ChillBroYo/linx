@@ -11,12 +11,13 @@ export const globalStyles = StyleSheet.create({
 	innerContainer: {
 		alignItems: 'center'
 	},
+	iconContainer: {
+		top: hp(20),
+		height: RFValue(42, stdHeight)
+	},
 	titleContainer: {
 		top: hp(20),
-	},
-	noTitleContainer: {
-		top: hp(20),
-		height: RFValue(35, stdHeight)
+		//height: RFValue(35, stdHeight)
 	},
 	blackTitle: {
 		color: '#2B2D42',
@@ -26,9 +27,13 @@ export const globalStyles = StyleSheet.create({
 		color: '#FFF',
 		fontSize: RFValue(35, stdHeight)
 	},
+	transparentTitle: {
+		color: 'transparent',
+		fontSize: RFValue(35, stdHeight)
+	},
 	paginationContainer: {
 		marginVertical: hp(20),
-		height: RFValue(20, stdHeight)
+		//height: RFValue(20, stdHeight)
 	},
 	paginationIcon: {
 		resizeMode: 'contain'
@@ -36,6 +41,11 @@ export const globalStyles = StyleSheet.create({
 	subtitleText: {
 		textAlign: 'center',
 		color: '#FFF',
+		fontSize: RFValue(20, stdHeight)
+	},
+	transparentText: {
+		textAlign: 'center',
+		color: 'transparent',
 		fontSize: RFValue(20, stdHeight)
 	},
 	contentContainerText: {
@@ -101,10 +111,11 @@ export const globalStyles = StyleSheet.create({
 	},
 	blankContainer: {
 		alignItems: 'center',
+		justifyContent: 'center',
 		backgroundColor: '#FFF',
 		width: wp(280),
-		height: hp(40),
-		marginTop: -hp(20),
+		marginTop: -RFValue(20, stdHeight),
+		paddingVertical: hp(7),
 		borderRadius: 10,
 		shadowColor: '#000',
 		shadowOffset: { width: 0, height: 2 },
@@ -118,8 +129,7 @@ export const globalStyles = StyleSheet.create({
 		justifyContent: 'center',
 		backgroundColor: '#439E73',
 		width: wp(280),
-		height: hp(40),
-		marginTop: -hp(20),
+		marginTop: -RFValue(20, stdHeight),
 		paddingVertical: hp(7),
 		borderRadius: 10,
 		shadowColor: '#000',
@@ -130,14 +140,27 @@ export const globalStyles = StyleSheet.create({
 		zIndex: 1
 	},
 	noContainer: {
+		alignItems: 'center',
+		justifyContent: 'center',
 		backgroundColor: 'transparent',
 		width: wp(280),
-		height: hp(40),
-		marginTop: -hp(20)
+		marginTop: -RFValue(20, stdHeight),
+		paddingVertical: hp(7),
+		borderRadius: 10,
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+		elevation: 5,
+		zIndex: 1	
 	},
 	verify: {
 		fontSize: RFValue(20, stdHeight),
 		color: '#FFF'
+	},
+	transparentVerify: {
+		fontSize: RFValue(20, stdHeight),
+		color: 'transparent'
 	},
 	emojiContainer: {
 		flexDirection: 'row',

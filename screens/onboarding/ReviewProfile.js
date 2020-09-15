@@ -66,7 +66,9 @@ export default function ReviewProfileScreen({ navigation }) {
                         <View style={globalStyles.titleContainer}>
                             <Text style={globalStyles.whiteTitle}>Photo</Text>
                         </View>
-                        <View style={globalStyles.paginationContainer} />
+                        <View style={globalStyles.paginationContainer}>
+                            <Text style={globalStyles.transparentText}>Replace Text Here</Text>
+                        </View>
                         <View style={globalStyles.contentContainerCard}>
                             <Image source={{ uri: photo.uri }} onLoad={() => setProfileImg(photo.uri)} style={globalStyles.cardContent} />
                         </View>
