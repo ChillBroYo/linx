@@ -313,9 +313,8 @@ const styles = StyleSheet.create({
     },
 
     imageWrapper: {
-        height: 190,
-        width: 190,
-        marginBottom: 8,
+        height: 125,
+        width: 125,
         marginRight: 8,
 
         /*
