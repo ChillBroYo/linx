@@ -25,7 +25,7 @@ const BottomTabNavigatorConfig = {
     }),
     tabBarOptions: {
         showLabel: false,
-        style: { height: hp(100) },
+        style: { height: hp(80) },
     },
 };
 

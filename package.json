@@ -49,6 +49,7 @@
     "react-native-masked-text": "^1.13.0",
     "react-native-pose": "^0.9.1",
     "react-native-reanimated": "~1.9.0",
+    "react-native-responsive-fontsize": "^0.4.3",
     "react-native-responsive-screen": "^1.4.1",
     "react-native-safe-area-context": "~3.0.7",
     "react-native-safe-area-view": "^1.1.1",

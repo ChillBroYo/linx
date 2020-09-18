@@ -1,6 +1,8 @@
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { stdHeight } from '../styles/helpers';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function TabBarIcon({ focused, name }) {
     switch (name) {
@@ -13,7 +15,7 @@ export default function TabBarIcon({ focused, name }) {
                     )}
                     style={styles.icon}
                 />}*/
-                <MaterialCommunityIcons name='cards-outline' size={50} color={focused ? '#439E73' : '#8D99AE'} />
+                <MaterialCommunityIcons name='cards-outline' size={RFValue(40, stdHeight)} color={focused ? '#439E73' : '#8D99AE'} />
             );
         case 'friends':
             return (
@@ -24,7 +26,7 @@ export default function TabBarIcon({ focused, name }) {
                     )}
                     style={styles.icon}
                 />}*/
-                <MaterialCommunityIcons name='message-text-outline' size={50} color={focused ? '#439E73' : '#8D99AE'} />
+                <MaterialCommunityIcons name='message-text-outline' size={RFValue(40, stdHeight)} color={focused ? '#439E73' : '#8D99AE'} />
             );
         case 'settings':
             return (
@@ -35,7 +37,7 @@ export default function TabBarIcon({ focused, name }) {
                     )}
                     style={styles.icon}
                 />}*/
-                <MaterialCommunityIcons name='settings-outline' size={50} color={focused ? '#439E73' : '#8D99AE'} />
+                <MaterialCommunityIcons name='settings-outline' size={RFValue(40, stdHeight)} color={focused ? '#439E73' : '#8D99AE'} />
             );
         default:
             return null;

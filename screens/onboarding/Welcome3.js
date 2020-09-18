@@ -54,7 +54,9 @@ export default function WelcomeScreen3({ navigation }) {
             <View style={globalStyles.outerContainer}>
                 <LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
                     <SafeAreaView style={globalStyles.innerContainer}>
-                        <View style={globalStyles.noTitleContainer} />
+                        <View style={globalStyles.titleContainer}>
+                            <Text style={globalStyles.transparentTitle}>Replace Title Here</Text>
+                        </View>
                         <View style={globalStyles.paginationContainer}>
                             <Text style={globalStyles.subtitleText}>Welcome!</Text>
                         </View>
@@ -62,7 +64,9 @@ export default function WelcomeScreen3({ navigation }) {
                             <Text style={globalStyles.content}>We will connect you to others who reacted similarly to you. Let's meet some new people!</Text>
                             <Image source={require('../../assets/images/welcome3.png')} style={globalStyles.imageContent} />
                         </View>
-                        <View style={globalStyles.blankContainer} />
+                        <View style={globalStyles.blankContainer}>
+                            <Text style={globalStyles.transparentVerify} >Enter Verify Here</Text>
+                        </View>
                         <View style={globalStyles.emojiContainer}>
                             <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim)} onPressOut={() => scaling.pressOutAnim(emojiAnim)}
                                 onPress={shootCannon} style={scaling.scalingStyle(emojiAnim)}
@@ -73,7 +77,7 @@ export default function WelcomeScreen3({ navigation }) {
                             </TouchableOpacity>
                         </View>
                         <View style={globalStyles.confettiContainer}>
-                            <ConfettiCannon count={100} origin={{ x: 0, y: 0 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
+                            <ConfettiCannon count={50} origin={{ x: 0, y: 0 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
                                 autoStart={false} ref={cannon} onAnimationEnd={doCompleteOnboarding}
                             />
                         </View>

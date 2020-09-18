@@ -36,7 +36,9 @@ export default function CardsCompletionScreen({ navigation }) {
                         <Animated.Image source={require('../../assets/images/cards_completion.png')} onLoad={() => fadeIn.start()}
                         style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
        				</View>
-       				<View style={globalStyles.noContainer} />
+       				<View style={globalStyles.noContainer}>
+                        <Text style={globalStyles.transparentVerify}>Enter Verify Here</Text>
+                    </View>
        				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
                         <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim)} onPressOut={() => scaling.pressOutAnim(emojiAnim)}
                             onPress={shootCannon} style={scaling.scalingStyle(emojiAnim)}
@@ -47,7 +49,7 @@ export default function CardsCompletionScreen({ navigation }) {
                         </TouchableOpacity>
                     </Animated.View>
                     <Animated.View style={[globalStyles.confettiContainer, {opacity: fadeAnim}]}>
-                        <ConfettiCannon count={100} origin={{ x: 0, y: 0 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
+                        <ConfettiCannon count={50} origin={{ x: 0, y: 0 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
                             autoStart={false} ref={cannon}
                         />
                     </Animated.View>

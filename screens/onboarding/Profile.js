@@ -37,12 +37,16 @@ export default function ProfileScreen({ navigation }) {
                     <View style={globalStyles.titleContainer}>
                         <Text style={globalStyles.whiteTitle}>Are you real?</Text>
                     </View>
-                    <View style={globalStyles.paginationContainer} />
+                    <View style={globalStyles.paginationContainer}>
+                        <Text style={globalStyles.transparentText}>Replace Text Here</Text>
+                    </View>
                     <View style={globalStyles.contentContainerText}>
                         <Text style={globalStyles.content}>Take your profile picture to verify that you are a real person. {'\n'}{'\n'}
                         While photos aren't mandatory, if you don't have a photo, we will only connect you with others that don't have photos.</Text>
                     </View>
-                    <View style={globalStyles.noContainer} />
+                    <View style={globalStyles.noContainer}>
+                        <Text style={globalStyles.transparentVerify}>Enter Verify Here</Text>
+                    </View>
                     <View style={globalStyles.emojiContainer}>
                         <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim1)} onPressOut={() => scaling.pressOutAnim(emojiAnim1)}
                             onPress={() => navigation.navigate('DenyProfile')} style={scaling.scalingStyle(emojiAnim1)}
