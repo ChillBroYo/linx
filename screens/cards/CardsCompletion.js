@@ -22,30 +22,34 @@ export default function CardsCompletionScreen({ navigation }) {
 
     const emojiAnim = useRef(new Animated.Value(0)).current;
 
-	return(
-		<View style={globalStyles.outerContainer}>
-      		<LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
-      			<SafeAreaView style={globalStyles.innerContainer}>
+    return(
+        <View style={globalStyles.outerContainer}>
+            <LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
+                <SafeAreaView style={globalStyles.innerContainer}>
                     <Animated.View style={[globalStyles.titleContainer, {opacity: fadeAnim}]}>
                         <Text style={globalStyles.whiteTitle}>Please Wait</Text>
                     </Animated.View>
                     <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
                         <Text style={globalStyles.subtitleText}>until new cards are available</Text>
                     </Animated.View>
-       				<View style={globalStyles.contentContainerImg}>
+                    <View style={globalStyles.contentContainerImg}>
                         <Animated.Image source={require('../../assets/images/cards_completion.png')} onLoad={() => fadeIn.start()}
-                        style={[globalStyles.imageContent, {opacity: fadeAnim}]} />
-       				</View>
-       				<View style={globalStyles.noContainer}>
+                            style={[globalStyles.imageContent, {opacity: fadeAnim}]}
+                        />
+                    </View>
+                    <View style={globalStyles.noContainer}>
                         <Text style={globalStyles.transparentVerify}>Enter Verify Here</Text>
                     </View>
-       				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
+                    <View style={globalStyles.emojiTextContainer}>
+                        <Text style={globalStyles.transparentEmojiText}>Replace Emoji Text Here</Text>
+                    </View>
+                    <Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
                         <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim)} onPressOut={() => scaling.pressOutAnim(emojiAnim)}
                             onPress={shootCannon} style={scaling.scalingStyle(emojiAnim)}
                         >
-           					<Animated.View style={globalStyles.emojiSymbol}>
-                            	<Emoji name="tada" style={globalStyles.emojiStyle} />
-                        	</Animated.View>
+                            <Animated.View style={globalStyles.emojiSymbol}>
+                                <Emoji name="tada" style={globalStyles.emojiStyle} />
+                            </Animated.View>
                         </TouchableOpacity>
                     </Animated.View>
                     <Animated.View style={[globalStyles.confettiContainer, {opacity: fadeAnim}]}>
@@ -53,8 +57,8 @@ export default function CardsCompletionScreen({ navigation }) {
                             autoStart={false} ref={cannon}
                         />
                     </Animated.View>
-  				</SafeAreaView>
-  			</LinearGradient>
-  		</View>
+                </SafeAreaView>
+            </LinearGradient>
+        </View>
 	);
 }

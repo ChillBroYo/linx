@@ -162,11 +162,22 @@ export const globalStyles = StyleSheet.create({
 		fontSize: RFValue(20, stdHeight),
 		color: 'transparent'
 	},
+	emojiTextContainer: {
+		marginTop: hp(10)
+	},
+	emojiText: {
+		textAlign: 'center',
+		color: '#2B2D42',
+		fontSize: RFValue(20, stdHeight)
+	},
+	transparentEmojiText: {
+		fontSize: RFValue(20, stdHeight),
+		color: 'transparent'
+	},
 	emojiContainer: {
 		flexDirection: 'row',
 		alignSelf: 'stretch',
 		justifyContent: 'space-around',
-		marginVertical: hp(25),
 		elevation: 7,
 		zIndex: 3
 	},

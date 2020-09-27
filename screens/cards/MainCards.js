@@ -137,6 +137,9 @@ export default function MainCardsScreen({ navigation }) {
        				<Animated.View style={[globalStyles.blankContainer, {opacity: fadeAnim}]}>
                         <Text style={globalStyles.transparentVerify}>Enter Verify Here</Text>
                     </Animated.View>
+                    <View style={[globalStyles.emojiTextContainer, {opacity: fadeAnim}]}>
+                        <Text style={globalStyles.transparentEmojiText}>Replace Emoji Text Here</Text>
+                    </View>
        				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
                         <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim1)} onPressOut={() => scaling.pressOutAnim(emojiAnim1)}
                             onPress={() => doReaction(1)} style={scaling.scalingStyle(emojiAnim1)}
