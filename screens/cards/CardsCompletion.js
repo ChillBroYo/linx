@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Text, View, Image, Animated, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import SafeAreaView from 'react-native-safe-area-view';
@@ -12,6 +12,8 @@ import { scaling } from '../helpers';
 import { globalStyles } from '../../styles/global';
 
 export default function CardsCompletionScreen({ navigation }) {
+    const [counter, setCounter] = useState(0);
+
     let cannon = useRef();
     function shootCannon() {
         cannon.current.start();
@@ -41,7 +43,7 @@ export default function CardsCompletionScreen({ navigation }) {
                         <Text style={globalStyles.transparentVerify}>Enter Verify Here</Text>
                     </View>
                     <View style={globalStyles.emojiTextContainer}>
-                        <Text style={globalStyles.transparentEmojiText}>Replace Emoji Text Here</Text>
+                        <Text style={(counter == 0) ? globalStyles.transparentEmojiText : globalStyles.emojiText}>{counter}</Text>
                     </View>
                     <Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
                         <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim)} onPressOut={() => scaling.pressOutAnim(emojiAnim)}
@@ -54,7 +56,7 @@ export default function CardsCompletionScreen({ navigation }) {
                     </Animated.View>
                     <Animated.View style={[globalStyles.confettiContainer, {opacity: fadeAnim}]}>
                         <ConfettiCannon count={50} origin={{ x: 0, y: 0 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
-                            autoStart={false} ref={cannon}
+                            autoStart={false} ref={cannon} onAnimationStart={() => setCounter(counter + 1)}
                         />
                     </Animated.View>
                 </SafeAreaView>
