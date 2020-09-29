@@ -168,8 +168,9 @@ export default function UserLocation({ navigation }) {
                                         selectedValue={city}
                                     >
                                         <Picker.Item label='Select an area' value='' />
-                                        <Picker.Item label='San Francisco Bay Area' value='San Francisco Bay Area' />
-                                        <Picker.Item label='Los Angeles Area' value='Los Angeles Area' />
+                                        <Picker.Item label='San Francisco Bay Area, CA' value='San Francisco Bay Area, CA' />
+                                        <Picker.Item label='Los Angeles Area, CA' value='Los Angeles Area, CA' />
+                                        <Picker.Item label='Atlanta Area, GA' value='Atlanta Area, GA' />
                                     </Picker>
                                 </View>
                             </Modal>
