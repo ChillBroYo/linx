@@ -13,6 +13,7 @@ import { darkGradient } from '../../constants/Colors';
 import { scaling } from '../helpers';
 import { stdHeight } from '../../styles/helpers';
 import { RFValue } from 'react-native-responsive-fontsize';
+import Loader from '../../components/Loader';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
@@ -36,6 +37,8 @@ export default function MainCardsScreen({ navigation }) {
     const [imageCategory, setImageCategory] = useState(6);
     const [imageLink, setImageLink] = useState('');
     const [imageMessage, setImageMessage] = useState('');
+
+    const [isLoading, setIsLoading] = useState(false);
 
     useLayoutEffect(() => {
         performGetProfile();
@@ -92,8 +95,10 @@ export default function MainCardsScreen({ navigation }) {
     }
 
     async function doReaction(reaction) {
+        setIsLoading(true);
         const [react, user] = getUserForReaction(reaction);
         const [didReact, didUpdateIndex] = await Promise.all([doReactImage(react), doUpdateImageIndex(user)]);
+        setIsLoading(false);
         if(!didReact || !didUpdateIndex) return;
         fadeOut.start(updateStates);
     }
@@ -115,46 +120,52 @@ export default function MainCardsScreen({ navigation }) {
     const symbols = getSymbols(imageCategory);
 
 	return (
-		<View style={globalStyles.outerContainer}>
-      		<LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
-      			<SafeAreaView style={globalStyles.innerContainer}>
-                    <Animated.View style={[globalStyles.iconContainer, {opacity: fadeAnim}]}>
-                        <MaterialCommunityIcons name='flag-variant' size={RFValue(25, stdHeight)} color='#FFF'
-                            onPress={() => navigation.navigate('ReportImage', {imageId, imageIndex, onGoBack: () => fadeOut.start(updateStates)})}
-                        />
-                    </Animated.View>
-                    <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
-                        <Text style={globalStyles.subtitleText}>{(imageIndex % 15) + 1} / 15</Text>
-                    </Animated.View>
-       				<View style={globalStyles.contentContainerCard}>
-                        <Animated.Image source={imageLink ? { uri: imageLink } : null} onLoad={() => fadeIn.start()}
-                            style={[globalStyles.cardContent, {opacity: fadeAnim}]} />
-                        {(imageMessage && imageMessage != null)
-                            ? <Animated.Text style={[globalStyles.cardDesc, {opacity: fadeAnim}]}>{imageMessage}</Animated.Text>
-                            : null
-                        }
-       				</View>
-       				<Animated.View style={[globalStyles.blankContainer, {opacity: fadeAnim}]}>
-                        <Text style={globalStyles.transparentVerify}>Enter Verify Here</Text>
-                    </Animated.View>
-       				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
-                        <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim1)} onPressOut={() => scaling.pressOutAnim(emojiAnim1)}
-                            onPress={() => doReaction(1)} style={scaling.scalingStyle(emojiAnim1)}
-                        >
-           					<Animated.View style={globalStyles.emojiSymbol}>
-                            	<Emoji name={symbols[0]} style={globalStyles.emojiStyle} />
-                        	</Animated.View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim2)} onPressOut={() => scaling.pressOutAnim(emojiAnim2)}
-                            onPress={() => doReaction(2)} style={scaling.scalingStyle(emojiAnim2)}
-                        >
-                            <Animated.View style={globalStyles.emojiSymbol}>
-                                <Emoji name={symbols[1]} style={globalStyles.emojiStyle} />
-                            </Animated.View>
-                        </TouchableOpacity>
-                    </Animated.View>
-  				</SafeAreaView>
-  			</LinearGradient>
-  		</View>
+        <>
+    		<View style={globalStyles.outerContainer}>
+          		<LinearGradient colors={darkGradient} style={globalStyles.gradientContainer}>
+          			<SafeAreaView style={globalStyles.innerContainer}>
+                        <Animated.View style={[globalStyles.iconContainer, {opacity: fadeAnim}]}>
+                            <MaterialCommunityIcons name='flag-variant' size={RFValue(25, stdHeight)} color='#FFF'
+                                onPress={() => navigation.navigate('ReportImage', {imageId, imageIndex, onGoBack: () => fadeOut.start(updateStates)})}
+                            />
+                        </Animated.View>
+                        <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
+                            <Text style={globalStyles.subtitleText}>{(imageIndex % 15) + 1} / 15</Text>
+                        </Animated.View>
+           				<View style={globalStyles.contentContainerCard}>
+                            <Animated.Image source={imageLink ? { uri: imageLink } : null} onLoad={() => fadeIn.start()}
+                                style={[globalStyles.cardContent, {opacity: fadeAnim}]} />
+                            {(imageMessage && imageMessage != null)
+                                ? <Animated.Text style={[globalStyles.cardDesc, {opacity: fadeAnim}]}>{imageMessage}</Animated.Text>
+                                : null
+                            }
+           				</View>
+           				<Animated.View style={[globalStyles.blankContainer, {opacity: fadeAnim}]}>
+                            <Text style={globalStyles.transparentVerify}>Enter Verify Here</Text>
+                        </Animated.View>
+                        <Animated.View style={[globalStyles.emojiTextContainer, {opacity: fadeAnim}]}>
+                            <Text style={globalStyles.transparentEmojiText}>Replace Emoji Text Here</Text>
+                        </Animated.View>
+           				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
+                            <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim1)} onPressOut={() => scaling.pressOutAnim(emojiAnim1)}
+                                onPress={() => doReaction(1)} style={scaling.scalingStyle(emojiAnim1)}
+                            >
+               					<Animated.View style={globalStyles.emojiSymbol}>
+                                	<Emoji name={symbols[0]} style={globalStyles.emojiStyle} />
+                            	</Animated.View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim2)} onPressOut={() => scaling.pressOutAnim(emojiAnim2)}
+                                onPress={() => doReaction(2)} style={scaling.scalingStyle(emojiAnim2)}
+                            >
+                                <Animated.View style={globalStyles.emojiSymbol}>
+                                    <Emoji name={symbols[1]} style={globalStyles.emojiStyle} />
+                                </Animated.View>
+                            </TouchableOpacity>
+                        </Animated.View>
+      				</SafeAreaView>
+      			</LinearGradient>
+      		</View>
+            <Loader visible={isLoading} />
+        </>
 	);
 }

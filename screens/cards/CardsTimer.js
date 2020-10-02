@@ -58,6 +58,9 @@ export default function CardsTimerScreen({ navigation, lastReaction }) {
        				<View style={globalStyles.noContainer}>
                         <Text style={globalStyles.transparentVerify}>Enter Verify Here</Text>
                     </View>
+                    <View style={globalStyles.emojiTextContainer}>
+                        <Text style={(counter == 0) ? globalStyles.transparentEmojiText : globalStyles.emojiText}>{counter}</Text>
+                    </View>
        				<Animated.View style={[globalStyles.emojiContainer, {opacity: fadeAnim}]}>
                         <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim)} onPressOut={() => scaling.pressOutAnim(emojiAnim)}
                             onPress={shootCannon} style={scaling.scalingStyle(emojiAnim)}
@@ -69,7 +72,7 @@ export default function CardsTimerScreen({ navigation, lastReaction }) {
                     </Animated.View>
                     <Animated.View style={[globalStyles.confettiContainer, {opacity: fadeAnim}]}>
                         <ConfettiCannon count={50} origin={{ x: 0, y: 0 }} explosionSpeed={500} fallSpeed={2500} fadeOut={true}
-                            autoStart={false} ref={cannon}
+                            autoStart={false} ref={cannon} onAnimationStart={() => setCounter(counter + 1)}
                         />
                     </Animated.View>
   				</SafeAreaView>

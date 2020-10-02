@@ -47,6 +47,9 @@ export default function ProfileScreen({ navigation }) {
                     <View style={globalStyles.noContainer}>
                         <Text style={globalStyles.transparentVerify}>Enter Verify Here</Text>
                     </View>
+                    <View style={globalStyles.emojiTextContainer}>
+                        <Text style={globalStyles.transparentEmojiText}>Replace Emoji Text Here</Text>
+                    </View>
                     <View style={globalStyles.emojiContainer}>
                         <TouchableOpacity onPressIn={() => scaling.pressInAnim(emojiAnim1)} onPressOut={() => scaling.pressOutAnim(emojiAnim1)}
                             onPress={() => navigation.navigate('DenyProfile')} style={scaling.scalingStyle(emojiAnim1)}

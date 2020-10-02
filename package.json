@@ -59,7 +59,8 @@
     "react-navigation": "^3.13.0",
     "react-navigation-stack": "^2.5.1",
     "react-text-mask": "^5.4.3",
-    "rollup": "^1.27.2"
+    "rollup": "^1.27.2",
+    "expo-sharing": "~8.2.1"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.2.3",
