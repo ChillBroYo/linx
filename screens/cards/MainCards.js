@@ -1,5 +1,5 @@
 import React, { useContext, useState, useLayoutEffect, useRef } from 'react';
-import { Text, View, Image, Animated, TouchableOpacity } from 'react-native';
+import { Text, View, Image, Animated, TouchableOpacity, Share } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
@@ -111,6 +111,26 @@ export default function MainCardsScreen({ navigation }) {
         return [react, user];
     }
 
+    async function shareImage() {
+        try {
+            const result = await Share.share({
+                message: `Check out this meme from Linx (getlinxnow.com) \n${imageLink}`,
+            });
+
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+            // dismissed
+            }
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
     if(cardsReact == 1) {
         return (<CardsCompletionScreen navigation={ navigation } />);
     } else if(cardsReact == 2) {
@@ -128,6 +148,7 @@ export default function MainCardsScreen({ navigation }) {
                             <MaterialCommunityIcons name='flag-variant' size={RFValue(25, stdHeight)} color='#FFF'
                                 onPress={() => navigation.navigate('ReportImage', {imageId, imageIndex, onGoBack: () => fadeOut.start(updateStates)})}
                             />
+                            <MaterialCommunityIcons name='share' size={RFValue(25, stdHeight)} color='#FFF' onPress={shareImage} />
                         </Animated.View>
                         <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
                             <Text style={globalStyles.subtitleText}>{(imageIndex % 15) + 1} / 15</Text>

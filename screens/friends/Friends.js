@@ -111,9 +111,6 @@ export default function Messages({ navigation }) {
         }
     }
 
-    console.log('Loading is ', loading);
-    console.log('Friends is ', friends);
-
     return (
         <LinearGradient colors={lightGradient} style={styles.container}>
             <View style={[styles.headerWrapper, {marginTop: insets.top || 40}]}>

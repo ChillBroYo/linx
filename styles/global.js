@@ -13,7 +13,10 @@ export const globalStyles = StyleSheet.create({
 	},
 	iconContainer: {
 		top: hp(20),
-		height: RFValue(42, stdHeight)
+		height: RFValue(42, stdHeight),
+		flexDirection: 'row',
+		justifyContent: 'space-evenly',
+		alignSelf: 'stretch'
 	},
 	titleContainer: {
 		top: hp(20),
