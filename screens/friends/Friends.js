@@ -111,15 +111,19 @@ export default function Messages({ navigation }) {
         }
     }
 
+    console.log('Loading is ', loading);
+    console.log('Friends is ', friends);
+
     return (
         <LinearGradient colors={lightGradient} style={styles.container}>
             <View style={[styles.headerWrapper, {marginTop: insets.top || 40}]}>
-                <Text style={styles.header}>Messages</Text>
+                <Text style={styles.header}>New friends</Text>
             </View>
             <Loader visible={loading} />
-            {loading === false && friends === null ? (
+            {loading === false && !friends?.length ? (
                 <View style={styles.loadingWrapper}>
-                    <Text>You have no messages right now</Text>
+                    <Text style={styles.noFriendsText}>You haven't been linked with anyone yet. Don't worry though, we are working on it.</Text>
+                    <Image source={require('../../assets/images/no_friends_cup.png')} style={styles.noFriendsImage} />
                 </View>
             ) : (
                 <FlatList
@@ -208,7 +212,7 @@ const styles = StyleSheet.create({
     },
     loadingWrapper: {
         alignItems: 'center',
-        marginTop: 30,
+        marginTop: 40,
     },
     message: {
         fontSize: 16,
@@ -216,6 +220,15 @@ const styles = StyleSheet.create({
     messageWrapper: {
         flex: 1,
         justifyContent: 'center',
+    },
+    noFriendsImage: {
+        marginTop: 50
+    },
+    noFriendsText: {
+        fontSize: 20,
+        color: black,
+        marginHorizontal: 55,
+        textAlign: 'center'
     },
     scrollable: {
         flex: 1,
