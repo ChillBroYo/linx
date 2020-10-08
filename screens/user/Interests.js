@@ -69,6 +69,7 @@ export default function UserGender({ navigation }) {
     function doUpdate() {
         const user = getUserForRequest(true);
         doUpdateUser(user, doUpdateContext);
+        navigation.goBack();
     }
 
     async function doUpdateContext() {

@@ -47,6 +47,7 @@ export default function UserEmail({ navigation }) {
         const user = formatUserForRequest(true);
         user.email = email.trim();
         doUpdateUser(user, doUpdateContext);
+        navigation.goBack();
     }
 
     async function doUpdateContext() {

@@ -66,6 +66,7 @@ export default function UserBirthday({ navigation }) {
         user.info.birthday = birthday.trim();
         user.info.connectWith.ageRange = ageRange;
         doUpdateUser(user, doUpdateContext);
+        navigation.goBack();
     }
 
     async function doUpdateContext() {

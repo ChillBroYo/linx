@@ -73,6 +73,7 @@ export default function UserName({ navigation }) {
         user.info.name.first = firstName.trim();
         user.info.name.last = lastName.trim();
         doUpdateUser(user, doUpdateContext);
+        navigation.goBack();
     }
 
     async function doUpdateContext() {

@@ -91,6 +91,7 @@ export default function UserLocation({ navigation }) {
         // user.info.location.state = state.trim();
         user.info.location.zip = zip.trim();
         doUpdateUser(user, doUpdateContext);
+        navigation.goBack();
     }
 
     async function doUpdateContext() {

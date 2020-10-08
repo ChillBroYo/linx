@@ -45,6 +45,7 @@ export default function UserName({ navigation }) {
         const user = formatUserForRequest(true);
         user.password = newPassword;
         doUpdateUser(user);
+        navigation.goBack();
     }
 
     function verifyPassword() {
