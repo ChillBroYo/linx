@@ -1,9 +1,9 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Text, View, Image, Platform, Alert, Animated, TouchableOpacity } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
-import { UserContext } from '../../contexts/UserContext';
+import { useUserContext } from '../../contexts/UserContext';
 import { Camera } from 'expo-camera';
 import * as Linking from 'expo-linking';
 import { darkGradient } from '../../constants/Colors';
@@ -20,11 +20,11 @@ export default function ReviewProfileScreen({ navigation }) {
     const photo = navigation.getParam('data');
 
     const {
-        profileImg: contextProfileImg,
-        setProfileImg: setContextProfileImg,
+        state: userState,
         doUploadProfileUser,
         formatUserForImageUpload,
-    } = useContext(UserContext);
+    } = useUserContext();
+    const { profileImg: contextProfileImg } = userState;
     const [profileImg, setProfileImg] = useState(contextProfileImg);
     const [isLoading, setIsLoading] = useState(false);
 

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
@@ -28,15 +28,11 @@ import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import TermsConditions from '../../components/TermsConditions';
 import { black, purple, white, lightGradient } from '../../constants/Colors';
-import { UserContext } from '../../contexts/UserContext';
+import { UserTypes, useUserContext } from '../../contexts/UserContext';
 
 export default function UserCredentials({ navigation }) {
     const insets = useSafeAreaInsets();
-    const {
-        setEmail: setContextEmail,
-        setPassword: setContextPassword,
-        setUsername: setContextUsername,
-    } = useContext(UserContext);
+    const { dispatch } = useUserContext();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordRetype, setPasswordRetype] = useState('');
@@ -59,9 +55,14 @@ export default function UserCredentials({ navigation }) {
     }
 
     async function doUpdateContext() {
-        await setContextEmail(email.trim());
-        await setContextPassword(password.trim());
-        await setContextUsername(username.trim());
+        await dispatch({
+            type: UserTypes.SET_USER_FIELDS,
+            payload: {
+                email: email.trim(),
+                password: password.trim(),
+                username: username.trim(),
+            },
+        });
     }
 
     function validateForm() {

@@ -3,7 +3,7 @@ import { Text, View, Image, Alert, Animated, TouchableOpacity } from 'react-nati
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import ConfettiCannon from 'react-native-confetti-cannon';
-import { UserContext } from '../../contexts/UserContext';
+import { UserTypes, useUserContext } from '../../contexts/UserContextFix';
 import { Camera } from 'expo-camera';
 import * as Linking from 'expo-linking';
 import { darkGradient } from '../../constants/Colors';
@@ -16,11 +16,12 @@ export default function ConfirmDenialScreen({ navigation }) {
     const emojiAnim = useRef(new Animated.Value(0)).current;
 
     const {
-        isOnboarded:contextIsOnboarded,
-        setIsOnboarded: setContextIsOnboarded,
+        state: userState,
+        dispatch,
         doCompleteOnboardingUser,
         formatUserForOnboarding,
-    } = useContext(UserContext);
+    } = useUserContext();
+    const { isOnboarded: contextIsOnboarded } = userState;
     const [isOnboarded, setIsOnboarded] = useState(contextIsOnboarded);
 
     let cannon = useRef();
@@ -36,7 +37,10 @@ export default function ConfirmDenialScreen({ navigation }) {
         const user = getUserForOnboarding();
         const isCompletedOnboarding = await doCompleteOnboardingUser(user);
         if (!isCompletedOnboarding) return;
-        setContextIsOnboarded(true);
+        dispatch({
+            type: UserTypes.SET_IS_ONBOARDED,
+            payload: { isOnboarded: true },
+        });
         navigation.navigate('UserStatus');
     }
 

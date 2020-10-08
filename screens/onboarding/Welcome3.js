@@ -1,10 +1,10 @@
-import React, { useRef, useContext, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Text, View, Image, Animated, TouchableOpacity } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import ConfettiCannon from 'react-native-confetti-cannon';
-import { UserContext } from '../../contexts/UserContext';
+import { UserTypes, useUserContext } from '../../contexts/UserContext';
 import { darkGradient } from '../../constants/Colors';
 import Loader from '../../components/Loader';
 import { scaling } from '../helpers';
@@ -16,11 +16,12 @@ export default function WelcomeScreen3({ navigation }) {
     const emojiAnim = useRef(new Animated.Value(0)).current;
 
     const {
-        isOnboarded:contextIsOnboarded,
-        setIsOnboarded: setContextIsOnboarded,
+        state: userState,
+        dispatch,
         doCompleteOnboardingUser,
         formatUserForOnboarding,
-    } = useContext(UserContext);
+    } = useUserContext();
+    const { isOnboarded: contextIsOnboarded } = userState;
     const [isOnboarded, setIsOnboarded] = useState(contextIsOnboarded);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -39,7 +40,10 @@ export default function WelcomeScreen3({ navigation }) {
         const isCompletedOnboarding = await doCompleteOnboardingUser(user);
         setIsLoading(false);
         if (!isCompletedOnboarding) return;
-        setContextIsOnboarded(true);
+        dispatch({
+            type: UserTypes.SET_IS_ONBOARDED,
+            payload: { isOnboarded: true },
+        });
         navigation.navigate('UserStatus');
     }
 

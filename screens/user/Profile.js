@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
@@ -27,22 +27,23 @@ import { isSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple, white } from '../../constants/Colors';
-import { UserContext } from '../../contexts/UserContext';
+import { UserTypes, useUserContext } from '../../contexts/UserContext';
 import { Camera } from 'expo-camera';
 import * as Linking from 'expo-linking';
 
 export default function UserName({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        firstName: contextFirstName,
-        setFirstName: setContextFirstName,
-        lastName: contextLastName,
-        setLastName: setContextLastName,
-        profileImg: contextProfileImg,
-        setProfileImg: setContextProfileImg,
+        state: userState,
+        dispatch,
         doUpdateUser,
         formatUserForRequest,
-    } = useContext(UserContext);
+    } = useUserContext();
+    const {
+        firstName: contextFirstName,
+        lastName: contextLastName,
+        profileImg: contextProfileImg,
+    } = userState;
     const [firstName, setFirstName] = useState(contextFirstName);
     const [lastName, setLastName] = useState(contextLastName);
     const [profileImg, setProfileImg] = useState(contextProfileImg);
@@ -76,8 +77,13 @@ export default function UserName({ navigation }) {
     }
 
     async function doUpdateContext() {
-        await setContextFirstName(firstName.trim());
-        await setContextLastName(lastName.trim());
+        await dispatch({
+            type: UserTypes.SET_USER_FIELDS,
+            payload: {
+                firstName: firstName.trim(),
+                lastName: lastName.trim(),
+            },
+        });
     }
 
     function validateForm() {

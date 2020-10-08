@@ -22,11 +22,12 @@ import {
     purple,
     white,
 } from '../constants/Colors';
-import { UserContext } from '../contexts/UserContext';
+import { useUserContext } from '../contexts/UserContext';
 import getApiEndpoint from '../helpers/apiEndpoint';
 
 export default function Settings({ navigation }) {
     const insets = useSafeAreaInsets();
+    const { state: userState, doLogoutUser } = useUserContext();
     const {
         token,
         userId,
@@ -39,8 +40,7 @@ export default function Settings({ navigation }) {
         ageRange,
         gender,
         sameGender,
-        doLogoutUser,
-    } = useContext(UserContext);
+    } = userState;
     const [showTermsConditions, setShowTermsConditions] = useState(false);
 
     useEffect(() => {

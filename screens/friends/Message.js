@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     Alert,
     FlatList,
@@ -27,14 +27,15 @@ import {
     purple,
     white,
 } from '../../constants/Colors';
-import { UserContext } from "../../contexts/UserContext";
+import { useUserContext } from '../../contexts/UserContext';
 import getApiEndpoint from '../../helpers/apiEndpoint';
 import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 
 export default function Message({ navigation }) {
     const isMountedRef = useIsMountedRef();
     const flatListRef = useRef(null);
-    const { token, userId } = useContext(UserContext);
+    const { state: userState } = useUserContext();
+    const { token, userId } = userState;
     const [flatListScrollY, setFlatListScrollY] = useState(0);
     const [multiplier, setMultiplier] = useState(1);
     const [messages, setMessages] = useState(null);

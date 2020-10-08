@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import {
     Keyboard,
     StyleSheet,
@@ -14,17 +14,16 @@ import { Ionicons } from '@expo/vector-icons';
 import BarButton from '../../components/BarButton';
 import moment from 'moment';
 import { canOpenURL, openURL } from 'expo-linking';
-import { UserContext } from '../../contexts/UserContext';
+import { useUserContext } from '../../contexts/UserContext';
 import { wp, hp } from '../../styles/helpers';
 
 export default function ReportImageScreen({ navigation }) {
 	const {
-		username,
-		userId,
+		state: userState,
+		doUpdateImageIndex,
 		formatUserForIndex,
-		doUpdateImageIndex
-	} = useContext(UserContext);
-
+	} = useUserContext();
+	const { userId, username } = userState;
 	const imageId = navigation.getParam('imageId');
 	const imageIndex = navigation.getParam('imageIndex');
 

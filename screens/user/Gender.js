@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Keyboard,
     ScrollView,
@@ -27,21 +27,22 @@ import BarButton from '../../components/BarButton';
 import Loader from '../../components/Loader';
 import PillButton from '../../components/PillButton';
 import { grey, lightGradient, purple } from '../../constants/Colors';
-import { UserContext } from '../../contexts/UserContext';
+import { UserTypes, useUserContext } from '../../contexts/UserContext';
 
 export default function UserGender({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        gender: contextGender,
-        setGender: setContextGender,
-        sameGender: contextSameGender,
-        setSameGender: setContextSameGender,
+        state: userState,
         doSignUpUser,
         doUpdateUser,
         formatUserForRequest,
+    } = useUserContext();
+    const {
+        gender: contextGender,
+        sameGender: contextSameGender,
         username: contextUsername,
-        password: contextPassword
-    } = useContext(UserContext);
+        password: contextPassword,
+    } = userState;
     const genderOptions = ['woman', 'man', 'other'];
     const [gender, setGender] = useState(contextGender);
     const [sameGender, setSameGender] = useState(contextSameGender);
@@ -89,8 +90,10 @@ export default function UserGender({ navigation }) {
     }
 
     async function doUpdateContext() {
-        await setContextGender(gender);
-        await setContextSameGender(sameGender);
+        await dispatch({
+            type: UserTypes.SET_USER_FIELDS,
+            payload: { gender, sameGender },
+        });
     }
 
     function getUserForRequest(isUpdate) {
