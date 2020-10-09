@@ -32,17 +32,16 @@ import { UserTypes, useUserContext } from '../../contexts/UserContext';
 export default function UserGender({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        state: userState,
+        state: {
+            gender: contextGender,
+            sameGender: contextSameGender,
+            username: contextUsername,
+            password: contextPassword,
+        },
         doSignUpUser,
         doUpdateUser,
         formatUserForRequest,
     } = useUserContext();
-    const {
-        gender: contextGender,
-        sameGender: contextSameGender,
-        username: contextUsername,
-        password: contextPassword,
-    } = userState;
     const genderOptions = ['woman', 'man', 'other'];
     const [gender, setGender] = useState(contextGender);
     const [sameGender, setSameGender] = useState(contextSameGender);

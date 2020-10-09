@@ -23,11 +23,10 @@ import { UserTypes, useUserContext } from '../../contexts/UserContext';
 
 export default function UserEmail({ navigation }) {
     const {
-        state: userState,
+        state: { email: contextEmail },
         doUpdateUser,
         formatUserForRequest,
     } = useUserContext();
-    const { email: contextEmail } = userState;
     const [email, setEmail] = useState(contextEmail);
 
     useEffect(() => {

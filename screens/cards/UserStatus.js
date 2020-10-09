@@ -4,8 +4,7 @@ import MainCardsScreen from './MainCards';
 import { useUserContext } from '../../contexts/UserContext';
 
 export default function UserStatusScreen({ navigation }) {
-	const { state: userState } = useUserContext();
-	const { isOnboarded } = userState;
+	const { state: { isOnboarded } } = useUserContext();
 
 	if(isOnboarded) {
 		return(<MainCardsScreen navigation={ navigation } />);

@@ -27,8 +27,7 @@ import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 
 export default function Messages({ navigation }) {
     const insets = useSafeAreaInsets();
-    const { state: userState } = useUserContext();
-    const { token, userId } = userState;
+    const { state: { token, userId } } = useUserContext();
     const isMountedRef = useIsMountedRef();
     const [loading, setLoading] = useState(true);
     const [friends, setFriends] = useState(null);

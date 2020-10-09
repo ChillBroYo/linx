@@ -30,15 +30,14 @@ import { UserTypes, useUserContext } from '../../contexts/UserContext';
 export default function UserBirthday({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        state: userState,
+        state: {
+            ageRange: contextAgeRange,
+            birthday: contextBirthday,
+        },
         dispatch,
         doUpdateUser,
         formatUserForRequest,
     } = useUserContext();
-    const {
-        ageRange: contextAgeRange,
-        birthday: contextBirthday,
-    } = userState;
     const [birthday, setBirthday] = useState(contextBirthday);
     const [ageRange, setAgeRange] = useState(contextAgeRange);
 

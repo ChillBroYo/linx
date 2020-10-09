@@ -20,7 +20,10 @@ import { globalStyles } from '../../styles/global';
 
 export default function MainCardsScreen({ navigation }) {
     const {
-        state: userState,
+        state: {
+            userId,
+            lastReaction: contextLastReaction,
+        },
         doGetImage,
         doGetUserProfile,
         doReactImage,
@@ -28,10 +31,6 @@ export default function MainCardsScreen({ navigation }) {
         formatUserForIndex,
         formatUserForReaction,
     } = useUserContext();
-    const {
-        userId,
-        lastReaction: contextLastReaction,
-    } = userState;
     const [cardsReact, setCardsReact] = useState(0);
     const [imageIndex, setImageIndex] = useState(-1);
     const [lastReaction, setLastReaction] = useState(contextLastReaction);

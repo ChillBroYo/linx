@@ -34,8 +34,7 @@ import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 export default function Message({ navigation }) {
     const isMountedRef = useIsMountedRef();
     const flatListRef = useRef(null);
-    const { state: userState } = useUserContext();
-    const { token, userId } = userState;
+    const { state: { token, userId } } = useUserContext();
     const [flatListScrollY, setFlatListScrollY] = useState(0);
     const [multiplier, setMultiplier] = useState(1);
     const [messages, setMessages] = useState(null);

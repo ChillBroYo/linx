@@ -32,16 +32,15 @@ import { UserTypes, useUserContext } from '../../contexts/UserContextFix';
 export default function UserGender({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        state: userState,
+        state: {
+            interests: contextInterests,
+            sameInterests: contextSameInterests,
+        },
         dispatch,
         doSignUpUser,
         doUpdateUser,
         formatUserForRequest,
     } = useUserContext();
-    const {
-        interests: contextInterests,
-        sameInterests: contextSameInterests,
-    } = userState;
     const [interests, setInterests] = useState(contextInterests);
     const [sameInterests, setSameInterests] = useState(contextSameInterests);
     const interestsList = ['art', 'food', 'nature', 'sports'];

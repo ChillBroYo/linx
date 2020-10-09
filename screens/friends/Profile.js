@@ -32,8 +32,7 @@ import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 export default function Profile({ navigation }) {
     const insets = useSafeAreaInsets();
     const isMountedRef = useIsMountedRef();
-    const { state: userState } = useUserContext();
-    const { token, userId } = userState;
+    const { state: { token, userId } } = useUserContext();
     const [isLoading, setIsLoading] = useState(true);
     const [friend, setFriend] = useState(null);
     const [genderIdentifier, setGenderIdentifier] = useState('');

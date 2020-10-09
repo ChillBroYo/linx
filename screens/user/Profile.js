@@ -34,16 +34,15 @@ import * as Linking from 'expo-linking';
 export default function UserName({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        state: userState,
+        state: {
+            firstName: contextFirstName,
+            lastName: contextLastName,
+            profileImg: contextProfileImg,
+        },
         dispatch,
         doUpdateUser,
         formatUserForRequest,
     } = useUserContext();
-    const {
-        firstName: contextFirstName,
-        lastName: contextLastName,
-        profileImg: contextProfileImg,
-    } = userState;
     const [firstName, setFirstName] = useState(contextFirstName);
     const [lastName, setLastName] = useState(contextLastName);
     const [profileImg, setProfileImg] = useState(contextProfileImg);

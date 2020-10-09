@@ -16,12 +16,11 @@ export default function WelcomeScreen3({ navigation }) {
     const emojiAnim = useRef(new Animated.Value(0)).current;
 
     const {
-        state: userState,
+        state: { isOnboarded: contextIsOnboarded },
         dispatch,
         doCompleteOnboardingUser,
         formatUserForOnboarding,
     } = useUserContext();
-    const { isOnboarded: contextIsOnboarded } = userState;
     const [isOnboarded, setIsOnboarded] = useState(contextIsOnboarded);
     const [isLoading, setIsLoading] = useState(false);
 

@@ -19,11 +19,13 @@ import { wp, hp } from '../../styles/helpers';
 
 export default function ReportImageScreen({ navigation }) {
 	const {
-		state: userState,
+		state: {
+			userId,
+			username,
+		},
 		doUpdateImageIndex,
 		formatUserForIndex,
 	} = useUserContext();
-	const { userId, username } = userState;
 	const imageId = navigation.getParam('imageId');
 	const imageIndex = navigation.getParam('imageIndex');
 

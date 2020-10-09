@@ -27,20 +27,22 @@ import getApiEndpoint from '../helpers/apiEndpoint';
 
 export default function Settings({ navigation }) {
     const insets = useSafeAreaInsets();
-    const { state: userState, doLogoutUser } = useUserContext();
     const {
-        token,
-        userId,
-        email,
-        city,
-        state,
-        zip,
-        distance,
-        birthday,
-        ageRange,
-        gender,
-        sameGender,
-    } = userState;
+        state: {
+            token,
+            userId,
+            email,
+            city,
+            state,
+            zip,
+            distance,
+            birthday,
+            ageRange,
+            gender,
+            sameGender,
+        },
+        doLogoutUser,
+    } = useUserContext();
     const [showTermsConditions, setShowTermsConditions] = useState(false);
 
     useEffect(() => {

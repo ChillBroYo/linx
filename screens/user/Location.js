@@ -33,17 +33,16 @@ import { UserTypes, useUserContext } from '../../contexts/UserContext';
 export default function UserLocation({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        state: userState,
+        state: {
+            city: contextCity,
+            // state: contextState,
+            zip: contextZip,
+            distance: contextDistance,
+        },
         doValidateZip,
         doUpdateUser,
         formatUserForRequest,
     } = useUserContext();
-    const {
-        city: contextCity,
-        // state: contextState,
-        zip: contextZip,
-        distance: contextDistance,
-    } = userState;
     const [city, setCity] = useState(contextCity);
     // const [state, setState] = useState(contextState);
     const [zip, setZip] = useState(contextZip);
