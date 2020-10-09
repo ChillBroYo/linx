@@ -24,6 +24,7 @@ import { UserTypes, useUserContext } from '../../contexts/UserContext';
 export default function UserEmail({ navigation }) {
     const {
         state: { email: contextEmail },
+        dispatch,
         doUpdateUser,
         formatUserForRequest,
     } = useUserContext();

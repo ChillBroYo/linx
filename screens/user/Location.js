@@ -39,6 +39,7 @@ export default function UserLocation({ navigation }) {
             zip: contextZip,
             distance: contextDistance,
         },
+        dispatch,
         doValidateZip,
         doUpdateUser,
         formatUserForRequest,

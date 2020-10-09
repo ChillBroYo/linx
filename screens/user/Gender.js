@@ -38,6 +38,7 @@ export default function UserGender({ navigation }) {
             username: contextUsername,
             password: contextPassword,
         },
+        dispatch,
         doSignUpUser,
         doUpdateUser,
         formatUserForRequest,

@@ -444,7 +444,10 @@ export function UserProvider({ children }) {
             if (res.status != 200 || !data.success || data.success == 'false') {
                 return Alert.alert(data?.errmsg || 'Profile upload failed. Please try again.');
             }
-            setProfileImg(data.image_url);
+            dispatch({
+                type: UserTypes.SET_PROFILE_IMG,
+                payload: { profileImg: data.image_url },
+            });
             return true;
         }
         catch (error) {
