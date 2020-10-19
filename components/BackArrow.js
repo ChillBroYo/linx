@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { black } from '../constants/Colors';
-import {wp, hp, stdHeight} from '../styles/helpers';
+import { wp, hp, stdHeight } from '../styles/helpers';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function BackArrow({ doPress }) {

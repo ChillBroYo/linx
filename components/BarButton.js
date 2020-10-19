@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { grey, white } from '../constants/Colors';
-import {wp, hp, stdHeight} from '../styles/helpers';
+import { hp, stdHeight } from '../styles/helpers';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function BarButton({ active, value, doPress }) {

@@ -29,8 +29,7 @@ import BarButton from '../../components/BarButton';
 import TermsConditions from '../../components/TermsConditions';
 import { black, purple, white, lightGradient } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
-import {wp, hp, stdHeight} from '../../styles/helpers';
-import { RFValue } from 'react-native-responsive-fontsize';
+import { wp, hp } from '../../styles/helpers';
 
 export default function UserCredentials({ navigation }) {
     const insets = useSafeAreaInsets();

@@ -4,8 +4,7 @@ import {
     Text,
     View,
 } from 'react-native';
-import {wp, hp, stdHeight} from '../styles/helpers';
-import { RFValue } from 'react-native-responsive-fontsize';
+import { wp, hp } from '../styles/helpers';
 
 export default function TermsConditions() {
     return (

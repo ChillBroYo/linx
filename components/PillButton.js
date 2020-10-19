@@ -6,7 +6,7 @@ import {
     View,
 } from 'react-native';
 import { black, purple, white } from '../constants/Colors';
-import {wp, hp, stdHeight} from '../styles/helpers';
+import { wp, stdHeight } from '../styles/helpers';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function PillButton({ selected, value, doPress}) {

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import {wp, hp, stdHeight} from './helpers';
+import { wp, hp, stdHeight } from './helpers';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 export const globalStyles = StyleSheet.create({

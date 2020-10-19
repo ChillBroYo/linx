@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { wp, hp, stdHeight } from '../styles/helpers';
+import { hp, stdHeight } from '../styles/helpers';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function TabBarIcon({ focused, name }) {
