@@ -4,6 +4,8 @@ import {
     Text,
     View,
 } from 'react-native';
+import {wp, hp, stdHeight} from '../styles/helpers';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function TermsConditions() {
     return (
@@ -377,18 +379,18 @@ export default function TermsConditions() {
 
 const styles = StyleSheet.create({
     section: {
-        marginTop: 30,
+        marginTop: hp(30),
     },
     header: {
         textTransform: 'uppercase',
     },
     text: {
-        marginTop: 16,
+        marginTop: hp(15),
     },
     list: {
         flexDirection: 'column',
     },
     bullet: {
-        marginLeft: 4,
+        marginLeft: wp(5),
     },
 });

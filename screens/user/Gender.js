@@ -28,6 +28,8 @@ import Loader from '../../components/Loader';
 import PillButton from '../../components/PillButton';
 import { grey, lightGradient, purple } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
+import {wp, hp, stdHeight} from '../../styles/helpers';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function UserGender({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
@@ -153,14 +155,14 @@ export default function UserGender({ navigation }) {
 
 const styles = StyleSheet.create({
     buttonWrapper: {
-        marginBottom: 23,
-        marginTop: 0,
-        marginLeft: 11,
-        marginRight: 11,
-        height: 42,
-        width: 140,
+        marginBottom: hp(25),
+        //marginTop: 0,
+        //marginLeft: 11,
+        //marginRight: 11,
+        height: hp(45),
+        width: wp(140),
     },
     toggle: {
-        marginTop: 16,
+        marginTop: hp(20),
     },
 });

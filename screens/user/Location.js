@@ -29,6 +29,8 @@ import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple } from '../../constants/Colors';
 import { UserContext } from '../../contexts/UserContext';
+import {wp, hp, stdHeight} from '../../styles/helpers';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function UserLocation({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
@@ -217,22 +219,22 @@ export default function UserLocation({ navigation }) {
 
 const styles = StyleSheet.create({
     cityText: {
-        fontSize: 20,
+        fontSize: RFValue(20, stdHeight),
     },
     pickerButtonWrapper: {
         alignItems: 'flex-end',
-        paddingRight: 10,
-        paddingTop: 10,
+        paddingRight: wp(10),
+        paddingTop: hp(10),
     },
     pickerButtonText: {
         color: 'blue',
-        fontSize: 20,
+        fontSize: RFValue(20, stdHeight),
     },
     pickerWrapper: {
         backgroundColor: 'white',
-        bottom: 0,
-        left: 0,
-        right: 0,
+        bottom: hp(0),
+        left: wp(0),
+        right: wp(0),
         position: 'absolute',
     },
 });

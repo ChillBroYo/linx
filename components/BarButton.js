@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { grey, white } from '../constants/Colors';
+import {wp, hp, stdHeight} from '../styles/helpers';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function BarButton({ active, value, doPress }) {
     const insets = useSafeAreaInsets();
@@ -31,16 +33,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: grey,
         justifyContent: 'center',
-        minHeight: 48,
-        paddingTop: 12,
+        minHeight: hp(60),
+        paddingTop: hp(15),
     },
     buttonActive: {
         backgroundColor: '#439E73',
     },
     text: {
         color: white,
-        fontSize: 20,
+        fontSize: RFValue(20, stdHeight),
         fontWeight: '600',
-        lineHeight: 27,
+        lineHeight: hp(30),
     },
 });

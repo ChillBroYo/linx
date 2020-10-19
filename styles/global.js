@@ -204,7 +204,7 @@ export const globalStyles = StyleSheet.create({
         justifyContent: 'center'
     },
     backButtonContainer: {
-        marginLeft: hp(35)
+        marginLeft: wp(30)
     },
     backButton: {
         color: 'white',

@@ -5,6 +5,8 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { black } from '../constants/Colors';
+import {wp, hp, stdHeight} from '../styles/helpers';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function BackArrow({ doPress }) {
     return (
@@ -20,11 +22,11 @@ export default function BackArrow({ doPress }) {
 const style = StyleSheet.create({
     backArrow: {
         color: black,
-        fontSize: 36,
+        fontSize: RFValue(35, stdHeight),
         fontWeight: '900',
-        marginBottom: 0,
-        marginTop: 12,
-        marginLeft: 30,
-        marginRight: 30,
+        //marginBottom: 0,
+        marginTop: hp(15),
+        marginLeft: wp(30),
+        //marginRight: 30,
     },
 });

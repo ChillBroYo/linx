@@ -6,6 +6,8 @@ import {
     View,
 } from 'react-native';
 import { black, purple, white } from '../constants/Colors';
+import {wp, hp, stdHeight} from '../styles/helpers';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function PillButton({ selected, value, doPress}) {
     return (
@@ -28,8 +30,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         height: '100%',
         width: '100%',
-        paddingLeft: 5,
-        paddingRight: 5,
+        paddingHorizontal: wp(5),
     },
     buttonSelected: {
         backgroundColor: purple,
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: black,
-        fontSize: 20,
+        fontSize: RFValue(20, stdHeight),
         fontWeight: '400',
         textTransform: 'capitalize',
     },
