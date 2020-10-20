@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
     Alert,
     Image,
@@ -14,7 +14,7 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage';
 import Loader from '../components/Loader';
-import { UserContext } from '../contexts/UserContext';
+import { UserTypes, useUserContext } from '../contexts/UserContext';
 import { green, white } from '../constants/Colors';
 import {
     addNotificationListener,
@@ -24,10 +24,10 @@ import {
 export default function SignIn({ navigation }) {
     const insets = useSafeAreaInsets();
     const {
-        setExpoPushToken,
+        dispatch,
         doSignInUser,
         resetState: resetUserContextState,
-    } = useContext(UserContext);
+    } = useUserContext();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [autoLogin, setAutoLogin] = useState(false);
@@ -41,7 +41,12 @@ export default function SignIn({ navigation }) {
     }, []);
 
     useLayoutEffect(() => {
-        registerForPushNotificationsAsync(setExpoPushToken);
+        registerForPushNotificationsAsync((expoPushToken) => {
+            dispatch({
+                type: UserTypes.SET_EXPO_PUSH_TOKEN,
+                payload: { expoPushToken }
+            });
+        });
 
         function handleNotification(notification) {
             console.log('New notification:', { notification });

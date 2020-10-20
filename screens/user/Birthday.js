@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
@@ -25,18 +25,19 @@ import { isSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple } from '../../constants/Colors';
-import { UserContext } from '../../contexts/UserContext';
+import { UserTypes, useUserContext } from '../../contexts/UserContext';
 
 export default function UserBirthday({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        birthday: contextBirthday,
-        setBirthday: setContextBirthday,
-        ageRange: contextAgeRange,
-        setAgeRange: setContextAgeRange,
+        state: {
+            ageRange: contextAgeRange,
+            birthday: contextBirthday,
+        },
+        dispatch,
         doUpdateUser,
         formatUserForRequest,
-    } = useContext(UserContext);
+    } = useUserContext();
     const [birthday, setBirthday] = useState(contextBirthday);
     const [ageRange, setAgeRange] = useState(contextAgeRange);
 
@@ -70,8 +71,10 @@ export default function UserBirthday({ navigation }) {
     }
 
     async function doUpdateContext() {
-        await setContextBirthday(birthday);
-        await setContextAgeRange(ageRange);
+        dispatch({
+            type: UserTypes.SET_USER_FIELDS,
+            payload: { ageRange, birthday },
+        });
     }
 
     function validateForm() {

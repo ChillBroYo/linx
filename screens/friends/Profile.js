@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Image,
@@ -25,17 +25,14 @@ import {
     purple,
     white,
 } from '../../constants/Colors';
-import { UserContext } from '../../contexts/UserContext';
+import { useUserContext } from '../../contexts/UserContext';
 import getApiEndpoint from '../../helpers/apiEndpoint';
 import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 
 export default function Profile({ navigation }) {
     const insets = useSafeAreaInsets();
     const isMountedRef = useIsMountedRef();
-    const {
-        token,
-        userId,
-    } = useContext(UserContext);
+    const { state: { token, userId } } = useUserContext();
     const [isLoading, setIsLoading] = useState(true);
     const [friend, setFriend] = useState(null);
     const [genderIdentifier, setGenderIdentifier] = useState('');

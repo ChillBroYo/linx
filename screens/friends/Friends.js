@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     Alert,
     FlatList,
@@ -21,16 +21,13 @@ import {
     purple,
 } from '../../constants/Colors';
 import Loader from '../../components/Loader';
-import { UserContext } from '../../contexts/UserContext';
+import { useUserContext } from '../../contexts/UserContext';
 import getApiEndpoint from '../../helpers/apiEndpoint';
 import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 
 export default function Messages({ navigation }) {
     const insets = useSafeAreaInsets();
-    const {
-        token,
-        userId,
-    } = useContext(UserContext);
+    const { state: { token, userId } } = useUserContext();
     const isMountedRef = useIsMountedRef();
     const [loading, setLoading] = useState(true);
     const [friends, setFriends] = useState(null);

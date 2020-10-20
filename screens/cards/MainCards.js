@@ -1,4 +1,4 @@
-import React, { useContext, useState, useLayoutEffect, useRef } from 'react';
+import React, { useState, useLayoutEffect, useRef } from 'react';
 import { Text, View, Image, Animated, TouchableOpacity, Share } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -8,7 +8,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import CardsCompletionScreen from './CardsCompletion';
 import CardsTimerScreen from './CardsTimer';
 import { getSymbols, timeDifference, fadeInVals, fadeOutVals } from './helpers';
-import { UserContext } from '../../contexts/UserContext';
+import { useUserContext } from '../../contexts/UserContext';
 import { darkGradient } from '../../constants/Colors';
 import { scaling } from '../helpers';
 import { stdHeight } from '../../styles/helpers';
@@ -20,16 +20,17 @@ import { globalStyles } from '../../styles/global';
 
 export default function MainCardsScreen({ navigation }) {
     const {
-        userId,
-        doGetUserProfile,
-        lastReaction: contextLastReaction,
+        state: {
+            userId,
+            lastReaction: contextLastReaction,
+        },
         doGetImage,
-        formatUserForReaction,
+        doGetUserProfile,
         doReactImage,
-        formatUserForIndex,
         doUpdateImageIndex,
-    } = useContext(UserContext);
-
+        formatUserForIndex,
+        formatUserForReaction,
+    } = useUserContext();
     const [cardsReact, setCardsReact] = useState(0);
     const [imageIndex, setImageIndex] = useState(-1);
     const [lastReaction, setLastReaction] = useState(contextLastReaction);
@@ -89,7 +90,7 @@ export default function MainCardsScreen({ navigation }) {
     const emojiAnim2 = useRef(new Animated.Value(0)).current;
 
     function updateStates() {
-        const reactionTime = moment.utc().format('YYYY-MM-DDTHH:mm:ss');     
+        const reactionTime = moment.utc().format('YYYY-MM-DDTHH:mm:ss');
         setLastReaction(reactionTime);
         setImageIndex(imageIndex + 1);
     }

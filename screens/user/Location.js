@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
@@ -28,25 +28,24 @@ import { isSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple } from '../../constants/Colors';
-import { UserContext } from '../../contexts/UserContext';
+import { UserTypes, useUserContext } from '../../contexts/UserContext';
 import {wp, hp, stdHeight} from '../../styles/helpers';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function UserLocation({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        city: contextCity,
-        setCity: setContextCity,
-        // state: contextState,
-        // setState: setContextState,
-        zip: contextZip,
-        setZip: setContextZip,
-        distance: contextDistance,
-        setDistance: setContextDistance,
+        state: {
+            city: contextCity,
+            // state: contextState,
+            zip: contextZip,
+            distance: contextDistance,
+        },
+        dispatch,
         doValidateZip,
         doUpdateUser,
         formatUserForRequest,
-    } = useContext(UserContext);
+    } = useUserContext();
     const [city, setCity] = useState(contextCity);
     // const [state, setState] = useState(contextState);
     const [zip, setZip] = useState(contextZip);
@@ -97,10 +96,15 @@ export default function UserLocation({ navigation }) {
     }
 
     async function doUpdateContext() {
-        await setContextCity(city.trim());
-        // await setContextState(state.trim());
-        await setContextZip(zip.trim());
-        await setContextDistance(distance);
+        await dispatch({
+            type: UserTypes.SET_USER_FIELDS,
+            payload: {
+                city: city.trim(),
+                // state: state.trim(),
+                zip: zip.trim(),
+                distance,
+            },
+        });
     }
 
     function validateForm() {
