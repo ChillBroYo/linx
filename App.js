@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import AppNavigator from './navigation/AppNavigator';
-import { UserContextProvider } from './contexts/UserContext';
+import { UserProvider } from './contexts/UserContext';
 
 export default function App(props) {
     const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -25,12 +25,12 @@ export default function App(props) {
     } else {
         return (
             <SafeAreaProvider>
-                <UserContextProvider>
+                <UserProvider>
                     <View style={styles.container}>
                         <StatusBar barStyle="light-content" />
                         <AppNavigator />
                     </View>
-                </UserContextProvider>
+                </UserProvider>
             </SafeAreaProvider>
         );
     }

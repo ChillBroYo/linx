@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
@@ -28,15 +28,12 @@ import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import TermsConditions from '../../components/TermsConditions';
 import { black, purple, white, lightGradient } from '../../constants/Colors';
-import { UserContext } from '../../contexts/UserContext';
+import { UserTypes, useUserContext } from '../../contexts/UserContext';
+import { wp, hp } from '../../styles/helpers';
 
 export default function UserCredentials({ navigation }) {
     const insets = useSafeAreaInsets();
-    const {
-        setEmail: setContextEmail,
-        setPassword: setContextPassword,
-        setUsername: setContextUsername,
-    } = useContext(UserContext);
+    const { dispatch } = useUserContext();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordRetype, setPasswordRetype] = useState('');
@@ -59,9 +56,14 @@ export default function UserCredentials({ navigation }) {
     }
 
     async function doUpdateContext() {
-        await setContextEmail(email.trim());
-        await setContextPassword(password.trim());
-        await setContextUsername(username.trim());
+        await dispatch({
+            type: UserTypes.SET_USER_FIELDS,
+            payload: {
+                email: email.trim(),
+                password: password.trim(),
+                username: username.trim(),
+            },
+        });
     }
 
     function validateForm() {
@@ -168,7 +170,7 @@ export default function UserCredentials({ navigation }) {
                                     </Text>
                                 </Text>
                                 <Modal animationType='fade' transparent={true} visible={showTermsConditions}>
-                                    <View style={[styles.modalContainer, { marginBottom: insets.bottom + 8, marginTop: insets.top + 8 }]}>
+                                    <View style={[styles.modalContainer, { marginBottom: hp(insets.bottom + 8), marginTop: hp(insets.top + 8) }]}>
                                         <ScrollView>
                                             <TermsConditions />
                                         </ScrollView>
@@ -199,9 +201,10 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
+        marginTop: hp(50)
     },
     eulaText: {
-        marginLeft: 5,
+        marginLeft: wp(5),
     },
     eulaLink: {
         color: purple,
@@ -214,8 +217,8 @@ const styles = StyleSheet.create({
         backgroundColor: white,
         borderRadius: 12,
         flex: 1,
-        margin: 10,
-        padding: 8,
+        margin: hp(10),
+        padding: hp(8),
         shadowColor: "#000",
         shadowOffset: {
           width: 0,
@@ -228,6 +231,6 @@ const styles = StyleSheet.create({
     modalButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 8,
+        padding: hp(8),
     },
 });

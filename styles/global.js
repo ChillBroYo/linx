@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import {wp, hp, stdHeight} from './helpers';
+import { wp, hp, stdHeight } from './helpers';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 export const globalStyles = StyleSheet.create({
@@ -13,7 +13,10 @@ export const globalStyles = StyleSheet.create({
 	},
 	iconContainer: {
 		top: hp(20),
-		height: RFValue(42, stdHeight)
+		height: RFValue(42, stdHeight),
+		flexDirection: 'row',
+		justifyContent: 'space-evenly',
+		alignSelf: 'stretch'
 	},
 	titleContainer: {
 		top: hp(20),
@@ -201,7 +204,7 @@ export const globalStyles = StyleSheet.create({
         justifyContent: 'center'
     },
     backButtonContainer: {
-        marginLeft: hp(35)
+        marginLeft: wp(30)
     },
     backButton: {
         color: 'white',

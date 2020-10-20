@@ -1,5 +1,5 @@
-import React, { useContext, useState, useLayoutEffect, useRef } from 'react';
-import { Text, View, Image, Animated, TouchableOpacity } from 'react-native';
+import React, { useState, useLayoutEffect, useRef } from 'react';
+import { Text, View, Image, Animated, TouchableOpacity, Share } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
@@ -8,7 +8,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import CardsCompletionScreen from './CardsCompletion';
 import CardsTimerScreen from './CardsTimer';
 import { getSymbols, timeDifference, fadeInVals, fadeOutVals } from './helpers';
-import { UserContext } from '../../contexts/UserContext';
+import { useUserContext } from '../../contexts/UserContext';
 import { darkGradient } from '../../constants/Colors';
 import { scaling } from '../helpers';
 import { stdHeight } from '../../styles/helpers';
@@ -20,16 +20,17 @@ import { globalStyles } from '../../styles/global';
 
 export default function MainCardsScreen({ navigation }) {
     const {
-        userId,
-        doGetUserProfile,
-        lastReaction: contextLastReaction,
+        state: {
+            userId,
+            lastReaction: contextLastReaction,
+        },
         doGetImage,
-        formatUserForReaction,
+        doGetUserProfile,
         doReactImage,
-        formatUserForIndex,
         doUpdateImageIndex,
-    } = useContext(UserContext);
-
+        formatUserForIndex,
+        formatUserForReaction,
+    } = useUserContext();
     const [cardsReact, setCardsReact] = useState(0);
     const [imageIndex, setImageIndex] = useState(-1);
     const [lastReaction, setLastReaction] = useState(contextLastReaction);
@@ -89,7 +90,7 @@ export default function MainCardsScreen({ navigation }) {
     const emojiAnim2 = useRef(new Animated.Value(0)).current;
 
     function updateStates() {
-        const reactionTime = moment.utc().format('YYYY-MM-DDTHH:mm:ss');     
+        const reactionTime = moment.utc().format('YYYY-MM-DDTHH:mm:ss');
         setLastReaction(reactionTime);
         setImageIndex(imageIndex + 1);
     }
@@ -111,6 +112,26 @@ export default function MainCardsScreen({ navigation }) {
         return [react, user];
     }
 
+    async function shareImage() {
+        try {
+            const result = await Share.share({
+                message: `Check out this meme from Linx (getlinxnow.com) \n${imageLink}`,
+            });
+
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+            // dismissed
+            }
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
     if(cardsReact == 1) {
         return (<CardsCompletionScreen navigation={ navigation } />);
     } else if(cardsReact == 2) {
@@ -128,6 +149,7 @@ export default function MainCardsScreen({ navigation }) {
                             <MaterialCommunityIcons name='flag-variant' size={RFValue(25, stdHeight)} color='#FFF'
                                 onPress={() => navigation.navigate('ReportImage', {imageId, imageIndex, onGoBack: () => fadeOut.start(updateStates)})}
                             />
+                            <MaterialCommunityIcons name='share' size={RFValue(25, stdHeight)} color='#FFF' onPress={shareImage} />
                         </Animated.View>
                         <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
                             <Text style={globalStyles.subtitleText}>{(imageIndex % 15) + 1} / 15</Text>

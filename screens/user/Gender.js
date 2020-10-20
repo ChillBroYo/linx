@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Keyboard,
     ScrollView,
@@ -27,21 +27,23 @@ import BarButton from '../../components/BarButton';
 import Loader from '../../components/Loader';
 import PillButton from '../../components/PillButton';
 import { grey, lightGradient, purple } from '../../constants/Colors';
-import { UserContext } from '../../contexts/UserContext';
+import { UserTypes, useUserContext } from '../../contexts/UserContext';
+import { wp, hp } from '../../styles/helpers';
 
 export default function UserGender({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        gender: contextGender,
-        setGender: setContextGender,
-        sameGender: contextSameGender,
-        setSameGender: setContextSameGender,
+        state: {
+            gender: contextGender,
+            sameGender: contextSameGender,
+            username: contextUsername,
+            password: contextPassword,
+        },
+        dispatch,
         doSignUpUser,
         doUpdateUser,
         formatUserForRequest,
-        username: contextUsername,
-        password: contextPassword
-    } = useContext(UserContext);
+    } = useUserContext();
     const genderOptions = ['woman', 'man', 'other'];
     const [gender, setGender] = useState(contextGender);
     const [sameGender, setSameGender] = useState(contextSameGender);
@@ -86,11 +88,14 @@ export default function UserGender({ navigation }) {
     async function doUpdate() {
         const user = getUserForRequest(true);
         doUpdateUser(user, doUpdateContext);
+        navigation.goBack();
     }
 
     async function doUpdateContext() {
-        await setContextGender(gender);
-        await setContextSameGender(sameGender);
+        await dispatch({
+            type: UserTypes.SET_USER_FIELDS,
+            payload: { gender, sameGender },
+        });
     }
 
     function getUserForRequest(isUpdate) {
@@ -152,14 +157,14 @@ export default function UserGender({ navigation }) {
 
 const styles = StyleSheet.create({
     buttonWrapper: {
-        marginBottom: 23,
-        marginTop: 0,
-        marginLeft: 11,
-        marginRight: 11,
-        height: 42,
-        width: 140,
+        marginBottom: hp(25),
+        //marginTop: 0,
+        //marginLeft: 11,
+        //marginRight: 11,
+        height: hp(45),
+        width: wp(140),
     },
     toggle: {
-        marginTop: 16,
+        marginTop: hp(20),
     },
 });

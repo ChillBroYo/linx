@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Text, TouchableOpacity, View, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { pageStyles } from './common';
@@ -6,7 +6,7 @@ import { lightGradient } from '../../constants/Colors';
 import Loader from '../../components/Loader';
 import { Camera } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
-import { UserContext } from '../../contexts/UserContext';
+import { useUserContext } from '../../contexts/UserContext';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
@@ -19,7 +19,7 @@ export default function UserProfileImage({ navigation }) {
     const {
         doUploadProfileUser,
         formatUserForImageUpload,
-    } = useContext(UserContext);
+    } = useUserContext();
 
     //Variables to determine if permission is granted by user to access camera
     const [hasPermission, setHasPermission] = useState(null);

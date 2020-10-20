@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
@@ -19,15 +19,15 @@ import {
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient } from '../../constants/Colors';
-import { UserContext } from '../../contexts/UserContext';
+import { UserTypes, useUserContext } from '../../contexts/UserContext';
 
 export default function UserEmail({ navigation }) {
     const {
-        email: contextEmail,
-        setEmail: setContextEmail,
+        state: { email: contextEmail },
+        dispatch,
         doUpdateUser,
         formatUserForRequest,
-    } = useContext(UserContext);
+    } = useUserContext();
     const [email, setEmail] = useState(contextEmail);
 
     useEffect(() => {
@@ -47,10 +47,14 @@ export default function UserEmail({ navigation }) {
         const user = formatUserForRequest(true);
         user.email = email.trim();
         doUpdateUser(user, doUpdateContext);
+        navigation.goBack();
     }
 
     async function doUpdateContext() {
-        await setContextEmail(email.trim());
+        await dispatch({
+            type: UserTypes.SET_EMAIL,
+            payload: { email: email.trim() },
+        });
     }
 
     function validateEmail() {

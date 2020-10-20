@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     FlatList,
@@ -27,19 +27,20 @@ import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import PillButton from '../../components/PillButton';
 import { grey, lightGradient, purple } from '../../constants/Colors';
-import { UserContext } from '../../contexts/UserContext';
+import { UserTypes, useUserContext } from '../../contexts/UserContextFix';
 
 export default function UserGender({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        interests: contextInterests,
-        setInterests: setContextInterests,
-        sameInterests: contextSameInterests,
-        setSameInterests: setContextSameInterests,
+        state: {
+            interests: contextInterests,
+            sameInterests: contextSameInterests,
+        },
+        dispatch,
         doSignUpUser,
         doUpdateUser,
         formatUserForRequest,
-    } = useContext(UserContext);
+    } = useUserContext();
     const [interests, setInterests] = useState(contextInterests);
     const [sameInterests, setSameInterests] = useState(contextSameInterests);
     const interestsList = ['art', 'food', 'nature', 'sports'];
@@ -69,11 +70,14 @@ export default function UserGender({ navigation }) {
     function doUpdate() {
         const user = getUserForRequest(true);
         doUpdateUser(user, doUpdateContext);
+        navigation.goBack();
     }
 
     async function doUpdateContext() {
-        await setContextInterests(interests);
-        await setContextSameInterests(sameInterests);
+        await dispatch({
+            type: UserTypes.SET_USER_FIELDS,
+            payload: { interests, sameInterests },
+        });
     }
 
     function getUserForRequest(isUpdate) {

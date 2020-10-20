@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
@@ -27,22 +27,24 @@ import { isSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple, white } from '../../constants/Colors';
-import { UserContext } from '../../contexts/UserContext';
+import { UserTypes, useUserContext } from '../../contexts/UserContext';
+import {wp, hp, stdHeight} from '../../styles/helpers';
+import { RFValue } from 'react-native-responsive-fontsize';
 import { Camera } from 'expo-camera';
 import * as Linking from 'expo-linking';
 
 export default function UserName({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
     const {
-        firstName: contextFirstName,
-        setFirstName: setContextFirstName,
-        lastName: contextLastName,
-        setLastName: setContextLastName,
-        profileImg: contextProfileImg,
-        setProfileImg: setContextProfileImg,
+        state: {
+            firstName: contextFirstName,
+            lastName: contextLastName,
+            profileImg: contextProfileImg,
+        },
+        dispatch,
         doUpdateUser,
         formatUserForRequest,
-    } = useContext(UserContext);
+    } = useUserContext();
     const [firstName, setFirstName] = useState(contextFirstName);
     const [lastName, setLastName] = useState(contextLastName);
     const [profileImg, setProfileImg] = useState(contextProfileImg);
@@ -73,11 +75,17 @@ export default function UserName({ navigation }) {
         user.info.name.first = firstName.trim();
         user.info.name.last = lastName.trim();
         doUpdateUser(user, doUpdateContext);
+        navigation.goBack();
     }
 
     async function doUpdateContext() {
-        await setContextFirstName(firstName.trim());
-        await setContextLastName(lastName.trim());
+        await dispatch({
+            type: UserTypes.SET_USER_FIELDS,
+            payload: {
+                firstName: firstName.trim(),
+                lastName: lastName.trim(),
+            },
+        });
     }
 
     function validateForm() {
@@ -127,7 +135,7 @@ export default function UserName({ navigation }) {
                                     }
                                     <TouchableWithoutFeedback onPress={checkPermission}>
                                         <View style={styles.cameraButton}>
-                                            <Ionicons name="ios-camera" size={24} color={white} />
+                                            <Ionicons name="ios-camera" size={RFValue(24, stdHeight)} color={white} />
                                         </View>
                                     </TouchableWithoutFeedback>
                                 </View>
@@ -166,12 +174,12 @@ const styles = StyleSheet.create({
         position: 'absolute',
         alignItems: 'center',
         justifyContent: 'center',
-        bottom: 0,
-        right: 0,
+        bottom: hp(0),
+        right: wp(0),
         backgroundColor: purple,
-        borderRadius: 20,
-        height: 40,
-        width: 40,
+        borderRadius: hp(40/2),
+        height: hp(40),
+        width: hp(40),
         shadowColor: 'black',
         shadowOffset: { height: 1, width: 1 },
         shadowOpacity: 0.5,
@@ -182,21 +190,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: purple,
-        borderRadius: 60,
-        height: 120,
-        width: 120,
-        marginBottom: 40,
+        borderRadius: hp(150/2),
+        height: hp(150),
+        width: hp(150),
+        marginBottom: hp(40),
     },
     image: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
+        width: hp(150),
+        height: hp(150),
+        borderRadius: hp(150/2),
         overflow: 'hidden',
     },
     profileInitials: {
         color: white,
-        fontSize: 40,
-        lineHeight: 54,
+        fontSize: RFValue(40, stdHeight),
+        lineHeight: hp(55),
         textTransform: 'uppercase',
     },
 });

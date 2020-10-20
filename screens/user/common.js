@@ -11,6 +11,8 @@ import {
     grey,
     purple,
 } from '../../constants/Colors';
+import {wp, hp, stdHeight} from '../../styles/helpers';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export function Form({ children }) {
     return <View style={formStyles.form}>{children}</View>;
@@ -21,23 +23,23 @@ export const formStyles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        marginHorizontal: 60,
-        marginVertical: 0,
+        marginHorizontal: wp(55),
+        //marginVertical: 0,
     },
     input: {
         borderBottomColor: black,
         borderBottomWidth: 1,
-        fontSize: 20,
-        marginBottom: 10,
-        padding: 10,
-        height: 44,
+        fontSize: RFValue(20, stdHeight),
+        marginBottom: hp(15),
+        paddingHorizontal: wp(10),
+        height: hp(60),
         width: '100%',
     },
     text: {
         color: 'black',
-        fontSize: 20,
-        lineHeight: 25,
-        marginTop: 20,
+        fontSize: RFValue(20, stdHeight),
+        lineHeight: hp(30),
+        marginTop: hp(20),
     },
     textBold: {
         color: purple,
@@ -58,12 +60,12 @@ export function PageHeader({ value }) {
 const pageHeaderStyles = StyleSheet.create({
     text: {
         color: purple,
-        fontSize: 30,
-        lineHeight: 41,
-        marginBottom: 32,
-        marginTop: 16,
-        marginLeft: 60,
-        marginRight: 60,
+        fontSize: RFValue(30, stdHeight),
+        lineHeight: hp(40),
+        marginBottom: hp(60),
+        marginTop: hp(20),
+        marginLeft: wp(60),
+        //marginRight: 60,
     },
 });
 
@@ -80,7 +82,7 @@ export function ProgressBar({ step, totalSteps }) {
 const progressBarStyles = StyleSheet.create({
     container: {
         backgroundColor: purple,
-        height: 11,
+        height: hp(10),
     }
 });
 
@@ -93,6 +95,6 @@ export function TopBar() {
 const topBarStyles = StyleSheet.create({
     topBar: {
         backgroundColor: grey,
-        minHeight: 26,
+        minHeight: hp(30),
     },
 });

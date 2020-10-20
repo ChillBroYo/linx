@@ -1,9 +1,9 @@
-import React, { useRef, useContext, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Text, View, Image, Animated, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import ConfettiCannon from 'react-native-confetti-cannon';
-import { UserContext } from '../../contexts/UserContext';
+import { UserTypes, useUserContext } from '../../contexts/UserContextFix';
 import { darkGradient } from '../../constants/Colors';
 import { scaling } from '../helpers';
 
@@ -14,11 +14,11 @@ export default function ConfirmProfileScreen({ navigation }) {
     const emojiAnim = useRef(new Animated.Value(0)).current;
 
     const {
-        isOnboarded:contextIsOnboarded,
-        setIsOnboarded: setContextIsOnboarded,
+        state: { isOnboarded: contextIsOnboarded },
+        dispatch,
         doCompleteOnboardingUser,
         formatUserForOnboarding,
-    } = useContext(UserContext);
+    } = useUserContext();
     const [isOnboarded, setIsOnboarded] = useState(contextIsOnboarded);
 
     let cannon = useRef();
@@ -34,7 +34,10 @@ export default function ConfirmProfileScreen({ navigation }) {
         const user = getUserForOnboarding();
         const isCompletedOnboarding = await doCompleteOnboardingUser(user);
         if (!isCompletedOnboarding) return;
-        setContextIsOnboarded(true);
+        dispatch({
+            type: UserTypes.SET_IS_ONBOARDED,
+            payload: { isOnboarded: true },
+        });
         navigation.navigate('UserStatus');
     }
 

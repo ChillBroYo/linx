@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Keyboard,
@@ -19,13 +19,13 @@ import {
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient } from '../../constants/Colors';
-import { UserContext } from '../../contexts/UserContext';
+import { useUserContext } from '../../contexts/UserContext';
 
 export default function UserName({ navigation }) {
     const {
         doUpdateUser,
         formatUserForRequest,
-    } = useContext(UserContext);
+    } = useUserContext();
     const [newPassword, setNewPassword] = useState('');
 
     useEffect(() => {
@@ -45,6 +45,7 @@ export default function UserName({ navigation }) {
         const user = formatUserForRequest(true);
         user.password = newPassword;
         doUpdateUser(user);
+        navigation.goBack();
     }
 
     function verifyPassword() {
