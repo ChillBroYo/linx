@@ -171,18 +171,24 @@ export default function Profile({ navigation }) {
         <View style={styles.container}>
             <LinearGradient colors={lightGradient} style={styles.container}>
                 <ScrollView contentContainerStyle={styles.container}>
-                    <View style={styles.header}>
-                        <View style={[styles.profileImage, { marginTop: insets.top + 30 }]}>
-                            {friend?.profile_picture
-                                ? <Image source={{ uri: friend.profile_picture }} style={styles.image} />
-                                : <Text style={styles.profileInitials}>{getInitials()}</Text>
-                            }
+                    <View style={styles.topRow}>
+                        <View style={styles.sideWrapper}>
+                            <BackArrow doPress={() => navigation.navigate('FriendsHome')} />
                         </View>
-                        {friend?.info?.name && (
-                            <Text style={styles.name}>
-                                {friend.info.name.first} {friend.info.name.last}
-                            </Text>
-                        )}
+                        <View style={styles.header}>
+                            <View style={[styles.profileImage, { marginTop: insets.top + 30 }]}>
+                                {friend?.profile_picture
+                                    ? <Image source={{ uri: friend.profile_picture }} style={styles.image} />
+                                    : <Text style={styles.profileInitials}>{getInitials()}</Text>
+                                }
+                            </View>
+                            {friend?.info?.name && (
+                                <Text style={styles.name}>
+                                    {friend.info.name.first} {friend.info.name.last}
+                                </Text>
+                            )}
+                        </View>
+                        <View style={styles.sideWrapper} />
                     </View>
 
                     <View style={styles.row}>
@@ -320,5 +326,11 @@ const styles = StyleSheet.create({
         this will have images resize within the container as needed so that the entire image shows.
         */
         //resizeMode: 'contain'
+    },
+    topRow: {
+        flexDirection: 'row',
+    },
+    sideWrapper: {
+        flex: 1,
     },
 });
