@@ -61,7 +61,7 @@ export default function MainCardsScreen({ navigation }) {
     }, [imageIndex]);
 
     async function performGetImage() {
-        if(imageIndex % 15 == 0 && imageIndex != 0) {
+        if(imageIndex % 10 == 0 && imageIndex != 0) {
             const diff = timeDifference(lastReaction);
             if(diff < 24 * 60 * 60) {
                 setCardsReact(2);
@@ -152,7 +152,7 @@ export default function MainCardsScreen({ navigation }) {
                             <MaterialCommunityIcons name='share' size={RFValue(25, stdHeight)} color='#FFF' onPress={shareImage} />
                         </Animated.View>
                         <Animated.View style={[globalStyles.paginationContainer, {opacity: fadeAnim}]}>
-                            <Text style={globalStyles.subtitleText}>{(imageIndex % 15) + 1} / 15</Text>
+                            <Text style={globalStyles.subtitleText}>{(imageIndex % 10) + 1} / 10</Text>
                         </Animated.View>
            				<View style={globalStyles.contentContainerCard}>
                             <Animated.Image source={imageLink ? { uri: imageLink } : null} onLoad={() => fadeIn.start()}
