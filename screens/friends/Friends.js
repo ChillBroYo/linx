@@ -54,7 +54,7 @@ export default function Messages({ navigation }) {
 
             friend.id = id;
             friend.name = friendInfo.name;
-            friend.profile_picture = friendData.profile_picture;
+            friend.profile_picture = friendData.profile_picture;            
             friend.lastMessage = lastMessage;
 
             friendsList.push(friend);
