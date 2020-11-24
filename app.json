@@ -29,6 +29,11 @@
       "bundleIdentifier": "com.linx.linx-app",
       "infoPlist": {
         "NSCameraUsageDescription": "Use your camera to take a profile picture so your new friends can see who you are."
+      },
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.483225426792-0kscgtmo52h67qscnkrjhkmvdvu05hj0"
+        }
       }
     },
     "android": {

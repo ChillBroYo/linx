@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage';
+import * as Google from 'expo-google-app-auth';
 import Loader from '../components/Loader';
 import { UserTypes, useUserContext } from '../contexts/UserContext';
 import { green, white } from '../constants/Colors';
@@ -32,6 +33,9 @@ export default function SignIn({ navigation }) {
     const [password, setPassword] = useState('');
     const [autoLogin, setAutoLogin] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
+    const iosClientId = '483225426792-0kscgtmo52h67qscnkrjhkmvdvu05hj0.apps.googleusercontent.com';
+    const androidClientId = '483225426792-48d326lmbjsj4ageolvf38ai0ehdvitn.apps.googleusercontent.com';
 
     useLayoutEffect(() => {
         // reset sign up state on screen load
