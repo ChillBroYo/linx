@@ -269,8 +269,7 @@ export function UserProvider({ children }) {
             return true;
         }
         catch (error) {
-            console.warn('Sign in error:', error);
-            Alert.alert('Sign in failed. Please try again');
+            return false;
         }
     }
 

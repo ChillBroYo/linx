@@ -34,8 +34,12 @@ export default function SignIn({ navigation }) {
     const [autoLogin, setAutoLogin] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const iosClientId = '483225426792-0kscgtmo52h67qscnkrjhkmvdvu05hj0.apps.googleusercontent.com';
-    const androidClientId = '483225426792-48d326lmbjsj4ageolvf38ai0ehdvitn.apps.googleusercontent.com';
+    const googleLoginConfig = {
+        iosClientId: `483225426792-0kscgtmo52h67qscnkrjhkmvdvu05hj0.apps.googleusercontent.com`,
+        androidClientId: `483225426792-48d326lmbjsj4ageolvf38ai0ehdvitn.apps.googleusercontent.com`,
+        iosStandaloneAppClientId: `483225426792-e2qkmrlhk9mqhh6d7ol5rrec8cokf5ht.apps.googleusercontent.com`,
+        androidStandaloneAppClientId: ``,
+    }
 
     useLayoutEffect(() => {
         // reset sign up state on screen load
@@ -109,6 +113,8 @@ export default function SignIn({ navigation }) {
         const user = { username, password };
         const isSignedIn = await doSignInUser(user);
         if (!isSignedIn) {
+            console.warn('Sign in error:', error);
+            Alert.alert('Sign in failed. Please try again');
             updateData();
             setPassword('');
             setAutoLogin(false);
@@ -118,6 +124,40 @@ export default function SignIn({ navigation }) {
         storeData();
         setIsLoading(false);
         navigation.navigate('Cards');
+    }
+
+    async function checkGoogleAccount(userInfo) {
+        setIsLoading(true);
+        const email = userInfo.email;
+        const id = userInfo.id;
+        const user = { email, id };
+        const isSignedIn = await doSignInUser(user);
+        if (!isSignedIn) {
+            updateData();
+            setPassword('');
+            setAutoLogin(false);
+            setIsLoading(false);
+            navigation.navigate('SignUp');
+        }
+        storeData();
+        setIsLoading(false);
+        navigation.navigate('Cards');
+    }
+
+    async function googleSignIn() {
+        try {
+            const result = await Google.logInAsync(googleLoginConfig);
+            if (result.type === 'success') {
+                console.log('Email:', result.user.email);
+                console.log('Id:', result.user.id);
+                checkGoogleAccount(result.user);
+            } else {
+                Alert.alert('Google Signin failed. Please try again');
+            }
+        } catch (error) {
+            console.warn('Google Signin error:', error);
+            Alert.alert('Google Signin failed. Please try again');
+        }
     }
 
     function onForgotPassword() {
@@ -163,6 +203,9 @@ export default function SignIn({ navigation }) {
                                     <Text style={{...styles.buttonText, color: white}}>Sign in</Text>
                                 </View>
                             </TouchableOpacity>
+                            <TouchableOpacity activeOpacity={0.8} onPress={googleSignIn}>
+                                <Image source={GOOGLE_SIGNIN} style={styles.googleSignIn} />
+                            </TouchableOpacity>
                             <TouchableOpacity activeOpacity={0.8} onPress={onSignUp}>
                                 <View style={{...styles.button, ...styles.buttonTransparent}}>
                                     <Text style={{...styles.buttonText, color: green}}>Sign up</Text>
@@ -184,6 +227,7 @@ export default function SignIn({ navigation }) {
 
 const BACKGROUND_IMAGE = require('../assets/images/cover_image.png');
 const LINX_LOGO = require('../assets/images/linx_logo.png');
+const GOOGLE_SIGNIN = require('../assets/images/google_signin.png');
 
 const styles = StyleSheet.create({
     background: {
@@ -194,11 +238,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 10,
-        marginTop: 16,
         height: 41,
         width: 164,
     },
     buttonColored: {
+        marginTop: 16,
         backgroundColor: green,
     },
     buttonTransparent: {
@@ -218,6 +262,11 @@ const styles = StyleSheet.create({
     forgotPassword: {
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    googleSignIn: {
+        marginTop: 10,
+        height: 41,
+        width: 164,
     },
     header: {
         marginBottom: 32,
