@@ -38,7 +38,7 @@ export default function SignIn({ navigation }) {
         iosClientId: `483225426792-0kscgtmo52h67qscnkrjhkmvdvu05hj0.apps.googleusercontent.com`,
         androidClientId: `483225426792-48d326lmbjsj4ageolvf38ai0ehdvitn.apps.googleusercontent.com`,
         iosStandaloneAppClientId: `483225426792-e2qkmrlhk9mqhh6d7ol5rrec8cokf5ht.apps.googleusercontent.com`,
-        androidStandaloneAppClientId: ``,
+        androidStandaloneAppClientId: `483225426792-n9e45j62sviq1t4voter5udrpdfbgnu7.apps.googleusercontent.com`,
     }
 
     useLayoutEffect(() => {
@@ -113,8 +113,8 @@ export default function SignIn({ navigation }) {
         const user = { username, password };
         const isSignedIn = await doSignInUser(user);
         if (!isSignedIn) {
-            console.warn('Sign in error:', error);
-            Alert.alert('Sign in failed. Please try again');
+            //console.warn('Sign in error:', error);
+            //Alert.alert('Sign in failed. Please try again');
             updateData();
             setPassword('');
             setAutoLogin(false);
