@@ -19,6 +19,7 @@ import {
     pageStyles,
     ProgressBar,
     TOTAL_STEPS,
+    TOTAL_GOOGLE_STEPS,
     TopBar,
 } from './common';
 import { isSignUpRoute } from './helpers';
@@ -29,6 +30,7 @@ import { UserTypes, useUserContext } from '../../contexts/UserContext';
 
 export default function UserBirthday({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
+    const isGoogleSignUpScreen = isGoogleSignUpRoute(navigation);
     const {
         state: {
             ageRange: contextAgeRange,
@@ -42,11 +44,11 @@ export default function UserBirthday({ navigation }) {
     const [ageRange, setAgeRange] = useState(contextAgeRange);
 
     useEffect(() => {
-        StatusBar.setBarStyle(isSignUpScreen ? 'light-content' : 'dark-content');
+        StatusBar.setBarStyle((isSignUpScreen || isGoogleSignUpScreen) ? 'light-content' : 'dark-content');
     }, []);
 
     async function doBack() {
-        if (isSignUpScreen) {
+        if (isSignUpScreen || isGoogleSignUpScreen) {
             await doUpdateContext();
         }
         navigation.goBack();
@@ -54,7 +56,7 @@ export default function UserBirthday({ navigation }) {
 
     function doSubmit() {
         if (!validateForm()) return;
-        isSignUpScreen ? doSignUp() : doUpdate();
+        (isSignUpScreen || isGoogleSignUpScreen) ? doSignUp() : doUpdate();
     }
 
     async function doSignUp() {
@@ -110,9 +112,10 @@ export default function UserBirthday({ navigation }) {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={pageStyles.container}>
-                {isSignUpScreen && <TopBar />}
+                {(isSignUpScreen || isGoogleSignUpScreen) && <TopBar />}
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
                     {isSignUpScreen && <ProgressBar step={4} totalSteps={TOTAL_STEPS} />}
+                    {isGoogleSignUpScreen && <ProgressBar step={2} totalSteps={TOTAL_GOOGLE_STEPS} />}
                     <SafeAreaView edges={['top']}>
                         <BackArrow doPress={doBack} />
                     </SafeAreaView>
@@ -149,7 +152,7 @@ export default function UserBirthday({ navigation }) {
                 </LinearGradient>
                 <BarButton
                     active={!!birthday}
-                    value={isSignUpScreen ? 'Continue' : 'Save'}
+                    value={(isSignUpScreen || isGoogleSignUpScreen) ? 'Continue' : 'Save'}
                     doPress={doSubmit}
                 />
             </View>

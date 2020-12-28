@@ -33,6 +33,7 @@ export default function SignIn({ navigation }) {
     const [password, setPassword] = useState('');
     const [autoLogin, setAutoLogin] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [loginFailed, setLoginFailed] = useState(false);
 
     const googleLoginConfig = {
         iosClientId: `483225426792-0kscgtmo52h67qscnkrjhkmvdvu05hj0.apps.googleusercontent.com`,
@@ -73,6 +74,10 @@ export default function SignIn({ navigation }) {
         if (autoLogin) doSignIn();
     }, [autoLogin]);
 
+    useEffect(() => {
+        if (loginFailed) Alert.alert('Sign in failed. Please try again');
+    });
+
     async function storeData() {
         try {
             await AsyncStorage.multiSet([['@username', username], ['@password', password], ['@signin', 'true']]);
@@ -109,35 +114,17 @@ export default function SignIn({ navigation }) {
     }
 
     async function doSignIn() {
+        setLoginFailed(false);
         setIsLoading(true);
         const user = { username, password };
         const isSignedIn = await doSignInUser(user);
         if (!isSignedIn) {
-            //console.warn('Sign in error:', error);
-            //Alert.alert('Sign in failed. Please try again');
             updateData();
             setPassword('');
             setAutoLogin(false);
             setIsLoading(false);
+            setLoginFailed(true);
             return;
-        }
-        storeData();
-        setIsLoading(false);
-        navigation.navigate('Cards');
-    }
-
-    async function checkGoogleAccount(userInfo) {
-        setIsLoading(true);
-        const email = userInfo.email;
-        const id = userInfo.id;
-        const user = { email, id };
-        const isSignedIn = await doSignInUser(user);
-        if (!isSignedIn) {
-            updateData();
-            setPassword('');
-            setAutoLogin(false);
-            setIsLoading(false);
-            navigation.navigate('SignUp');
         }
         storeData();
         setIsLoading(false);
@@ -150,6 +137,7 @@ export default function SignIn({ navigation }) {
             if (result.type === 'success') {
                 console.log('Email:', result.user.email);
                 console.log('Id:', result.user.id);
+                console.log('User:', result.user);
                 checkGoogleAccount(result.user);
             } else {
                 Alert.alert('Google Signin failed. Please try again');
@@ -160,12 +148,28 @@ export default function SignIn({ navigation }) {
         }
     }
 
-    function onForgotPassword() {
-        navigation.navigate('ResetPassword');
+    async function checkGoogleAccount(userInfo) {
+        setLoginFailed(false);
+        setIsLoading(true);
+        const email = userInfo.email;
+        const id = userInfo.id;
+        const user = { email, id };
+        const isSignedIn = await doSignInUser(user);
+        if (!isSignedIn) {
+            setIsLoading(false);
+            navigation.navigate('GoogleSignUp');
+        }
+        storeData();
+        setIsLoading(false);
+        navigation.navigate('Cards');
     }
 
     function onSignUp() {
         navigation.navigate('SignUp');
+    }
+
+    function onForgotPassword() {
+        navigation.navigate('ResetPassword');
     }
 
     if (autoLogin) {

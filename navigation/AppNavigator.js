@@ -5,6 +5,7 @@ import MainTabNavigator from './MainTabNavigator';
 import ResetPassword from '../screens/ResetPassword';
 import SignIn from '../screens/SignInScreen';
 import SignUp from './SignUpNavigator';
+import GoogleSignUp from './GoogleSignUpNavigator';
 
 const RouteConfig = {
     // You could add another route here for authentication.
@@ -13,6 +14,7 @@ const RouteConfig = {
     ResetPassword,
     SignIn,
     SignUp,
+    GoogleSignUp
 };
 
 const NavigatorConfig = {

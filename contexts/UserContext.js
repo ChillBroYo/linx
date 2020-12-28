@@ -259,10 +259,10 @@ export function UserProvider({ children }) {
             const res = await axios.get(API_ENDPOINT, { params: user });
             const data = res.data;
             if (res.status != 200) {
-                return Alert.alert('Sign in failed. Please try again');
+                return false;
             }
             if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
+                return false;
             }
 
             setUserFromResponse(data);
@@ -655,7 +655,7 @@ export function UserProvider({ children }) {
                 zip,
                 distance,
                 gender,
-                sameGender,
+                sameGender: Boolean(sameGender),
                 friends: JSON.parse(friends),
             }
         });
