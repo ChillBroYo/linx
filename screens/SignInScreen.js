@@ -11,6 +11,7 @@ import {
     TouchableWithoutFeedback,
     View
 } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage';
 import * as Google from 'expo-google-app-auth';
@@ -78,9 +79,13 @@ export default function SignIn({ navigation }) {
         if (loginFailed) Alert.alert('Sign in failed. Please try again');
     });
 
-    async function storeData() {
+    async function storeData(email, id) {
         try {
-            await AsyncStorage.multiSet([['@username', username], ['@password', password], ['@signin', 'true']]);
+            if (email !== undefined && id !== undefined) {
+                await AsyncStorage.multiSet([['@username', email], ['@password', id], ['@signin', 'true']]);
+            } else {
+                await AsyncStorage.multiSet([['@username', username], ['@password', password], ['@signin', 'true']]);
+            }
         }
         catch (error) {
             console.warn('AsyncStorage store error: ', error);
@@ -135,9 +140,6 @@ export default function SignIn({ navigation }) {
         try {
             const result = await Google.logInAsync(googleLoginConfig);
             if (result.type === 'success') {
-                console.log('Email:', result.user.email);
-                console.log('Id:', result.user.id);
-                console.log('User:', result.user);
                 checkGoogleAccount(result.user);
             } else {
                 Alert.alert('Google Signin failed. Please try again');
@@ -151,17 +153,22 @@ export default function SignIn({ navigation }) {
     async function checkGoogleAccount(userInfo) {
         setLoginFailed(false);
         setIsLoading(true);
-        const email = userInfo.email;
-        const id = userInfo.id;
-        const user = { email, id };
+        const user = { username: userInfo.email, password: userInfo.id };
         const isSignedIn = await doSignInUser(user);
         if (!isSignedIn) {
             setIsLoading(false);
-            navigation.navigate('GoogleSignUp');
+            navigation.navigate({
+                routeName: 'GoogleAccount',
+                action: NavigationActions.navigate({
+                    routeName: 'GoogleAccountLocation',
+                    params: { data: userInfo }
+                })
+            });
+        } else {
+            storeData(userInfo.email, userInfo.id);
+            setIsLoading(false);
+            navigation.navigate('Cards');
         }
-        storeData();
-        setIsLoading(false);
-        navigation.navigate('Cards');
     }
 
     function onSignUp() {

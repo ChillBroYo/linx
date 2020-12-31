@@ -43,7 +43,7 @@ export default function TakeProfileScreen({ navigation }) {
     async function snap() {
         if (camera.current) {
             let photo = await camera.current.takePictureAsync();
-            navigation.navigate('ReviewProfile', {data: photo});
+            navigation.navigate('ReviewProfile', { data: photo });
         }
     }
 

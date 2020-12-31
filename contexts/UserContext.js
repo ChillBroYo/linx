@@ -17,6 +17,7 @@ export const UserTypes = {
     SET_USER_ID: 'SET_USER_ID',
     SET_TOKEN: 'SET_TOKEN',
     SET_IS_ONBOARDED: 'SET_IS_ONBOARDED',
+    SET_GOOGLE_ACCOUNT: 'SET_GOOGLE_ACCOUNT',
     SET_LAST_REACTION: 'SET_LAST_REACTION',
     SET_EMAIL: 'SET_EMAIL',
     SET_PASSWORD: 'SET_PASSWORD',
@@ -43,6 +44,7 @@ const initialState = {
     userId: '',
     token: '',
     isOnboarded: false,
+    googleAccount: false,
     lastReaction: moment.utc().format('YYYY-MM-DDTHH:mm:ss'),
     email: '',
     password: '',
@@ -84,6 +86,11 @@ function userReducer(state, action) {
             return {
                 ...state,
                 isOnboarded: payload.isOnboarded,
+            }
+        case UserTypes.SET_GOOGLE_ACCOUNT:
+            return {
+                ...state,
+                googleAccount: payload.googleAccount,
             }
         case UserTypes.SET_LAST_REACTION:
             return {
@@ -195,6 +202,7 @@ export function UserProvider({ children }) {
         userId,
         token,
         isOnboarded,
+        googleAccount,
         lastReaction,
         email,
         password,
@@ -575,6 +583,7 @@ export function UserProvider({ children }) {
             gender,
             imgUrl: profileImg,
             isOnboarded,
+            googleAccount,
             lastReaction,
             location: {
                 city: city?.trim() || '',
@@ -619,6 +628,7 @@ export function UserProvider({ children }) {
         const info = JSON.parse(infoJSON);
         const {
             isOnboarded,
+            googleAccount,
             lastReaction,
             birthday,
             gender,
@@ -643,6 +653,7 @@ export function UserProvider({ children }) {
                 token,
                 userId: uid,
                 isOnboarded: Boolean(isOnboarded),
+                googleAccount: Boolean(googleAccount),
                 lastReaction,
                 email,
                 username,

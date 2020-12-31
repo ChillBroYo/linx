@@ -25,7 +25,7 @@ import {
     TOTAL_GOOGLE_STEPS,
     TopBar,
 } from './common';
-import { isSignUpRoute } from './helpers';
+import { isSignUpRoute, isGoogleSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple } from '../../constants/Colors';
@@ -53,6 +53,11 @@ export default function UserLocation({ navigation }) {
     const [zip, setZip] = useState(contextZip);
     const [distance, setDistance] = useState(contextDistance);
     const [showPicker, setShowPicker] = useState(false);
+
+    var googleInfo;
+    if (isGoogleSignUpScreen) {
+        googleInfo = navigation.getParam('data');
+    };
 
     useEffect(() => {
         StatusBar.setBarStyle((isSignUpScreen || isGoogleSignUpScreen) ? 'light-content' : 'dark-content');
@@ -88,7 +93,11 @@ export default function UserLocation({ navigation }) {
 
     async function doSignUp() {
         await doUpdateContext();
-        navigation.navigate('SignUpBirthday');
+        if (isSignUpScreen) {
+            navigation.navigate('SignUpBirthday');
+        } else {
+            navigation.navigate('GoogleAccountBirthday');
+        }
     }
 
     function doUpdate() {
@@ -102,15 +111,44 @@ export default function UserLocation({ navigation }) {
     }
 
     async function doUpdateContext() {
-        await dispatch({
-            type: UserTypes.SET_USER_FIELDS,
-            payload: {
-                city: city.trim(),
-                // state: state.trim(),
-                zip: zip.trim(),
-                distance,
-            },
-        });
+        if (isSignUpScreen) {
+            await dispatch({
+                type: UserTypes.SET_USER_FIELDS,
+                payload: {
+                    city: city.trim(),
+                    // state: state.trim(),
+                    zip: zip.trim(),
+                    distance,
+                    googleAccount: false
+                },
+            });
+        } else if (isGoogleSignUpScreen) {
+            await dispatch({
+                type: UserTypes.SET_USER_FIELDS,
+                payload: {
+                    city: city.trim(),
+                    // state: state.trim(),
+                    zip: zip.trim(),
+                    distance,
+                    googleAccount: true,
+                    email: googleInfo.email,
+                    password: googleInfo.id,
+                    username: googleInfo.email,
+                    firstName: googleInfo.givenName,
+                    lastName: googleInfo.familyName,
+                },
+            });
+        } else {
+            await dispatch({
+                type: UserTypes.SET_USER_FIELDS,
+                payload: {
+                    city: city.trim(),
+                    // state: state.trim(),
+                    zip: zip.trim(),
+                    distance,
+                },
+            });
+        }
     }
 
     function validateForm() {

@@ -5,5 +5,5 @@ export function isSignUpRoute(navigation) {
 
 export function isGoogleSignUpRoute(navigation) {
     const routeName = navigation.state.routeName;
-    return routeName.indexOf('GoogleSignUp') != -1;
+    return routeName.indexOf('GoogleAccount') != -1;
 }

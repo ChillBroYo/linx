@@ -22,7 +22,7 @@ import {
     TOTAL_GOOGLE_STEPS,
     TopBar,
 } from './common';
-import { isSignUpRoute } from './helpers';
+import { isSignUpRoute, isGoogleSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import Loader from '../../components/Loader';

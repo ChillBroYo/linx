@@ -22,7 +22,7 @@ import {
     TOTAL_GOOGLE_STEPS,
     TopBar,
 } from './common';
-import { isSignUpRoute } from './helpers';
+import { isSignUpRoute, isGoogleSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple } from '../../constants/Colors';
@@ -61,7 +61,11 @@ export default function UserBirthday({ navigation }) {
 
     async function doSignUp() {
         await doUpdateContext();
-        navigation.navigate('SignUpGender');
+        if (isSignUpScreen) {
+            navigation.navigate('SignUpGender');
+        } else {
+            navigation.navigate('GoogleAccountGender');
+        }
     }
 
     function doUpdate() {
