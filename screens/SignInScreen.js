@@ -77,7 +77,7 @@ export default function SignIn({ navigation }) {
 
     useEffect(() => {
         if (loginFailed) Alert.alert('Sign in failed. Please try again');
-    });
+    }, [loginFailed]);
 
     async function storeData(email, id) {
         try {

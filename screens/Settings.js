@@ -120,7 +120,11 @@ export default function Settings({ navigation }) {
 
     async function removeStoredData() {
         try {
-            await AsyncStorage.multiRemove(['@password', '@signin']);
+            if (!googleAccount) {
+                await AsyncStorage.multiRemove(['@password', '@signin']);
+            } else {
+                await AsyncStorage.multiRemove(['@username', '@password', '@signin']);
+            }
         }
         catch (error) {
             console.warn('AsyncStorage remove error: ', error);
