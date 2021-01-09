@@ -32,7 +32,13 @@ import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 export default function Profile({ navigation }) {
     const insets = useSafeAreaInsets();
     const isMountedRef = useIsMountedRef();
-    const { state: { token, userId } } = useUserContext();
+    const {
+        state: {
+            token,
+            userId,
+        },
+        doGetUserProfile,
+    } = useUserContext();
     const [isLoading, setIsLoading] = useState(true);
     const [friend, setFriend] = useState(null);
     const [genderIdentifier, setGenderIdentifier] = useState('');
@@ -57,27 +63,17 @@ export default function Profile({ navigation }) {
     }
 
     async function getProfile(uid) {
-        try {
-            const API_ENDPOINT = getApiEndpoint(['get', 'profile']);
-            const queryParams = {
-                uid,
-                key: 123,
+        const user = { uid, key: 123 };
+        const data = await doGetUserProfile(user, true);
+        if (isMountedRef.current && data) {
+            const friend = {
+                ...data,
+                friends: JSON.parse(data.friends),
+                info: JSON.parse(data.info),
             };
-            const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
-            const data = res?.data?.user_info;
-            if (isMountedRef.current && data) {
-                const friend = {
-                    ...data,
-                    friends: JSON.parse(data.friends),
-                    info: JSON.parse(data.info),
-                };
-                await setFriend(friend);
-                await setGenderIdentifier(getGenderIdentifier());
-                await setIsLoading(false);
-            }
-        }
-        catch (error) {
-            console.warn('error in getProfile:', error);
+            await setFriend(friend);
+            await setGenderIdentifier(getGenderIdentifier());
+            await setIsLoading(false);
         }
     }
 

@@ -27,7 +27,13 @@ import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 
 export default function Messages({ navigation }) {
     const insets = useSafeAreaInsets();
-    const { state: { token, userId } } = useUserContext();
+    const {
+        state: {
+            token,
+            userId,
+        },
+        doGetUserProfile,
+    } = useUserContext();
     const isMountedRef = useIsMountedRef();
     const [loading, setLoading] = useState(true);
     const [friends, setFriends] = useState(null);
@@ -48,7 +54,8 @@ export default function Messages({ navigation }) {
 
         for (let id of userFriends) {
             const friend = {};
-            const friendData = await getProfile(id);
+            const user = { uid: id, key: 123 };
+            const friendData = await doGetUserProfile(user, true);
             const friendInfo = JSON.parse(friendData.info);
             const lastMessage = await getLastMessage(id);
 
@@ -68,7 +75,8 @@ export default function Messages({ navigation }) {
     async function getFriends() {
         if (!userId) return;
 
-        const user = await getProfile(userId);
+        const userInfo = { uid: userId, key: 123 }
+        const user = await doGetUserProfile(userInfo, true);
         const userFriends = JSON.parse(user.friends);
         return userFriends;
     }
@@ -89,22 +97,6 @@ export default function Messages({ navigation }) {
         }
         catch (error) {
             console.warn('error in getLastMessage:', error);
-        }
-    }
-
-    async function getProfile(uid) {
-        try {
-            const API_ENDPOINT = getApiEndpoint(['get', 'profile']);
-            const queryParams = {
-                uid,
-                key: 123,
-            };
-            const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
-            const data = res?.data?.user_info;
-            return data;
-        }
-        catch (error) {
-            console.warn('error in getProfile:', error);
         }
     }
 

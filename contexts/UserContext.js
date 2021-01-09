@@ -373,7 +373,7 @@ export function UserProvider({ children }) {
         }
     }
 
-    async function doGetUserProfile(user) {
+    async function doGetUserProfile(user, returnInfo = false) {
         try {
             const API_ENDPOINT = getApiEndpoint(['get', 'profile']);
             const res = await axios.get(API_ENDPOINT, { params: user });
@@ -385,8 +385,12 @@ export function UserProvider({ children }) {
                 return Alert.alert(data.errmsg);
             }
 
-            setUserFromProfileResponse(data);
-            return { imageIndex: data.user_info.image_index };
+            if (!returnInfo) {
+                setUserFromProfileResponse(data);
+                return { imageIndex: data.user_info.image_index };
+            } else {
+                return data.user_info;
+            }
         }
         catch (error) {
             console.warn('Get user profile error:', error);
