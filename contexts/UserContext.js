@@ -236,6 +236,7 @@ export function UserProvider({ children }) {
         doUpdateImageIndex,
         doUploadProfileUser,
         doValidateZip,
+        doGetMessages,
         formatFormData,
         formatParams,
         formatUserForImageUpload,
@@ -484,6 +485,28 @@ export function UserProvider({ children }) {
         catch (error) {
             console.warn('Validate zip code error:', error);
             Alert.alert('Validate zip code failed. Please try again');
+        }
+    }
+
+    async function doGetMessages(conversation) {
+        try {
+            console.log('function called');
+            const API_ENDPOINT = getApiEndpoint(['get', 'conversation']);
+            const res = await axios.get(API_ENDPOINT, { params: conversation });
+            //console.log('res:', res);
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Get messages failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return data.messages;
+        }
+        catch (error) {
+            console.warn('Get messages failed:', error);
+            Alert.alert('Get messages failed. Please try again');
         }
     }
 

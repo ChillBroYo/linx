@@ -1,28 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    Alert,
     FlatList,
     Image,
-    ScrollView,
     StyleSheet,
     Text,
-    TextInput,
     TouchableHighlight,
     View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import axios from 'axios';
-import qs from 'query-string';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
     black,
     grey,
     lightGradient,
-    purple,
 } from '../../constants/Colors';
 import Loader from '../../components/Loader';
 import { useUserContext } from '../../contexts/UserContext';
-import getApiEndpoint from '../../helpers/apiEndpoint';
 import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 
 export default function Messages({ navigation }) {
@@ -33,6 +26,7 @@ export default function Messages({ navigation }) {
             userId,
         },
         doGetUserProfile,
+        doGetMessages,
     } = useUserContext();
     const isMountedRef = useIsMountedRef();
     const [loading, setLoading] = useState(true);
@@ -82,22 +76,16 @@ export default function Messages({ navigation }) {
     }
 
     async function getLastMessage(oid) {
-        try {
-            const API_ENDPOINT = getApiEndpoint(['get', 'conversation']);
-            const queryParams = {
-                uid: userId,
-                oid,
-                token,
-                limit: 1,
-                ts: null,
-            };
-            const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
-            const data = res?.data;
-            return data?.messages?.[0];
-        }
-        catch (error) {
-            console.warn('error in getLastMessage:', error);
-        }
+        const queryParams = {
+            uid: userId,
+            oid,
+            token,
+            limit: 1,
+            ts: null,
+        };
+        console.log('queryParams', queryParams);
+        const messages = await doGetMessages(queryParams);
+        return messages[0];
     }
 
     return (
