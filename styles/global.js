@@ -234,5 +234,11 @@ export const globalStyles = StyleSheet.create({
     flipCamera: {
         fontSize: RFValue(50, stdHeight),
         color: 'white',
+    },
+    selectPictureContainer: {
+    },
+    selectPicture: {
+    	fontSize: RFValue(35, stdHeight),
+    	color: 'white',
     }
 });

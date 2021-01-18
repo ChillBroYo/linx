@@ -7,7 +7,7 @@ import { UserTypes, useUserContext } from '../../contexts/UserContextFix';
 import { Camera } from 'expo-camera';
 import * as Linking from 'expo-linking';
 import { darkGradient } from '../../constants/Colors';
-import { scaling } from '../helpers';
+import { scaling, popup } from '../helpers';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
@@ -52,11 +52,10 @@ export default function ConfirmDenialScreen({ navigation }) {
     async function checkPermission() {
         const { status } = await Camera.getPermissionsAsync();
         if (status === 'denied') {
-            Alert.alert('Permission Denied',
-                'Linx currently does not have permission to access Camera. Please go into Settings to grant Linx access.',
+            Alert.alert(popup.title, popup.message,
                 [
-                    { text: 'OK', style: 'cancel' },
-                    { text: 'Settings', onPress: () => Linking.openSettings()}
+                    { text: popup.btn1Text, style: 'cancel' },
+                    { text: popup.btn2Text, onPress: () => Linking.openSettings()}
                 ],
                 { cancelable: false }
             );

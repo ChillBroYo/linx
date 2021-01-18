@@ -38,3 +38,10 @@ export const popup = {
     btn1Text: 'OK',
     btn2Text: 'Settings'
 };
+
+export const popup2 = {
+    title: 'Permission Denied',
+    message: 'Linx currently does not have permission to access Camera Roll. Please go into Settings to grant Linx access.',
+    btn1Text: 'OK',
+    btn2Text: 'Settings'
+}
