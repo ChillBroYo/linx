@@ -237,6 +237,7 @@ export function UserProvider({ children }) {
         doUploadProfileUser,
         doValidateZip,
         doGetMessages,
+        doGetCommonImages,
         formatFormData,
         formatParams,
         formatUserForImageUpload,
@@ -490,10 +491,8 @@ export function UserProvider({ children }) {
 
     async function doGetMessages(conversation) {
         try {
-            console.log('function called');
             const API_ENDPOINT = getApiEndpoint(['get', 'conversation']);
             const res = await axios.get(API_ENDPOINT, { params: conversation });
-            //console.log('res:', res);
             const data = res.data;
             if (res.status != 200) {
                 return Alert.alert('Get messages failed. Please try again');
@@ -507,6 +506,25 @@ export function UserProvider({ children }) {
         catch (error) {
             console.warn('Get messages failed:', error);
             Alert.alert('Get messages failed. Please try again');
+        }
+    }
+
+    async function doGetCommonImages(users) {
+        try {
+            const API_ENDPOINT = getApiEndpoint(['common', 'images', 'between', 'users']);
+            const res = await axios.get(API_ENDPOINT, { params: users });
+            const data = res.data;
+            if (res.status != 200) {
+                console.warn('Get common images failed');
+            }
+            if (!data.success || data.success == 'false') {
+                console.warn('Get common images failed');
+            }
+
+            return data.images_urls;
+        }
+        catch (error) {
+            console.warn('Get common images failed:', error);
         }
     }
 
@@ -705,7 +723,6 @@ export function UserProvider({ children }) {
         user.info = JSON.stringify(info);
         user.user_id = user.uid;
         delete user.uid;
-        console.log({ user });
         doUpdateUser(user, null, true);
     }
 

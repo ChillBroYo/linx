@@ -69,7 +69,7 @@ export default function Message({ navigation }) {
             oid: contact.id,
             token,
             limit: 50 * multiplier,
-            ts: null,
+            ts: '',
         };
         const messages = await doGetMessages(queryParams);
         if (isMountedRef.current && messages) {

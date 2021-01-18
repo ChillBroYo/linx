@@ -81,9 +81,8 @@ export default function Messages({ navigation }) {
             oid,
             token,
             limit: 1,
-            ts: null,
+            ts: '',
         };
-        console.log('queryParams', queryParams);
         const messages = await doGetMessages(queryParams);
         return messages[0];
     }

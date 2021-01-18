@@ -38,6 +38,7 @@ export default function Profile({ navigation }) {
             userId,
         },
         doGetUserProfile,
+        doGetCommonImages,
     } = useUserContext();
     const [isLoading, setIsLoading] = useState(true);
     const [friend, setFriend] = useState(null);
@@ -78,21 +79,14 @@ export default function Profile({ navigation }) {
     }
 
     async function getCommonImages(oid) {
-        try {
-            const API_ENDPOINT = getApiEndpoint(['common', 'images', 'between', 'users']);
-            const queryParams = {
-                token,
-                user_id: userId,
-                oid,
-            };
-            const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
-            const data = res?.data;
-            if (isMountedRef.current && data) {
-                await setCommonImages(data.images_urls);
-            }
-        }
-        catch (error) {
-            console.warn('error in getCommonImages:', error);
+        const queryParams = {
+            token,
+            user_id: userId,
+            oid,
+        };
+        const images_urls = await doGetCommonImages(queryParams);
+        if (isMountedRef.current && images_urls) {
+            await setCommonImages(images_urls);
         }
     }
 
