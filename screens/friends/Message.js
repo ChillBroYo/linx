@@ -12,10 +12,7 @@ import {
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import InView from "react-native-component-inview";
 import axios from 'axios';
-import moment from 'moment';
-import qs from 'query-string';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import BackArrow from '../../components/BackArrow';
@@ -34,7 +31,13 @@ import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 export default function Message({ navigation }) {
     const isMountedRef = useIsMountedRef();
     const flatListRef = useRef(null);
-    const { state: { token, userId } } = useUserContext();
+    const {
+        state: {
+            token,
+            userId,
+        },
+        doGetMessages,
+    } = useUserContext();
     const [flatListScrollY, setFlatListScrollY] = useState(0);
     const [multiplier, setMultiplier] = useState(1);
     const [messages, setMessages] = useState(null);
@@ -61,25 +64,18 @@ export default function Message({ navigation }) {
     }
 
     async function getMessages() {
-        try {
-            const API_ENDPOINT = getApiEndpoint(['get', 'conversation']);
-            const queryParams = {
-                uid: userId,
-                oid: contact.id,
-                token,
-                limit: 50 * multiplier,
-                ts: null,
-            };
-            const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
-            const data = res?.data;
-            if (isMountedRef.current && data?.messages) {
-                await setMessages(data.messages);
-            }
-            scrollToBottom();
+        const queryParams = {
+            uid: userId,
+            oid: contact.id,
+            token,
+            limit: 50 * multiplier,
+            ts: '',
+        };
+        const messages = await doGetMessages(queryParams);
+        if (isMountedRef.current && messages) {
+            await setMessages(messages);
         }
-        catch (error) {
-            console.warn('Error in getMessages:', error);
-        }
+        scrollToBottom();
     }
 
     async function sendMessage() {

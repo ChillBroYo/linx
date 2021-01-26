@@ -40,6 +40,7 @@ export default function Settings({ navigation }) {
             ageRange,
             gender,
             sameGender,
+            googleAccount,
         },
         doLogoutUser,
     } = useUserContext();
@@ -119,7 +120,11 @@ export default function Settings({ navigation }) {
 
     async function removeStoredData() {
         try {
-            await AsyncStorage.multiRemove(['@password', '@signin']);
+            if (!googleAccount) {
+                await AsyncStorage.multiRemove(['@password', '@signin']);
+            } else {
+                await AsyncStorage.multiRemove(['@username', '@password', '@signin']);
+            }
         }
         catch (error) {
             console.warn('AsyncStorage remove error: ', error);
@@ -174,25 +179,29 @@ export default function Settings({ navigation }) {
                             </View>
                         </TouchableOpacity>
                         <View style={styles.divider} />
-                        <TouchableOpacity onPress={doEmail}>
-                            <View style={styles.row}>
-                                <View style={styles.column}>
-                                    <Text style={styles.settingHeader}>Account email</Text>
-                                    <Text>{email}</Text>
-                                </View>
-                                <Ionicons name="ios-arrow-forward" size={20} />
-                            </View>
-                        </TouchableOpacity>
-                        <View style={styles.divider} />
-                        <TouchableOpacity onPress={doPassword}>
-                            <View style={styles.row}>
-                                <View style={styles.column}>
-                                    <Text style={styles.settingHeader}>Change password</Text>
-                                </View>
-                                <Ionicons name="ios-arrow-forward" size={20} />
-                            </View>
-                        </TouchableOpacity>
-                        <View style={styles.divider} />
+                        {!googleAccount &&
+                            <>
+                                <TouchableOpacity onPress={doEmail}>
+                                    <View style={styles.row}>
+                                        <View style={styles.column}>
+                                            <Text style={styles.settingHeader}>Account email</Text>
+                                            <Text>{email}</Text>
+                                        </View>
+                                        <Ionicons name="ios-arrow-forward" size={20} />
+                                    </View>
+                                </TouchableOpacity>
+                                <View style={styles.divider} />
+                                <TouchableOpacity onPress={doPassword}>
+                                    <View style={styles.row}>
+                                        <View style={styles.column}>
+                                            <Text style={styles.settingHeader}>Change password</Text>
+                                        </View>
+                                        <Ionicons name="ios-arrow-forward" size={20} />
+                                    </View>
+                                </TouchableOpacity>
+                                <View style={styles.divider} />
+                            </>
+                        }
                         <TouchableOpacity onPress={() => setShowTermsConditions(true)}>
                             <View style={styles.row}>
                                 <View style={styles.column}>

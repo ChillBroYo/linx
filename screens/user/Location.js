@@ -22,9 +22,10 @@ import {
     pageStyles,
     ProgressBar,
     TOTAL_STEPS,
+    TOTAL_GOOGLE_STEPS,
     TopBar,
 } from './common';
-import { isSignUpRoute } from './helpers';
+import { isSignUpRoute, isGoogleSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple } from '../../constants/Colors';
@@ -34,6 +35,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function UserLocation({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
+    const isGoogleSignUpScreen = isGoogleSignUpRoute(navigation);
     const {
         state: {
             city: contextCity,
@@ -52,15 +54,24 @@ export default function UserLocation({ navigation }) {
     const [distance, setDistance] = useState(contextDistance);
     const [showPicker, setShowPicker] = useState(false);
 
+    var googleInfo;
+    if (isGoogleSignUpScreen) {
+        googleInfo = navigation.getParam('data');
+    };
+
     useEffect(() => {
-        StatusBar.setBarStyle(isSignUpScreen ? 'light-content' : 'dark-content');
+        StatusBar.setBarStyle((isSignUpScreen || isGoogleSignUpScreen) ? 'light-content' : 'dark-content');
     }, []);
 
     function doBack() {
         if (isSignUpScreen) {
             doUpdateContext();
+            navigation.goBack();
+        } else if (isGoogleSignUpScreen) {
+            navigation.navigate('SignIn');
+        } else {
+            navigation.goBack();
         }
-        navigation.goBack();
     }
 
     async function doSubmit() {
@@ -72,17 +83,21 @@ export default function UserLocation({ navigation }) {
                 'Linx is currently not available within the ZIP code you have entered. You can still sign up and react to cards. \
                 Once Linx is in your area, we will match you up with friends in your area.',
                 [
-                    { text: 'OK', style: 'cancel', onPress: () => isSignUpScreen ? doSignUp() : doUpdate() },
+                    { text: 'OK', style: 'cancel', onPress: () => (isSignUpScreen || isGoogleSignUpScreen) ? doSignUp() : doUpdate() },
                 ]
             );
         };
 
-        isSignUpScreen ? doSignUp() : doUpdate();
+        (isSignUpScreen || isGoogleSignUpScreen) ? doSignUp() : doUpdate();
     }
 
     async function doSignUp() {
         await doUpdateContext();
-        navigation.navigate('SignUpBirthday');
+        if (isSignUpScreen) {
+            navigation.navigate('SignUpBirthday');
+        } else {
+            navigation.navigate('GoogleAccountBirthday');
+        }
     }
 
     function doUpdate() {
@@ -96,15 +111,44 @@ export default function UserLocation({ navigation }) {
     }
 
     async function doUpdateContext() {
-        await dispatch({
-            type: UserTypes.SET_USER_FIELDS,
-            payload: {
-                city: city.trim(),
-                // state: state.trim(),
-                zip: zip.trim(),
-                distance,
-            },
-        });
+        if (isSignUpScreen) {
+            await dispatch({
+                type: UserTypes.SET_USER_FIELDS,
+                payload: {
+                    city: city.trim(),
+                    // state: state.trim(),
+                    zip: zip.trim(),
+                    distance,
+                    googleAccount: false
+                },
+            });
+        } else if (isGoogleSignUpScreen) {
+            await dispatch({
+                type: UserTypes.SET_USER_FIELDS,
+                payload: {
+                    city: city.trim(),
+                    // state: state.trim(),
+                    zip: zip.trim(),
+                    distance,
+                    googleAccount: true,
+                    email: googleInfo.email,
+                    password: googleInfo.id,
+                    username: googleInfo.email,
+                    firstName: googleInfo.givenName,
+                    lastName: googleInfo.familyName,
+                },
+            });
+        } else {
+            await dispatch({
+                type: UserTypes.SET_USER_FIELDS,
+                payload: {
+                    city: city.trim(),
+                    // state: state.trim(),
+                    zip: zip.trim(),
+                    distance,
+                },
+            });
+        }
     }
 
     function validateForm() {
@@ -140,9 +184,10 @@ export default function UserLocation({ navigation }) {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={pageStyles.container}>
-                {isSignUpScreen && <TopBar />}
+                {(isSignUpScreen || isGoogleSignUpScreen) && <TopBar />}
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
                     {isSignUpScreen && <ProgressBar step={3} totalSteps={TOTAL_STEPS} />}
+                    {isGoogleSignUpScreen && <ProgressBar step={1} totalSteps={TOTAL_GOOGLE_STEPS} />}
                     <SafeAreaView edges={['top']}>
                         <BackArrow doPress={doBack} />
                     </SafeAreaView>
@@ -213,7 +258,7 @@ export default function UserLocation({ navigation }) {
                 </LinearGradient>
                 <BarButton
                     active={!!(city && zip)}
-                    value={isSignUpScreen ? 'Continue' : 'Save'}
+                    value={(isSignUpScreen || isGoogleSignUpScreen) ? 'Continue' : 'Save'}
                     doPress={doSubmit}
                 />
             </View>

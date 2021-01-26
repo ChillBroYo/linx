@@ -32,6 +32,7 @@ import {wp, hp, stdHeight} from '../../styles/helpers';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Camera } from 'expo-camera';
 import * as Linking from 'expo-linking';
+import { popup } from '../helpers';
 
 export default function UserName({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
@@ -40,6 +41,7 @@ export default function UserName({ navigation }) {
             firstName: contextFirstName,
             lastName: contextLastName,
             profileImg: contextProfileImg,
+            googleAccount,
         },
         dispatch,
         doUpdateUser,
@@ -102,11 +104,10 @@ export default function UserName({ navigation }) {
     async function checkPermission() {
         const { status } = await Camera.getPermissionsAsync();
         if (status === 'denied') {
-            Alert.alert('Permission Denied',
-                'Linx currently does not have permission to access Camera. Please go into Settings to grant Linx access.',
+            Alert.alert(popup.title, popup.message,
                 [
-                    { text: 'OK', style: 'cancel' },
-                    { text: 'Settings', onPress: () => Linking.openSettings()}
+                    { text: popup.btn1Text, style: 'cancel' },
+                    { text: popup.btn2Text, onPress: () => Linking.openSettings()}
                 ],
                 { cancelable: false }
             );
@@ -146,6 +147,7 @@ export default function UserName({ navigation }) {
                                 value={firstName}
                                 onChangeText={firstName => setFirstName(firstName)}
                                 clearButtonMode='while-editing'
+                                //editable={!googleAccount ? true : false}
                                 style={formStyles.input}
                             />
                             <TextInput
@@ -154,6 +156,7 @@ export default function UserName({ navigation }) {
                                 value={lastName}
                                 onChangeText={lastName => setLastName(lastName)}
                                 clearButtonMode='while-editing'
+                                //editable={!googleAccount ? true : false}
                                 style={formStyles.input}
                             />
                         </Form>

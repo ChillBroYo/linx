@@ -1,33 +1,33 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    Alert,
     FlatList,
     Image,
-    ScrollView,
     StyleSheet,
     Text,
-    TextInput,
     TouchableHighlight,
     View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import axios from 'axios';
-import qs from 'query-string';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
     black,
     grey,
     lightGradient,
-    purple,
 } from '../../constants/Colors';
 import Loader from '../../components/Loader';
 import { useUserContext } from '../../contexts/UserContext';
-import getApiEndpoint from '../../helpers/apiEndpoint';
 import { useInterval, useIsMountedRef } from '../../helpers/hooks';
 
 export default function Messages({ navigation }) {
     const insets = useSafeAreaInsets();
-    const { state: { token, userId } } = useUserContext();
+    const {
+        state: {
+            token,
+            userId,
+        },
+        doGetUserProfile,
+        doGetMessages,
+    } = useUserContext();
     const isMountedRef = useIsMountedRef();
     const [loading, setLoading] = useState(true);
     const [friends, setFriends] = useState(null);
@@ -48,7 +48,8 @@ export default function Messages({ navigation }) {
 
         for (let id of userFriends) {
             const friend = {};
-            const friendData = await getProfile(id);
+            const user = { uid: id, key: 123 };
+            const friendData = await doGetUserProfile(user, true);
             const friendInfo = JSON.parse(friendData.info);
             const lastMessage = await getLastMessage(id);
 
@@ -68,44 +69,22 @@ export default function Messages({ navigation }) {
     async function getFriends() {
         if (!userId) return;
 
-        const user = await getProfile(userId);
+        const userInfo = { uid: userId, key: 123 }
+        const user = await doGetUserProfile(userInfo, true);
         const userFriends = JSON.parse(user.friends);
         return userFriends;
     }
 
     async function getLastMessage(oid) {
-        try {
-            const API_ENDPOINT = getApiEndpoint(['get', 'conversation']);
-            const queryParams = {
-                uid: userId,
-                oid,
-                token,
-                limit: 1,
-                ts: null,
-            };
-            const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
-            const data = res?.data;
-            return data?.messages?.[0];
-        }
-        catch (error) {
-            console.warn('error in getLastMessage:', error);
-        }
-    }
-
-    async function getProfile(uid) {
-        try {
-            const API_ENDPOINT = getApiEndpoint(['get', 'profile']);
-            const queryParams = {
-                uid,
-                key: 123,
-            };
-            const res = await axios(`${API_ENDPOINT}?${qs.stringify(queryParams)}`);
-            const data = res?.data?.user_info;
-            return data;
-        }
-        catch (error) {
-            console.warn('error in getProfile:', error);
-        }
+        const queryParams = {
+            uid: userId,
+            oid,
+            token,
+            limit: 1,
+            ts: '',
+        };
+        const messages = await doGetMessages(queryParams);
+        return messages[0];
     }
 
     return (

@@ -1,14 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Camera } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import { darkGradient } from '../../constants/Colors';
+import * as ImagePicker from 'expo-image-picker';
+import { popup2 } from '../helpers';
+import * as Linking from 'expo-linking';
+import Loader from '../../components/Loader';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
 
 export default function TakeProfileScreen({ navigation }) {
+    const [isLoading, setIsLoading] = useState(false);
     
     let camera = useRef();
 
@@ -41,38 +46,63 @@ export default function TakeProfileScreen({ navigation }) {
     }
 
     async function snap() {
+        setIsLoading(true);
         if (camera.current) {
             let photo = await camera.current.takePictureAsync();
-            navigation.navigate('ReviewProfile', {data: photo});
+            setIsLoading(false);
+            navigation.navigate('ReviewProfile', { data: photo });
+        }
+    }
+
+    async function selectImage() {
+        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        if (status !== 'granted') {
+            Alert.alert(popup2.title, popup2.message,
+                [
+                    { text: popup2.btn1Text, style: 'cancel' },
+                    { text: popup2.btn2Text, onPress: () => Linking.openSettings()}
+                ],
+                { cancelable: false }
+            );
+        } else {
+            setIsLoading(true);
+            let photo = await ImagePicker.launchImageLibraryAsync();
+            setIsLoading(false);
+            if (!photo.cancelled) navigation.navigate('ReviewProfile', { data: photo });
         }
     }
 
     //Case when permission has been approved
     return (
-        <View style={globalStyles.cameraContainer}>
-            <View style={globalStyles.navigationButtonContainer}>
-                <TouchableOpacity style={globalStyles.backButtonContainer} onPress={() => navigation.goBack()}>
-                    <Ionicons name="ios-arrow-back" style={globalStyles.backButton} />
-                </TouchableOpacity>
+        <>
+            <View style={globalStyles.cameraContainer}>
+                <View style={globalStyles.navigationButtonContainer}>
+                    <TouchableOpacity style={globalStyles.backButtonContainer} onPress={() => navigation.goBack()}>
+                        <Ionicons name="ios-arrow-back" style={globalStyles.backButton} />
+                    </TouchableOpacity>
+                </View>
+                <Camera style={globalStyles.camera} type={type} ref={camera} />
+                <View style={globalStyles.cameraButtonContainer}>
+                    <TouchableOpacity style={globalStyles.selectPictureContainer} onPress={selectImage}>
+                        <Ionicons name="ios-albums" style={globalStyles.selectPicture} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={globalStyles.takePictureContainer} onPress={snap}>
+                        <Ionicons name="ios-camera" style={globalStyles.takePicture} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={globalStyles.flipCameraContainer}
+                        onPress={() => {
+                            setType(type == Camera.Constants.Type.back
+                                ? Camera.Constants.Type.front
+                                : Camera.Constants.Type.back
+                            )
+                        }}
+                    >
+                        <Ionicons name="ios-reverse-camera" style={globalStyles.flipCamera} />
+                    </TouchableOpacity>
+                </View>
             </View>
-            <Camera style={globalStyles.camera} type={type} ref={camera} />
-            <View style={globalStyles.cameraButtonContainer}>
-                <View style={globalStyles.noIcon} />
-                <TouchableOpacity style={globalStyles.takePictureContainer} onPress={snap}>
-                    <Ionicons name="ios-camera" style={globalStyles.takePicture} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={globalStyles.flipCameraContainer}
-                    onPress={() => {
-                        setType(type == Camera.Constants.Type.back
-                            ? Camera.Constants.Type.front
-                            : Camera.Constants.Type.back
-                        )
-                    }}
-                >
-                    <Ionicons name="ios-reverse-camera" style={globalStyles.flipCamera} />
-                </TouchableOpacity>
-            </View>
-        </View>
+            <Loader visible={isLoading} />
+        </>
     );
 }

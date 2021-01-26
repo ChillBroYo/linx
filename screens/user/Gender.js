@@ -19,9 +19,10 @@ import {
     pageStyles,
     ProgressBar,
     TOTAL_STEPS,
+    TOTAL_GOOGLE_STEPS,
     TopBar,
 } from './common';
-import { isSignUpRoute } from './helpers';
+import { isSignUpRoute, isGoogleSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import Loader from '../../components/Loader';
@@ -32,6 +33,7 @@ import { wp, hp } from '../../styles/helpers';
 
 export default function UserGender({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
+    const isGoogleSignUpScreen = isGoogleSignUpRoute(navigation);
     const {
         state: {
             gender: contextGender,
@@ -50,18 +52,18 @@ export default function UserGender({ navigation }) {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        StatusBar.setBarStyle(isSignUpScreen ? 'light-content' : 'dark-content');
+        StatusBar.setBarStyle((isSignUpScreen || isGoogleSignUpScreen) ? 'light-content' : 'dark-content');
     }, []);
 
     async function doBack() {
-        if (isSignUpScreen) {
+        if (isSignUpScreen || isGoogleSignUpScreen) {
             await doUpdateContext();
         }
         navigation.goBack();
     }
 
     function doSubmit() {
-        isSignUpScreen ? doSignUp() : doUpdate();
+        (isSignUpScreen || isGoogleSignUpScreen) ? doSignUp() : doUpdate();
     }
 
     async function doSignUp() {
@@ -109,9 +111,10 @@ export default function UserGender({ navigation }) {
         <>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={pageStyles.container}>
-                    {isSignUpScreen && <TopBar />}
+                    {(isSignUpScreen || isGoogleSignUpScreen) && <TopBar />}
                     <LinearGradient colors={lightGradient} style={pageStyles.container}>
                         {isSignUpScreen && <ProgressBar step={5} totalSteps={TOTAL_STEPS} />}
+                        {isGoogleSignUpScreen && <ProgressBar step={3} totalSteps={TOTAL_GOOGLE_STEPS} />}
                         <SafeAreaView edges={['top']}>
                             <BackArrow doPress={doBack} />
                         </SafeAreaView>
@@ -145,7 +148,7 @@ export default function UserGender({ navigation }) {
                     </LinearGradient>
                     <BarButton
                         active={!!gender}
-                        value={isSignUpScreen ? 'Done' : 'Save'}
+                        value={(isSignUpScreen || isGoogleSignUpScreen) ? 'Done' : 'Save'}
                         doPress={doSubmit}
                     />
                 </View>

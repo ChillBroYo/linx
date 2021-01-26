@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, TouchableOpacity, View, Platform } from 'react-native';
+import { Alert, Text, TouchableOpacity, View, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { pageStyles } from './common';
 import { lightGradient } from '../../constants/Colors';
@@ -7,6 +7,9 @@ import Loader from '../../components/Loader';
 import { Camera } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import { useUserContext } from '../../contexts/UserContext';
+import * as ImagePicker from 'expo-image-picker';
+import { popup2 } from '../helpers';
+import * as Linking from 'expo-linking';
 
 //Import global styles used throughout app
 import { globalStyles } from '../../styles/global';
@@ -56,6 +59,22 @@ export default function UserProfileImage({ navigation }) {
         }
     }
 
+    async function selectImage() {
+        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        if (status !== 'granted') {
+            Alert.alert(popup2.title, popup2.message,
+                [
+                    { text: popup2.btn1Text, style: 'cancel' },
+                    { text: popup2.btn2Text, onPress: () => Linking.openSettings()}
+                ],
+                { cancelable: false }
+            );
+        } else {
+            let photo = await ImagePicker.launchImageLibraryAsync();
+            if (!photo.cancelled) doUploadProfile(photo.uri);
+        }
+    }
+
     async function doUploadProfile(photo) {
         setIsLoading(true);
         const user = getUserForImageUpload(photo);
@@ -82,7 +101,9 @@ export default function UserProfileImage({ navigation }) {
                 </View>
                 <Camera style={globalStyles.camera} type={type} ref={camera} />
                 <View style={globalStyles.cameraButtonContainer}>
-                    <View style={globalStyles.noIcon} />
+                    <TouchableOpacity style={globalStyles.selectPictureContainer} onPress={selectImage}>
+                        <Ionicons name="ios-albums" style={globalStyles.selectPicture} />
+                    </TouchableOpacity>
                     <TouchableOpacity style={globalStyles.takePictureContainer} onPress={snap}>
                         <Ionicons name="ios-camera" style={globalStyles.takePicture} />
                     </TouchableOpacity>

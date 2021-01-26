@@ -17,6 +17,7 @@ export const UserTypes = {
     SET_USER_ID: 'SET_USER_ID',
     SET_TOKEN: 'SET_TOKEN',
     SET_IS_ONBOARDED: 'SET_IS_ONBOARDED',
+    SET_GOOGLE_ACCOUNT: 'SET_GOOGLE_ACCOUNT',
     SET_LAST_REACTION: 'SET_LAST_REACTION',
     SET_EMAIL: 'SET_EMAIL',
     SET_PASSWORD: 'SET_PASSWORD',
@@ -43,6 +44,7 @@ const initialState = {
     userId: '',
     token: '',
     isOnboarded: false,
+    googleAccount: false,
     lastReaction: moment.utc().format('YYYY-MM-DDTHH:mm:ss'),
     email: '',
     password: '',
@@ -84,6 +86,11 @@ function userReducer(state, action) {
             return {
                 ...state,
                 isOnboarded: payload.isOnboarded,
+            }
+        case UserTypes.SET_GOOGLE_ACCOUNT:
+            return {
+                ...state,
+                googleAccount: payload.googleAccount,
             }
         case UserTypes.SET_LAST_REACTION:
             return {
@@ -195,6 +202,7 @@ export function UserProvider({ children }) {
         userId,
         token,
         isOnboarded,
+        googleAccount,
         lastReaction,
         email,
         password,
@@ -228,6 +236,8 @@ export function UserProvider({ children }) {
         doUpdateImageIndex,
         doUploadProfileUser,
         doValidateZip,
+        doGetMessages,
+        doGetCommonImages,
         formatFormData,
         formatParams,
         formatUserForImageUpload,
@@ -259,18 +269,17 @@ export function UserProvider({ children }) {
             const res = await axios.get(API_ENDPOINT, { params: user });
             const data = res.data;
             if (res.status != 200) {
-                return Alert.alert('Sign in failed. Please try again');
+                return false;
             }
             if (!data.success || data.success == 'false') {
-                return Alert.alert(data.errmsg);
+                return false;
             }
 
             setUserFromResponse(data);
             return true;
         }
         catch (error) {
-            console.warn('Sign in error:', error);
-            Alert.alert('Sign in failed. Please try again');
+            return false;
         }
     }
 
@@ -366,7 +375,7 @@ export function UserProvider({ children }) {
         }
     }
 
-    async function doGetUserProfile(user) {
+    async function doGetUserProfile(user, returnInfo = false) {
         try {
             const API_ENDPOINT = getApiEndpoint(['get', 'profile']);
             const res = await axios.get(API_ENDPOINT, { params: user });
@@ -378,8 +387,12 @@ export function UserProvider({ children }) {
                 return Alert.alert(data.errmsg);
             }
 
-            setUserFromProfileResponse(data);
-            return { imageIndex: data.user_info.image_index };
+            if (!returnInfo) {
+                setUserFromProfileResponse(data);
+                return { imageIndex: data.user_info.image_index };
+            } else {
+                return data.user_info;
+            }
         }
         catch (error) {
             console.warn('Get user profile error:', error);
@@ -473,6 +486,45 @@ export function UserProvider({ children }) {
         catch (error) {
             console.warn('Validate zip code error:', error);
             Alert.alert('Validate zip code failed. Please try again');
+        }
+    }
+
+    async function doGetMessages(conversation) {
+        try {
+            const API_ENDPOINT = getApiEndpoint(['get', 'conversation']);
+            const res = await axios.get(API_ENDPOINT, { params: conversation });
+            const data = res.data;
+            if (res.status != 200) {
+                return Alert.alert('Get messages failed. Please try again');
+            }
+            if (!data.success || data.success == 'false') {
+                return Alert.alert(data.errmsg);
+            }
+
+            return data.messages;
+        }
+        catch (error) {
+            console.warn('Get messages failed:', error);
+            Alert.alert('Get messages failed. Please try again');
+        }
+    }
+
+    async function doGetCommonImages(users) {
+        try {
+            const API_ENDPOINT = getApiEndpoint(['common', 'images', 'between', 'users']);
+            const res = await axios.get(API_ENDPOINT, { params: users });
+            const data = res.data;
+            if (res.status != 200) {
+                console.warn('Get common images failed');
+            }
+            if (!data.success || data.success == 'false') {
+                console.warn('Get common images failed');
+            }
+
+            return data.images_urls;
+        }
+        catch (error) {
+            console.warn('Get common images failed:', error);
         }
     }
 
@@ -576,6 +628,7 @@ export function UserProvider({ children }) {
             gender,
             imgUrl: profileImg,
             isOnboarded,
+            googleAccount,
             lastReaction,
             location: {
                 city: city?.trim() || '',
@@ -620,6 +673,7 @@ export function UserProvider({ children }) {
         const info = JSON.parse(infoJSON);
         const {
             isOnboarded,
+            googleAccount,
             lastReaction,
             birthday,
             gender,
@@ -644,6 +698,7 @@ export function UserProvider({ children }) {
                 token,
                 userId: uid,
                 isOnboarded: Boolean(isOnboarded),
+                googleAccount: Boolean(googleAccount),
                 lastReaction,
                 email,
                 username,
@@ -656,7 +711,7 @@ export function UserProvider({ children }) {
                 zip,
                 distance,
                 gender,
-                sameGender,
+                sameGender: Boolean(sameGender),
                 friends: JSON.parse(friends),
             }
         });
@@ -668,7 +723,6 @@ export function UserProvider({ children }) {
         user.info = JSON.stringify(info);
         user.user_id = user.uid;
         delete user.uid;
-        console.log({ user });
         doUpdateUser(user, null, true);
     }
 
