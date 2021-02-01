@@ -130,8 +130,7 @@ export default function Message({ navigation }) {
     }
 
     const imageMessage = getImageMessage();
-    const randImage = getRandomImage(commonImages);
-    console.log('random image:', randImage);
+    const randImage = commonImages[getRandomImage(commonImages.length)];
 
     return (
         <KeyboardAvoidingView

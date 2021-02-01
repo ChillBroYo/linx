@@ -16,7 +16,6 @@ export function getImageMessage() {
 
 export function getRandomImage(images) {
 	const rand = seedrandom(dayOfYear.toString());
-	const length = images.length;
-	const result = Math.floor(rand() * length);
-	return images[result];
+	const result = Math.floor(rand() * images);
+	return result;
 }
