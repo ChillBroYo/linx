@@ -28,13 +28,16 @@
     "ios": {
       "bundleIdentifier": "com.linx.linx-app",
       "infoPlist": {
-        "NSCameraUsageDescription": "Use your camera to take a profile picture so your new friends can see who you are."
+        "NSCameraUsageDescription": "Use your camera to take a profile picture so your new friends can see who you are.",
+        "NSPhotoLibraryUsageDescription": "Use your camera roll to select a profile picture so your new friends can see who you are.",
+        "CFBundleAllowMixedLocalizations": true,
       },
       "config": {
         "googleSignIn": {
           "reservedClientId": "com.googleusercontent.apps.483225426792-e2qkmrlhk9mqhh6d7ol5rrec8cokf5ht"
         }
-      }
+      },
+      "usesAppleSignIn": true,
     },
     "android": {
       "package": "com.linx.linx",

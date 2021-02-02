@@ -64,7 +64,8 @@
     "react-navigation-stack": "^2.5.1",
     "react-text-mask": "^5.4.3",
     "rollup": "^1.27.2",
-    "seedrandom": "^3.0.5"
+    "seedrandom": "^3.0.5",
+    "expo-apple-authentication": "~2.2.1"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.2.3",
