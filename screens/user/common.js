@@ -70,7 +70,7 @@ const pageHeaderStyles = StyleSheet.create({
 });
 
 export const TOTAL_STEPS = 6;
-export const TOTAL_GOOGLE_STEPS = 4;
+export const TOTAL_ALTERNATE_STEPS = 4;
 export function ProgressBar({ step, totalSteps }) {
     return (
         <View style={{

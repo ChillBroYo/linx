@@ -85,10 +85,10 @@ export default function SignIn({ navigation }) {
         if (loginFailed) Alert.alert('Sign in failed. Please try again');
     }, [loginFailed]);
 
-    async function storeData(email, id) {
+    async function storeData(id, constPassword) {
         try {
-            if (email !== undefined && id !== undefined) {
-                await AsyncStorage.multiSet([['@username', email], ['@password', id], ['@signin', 'true']]);
+            if (id !== undefined && constPassword !== undefined) {
+                await AsyncStorage.multiSet([['@username', id], ['@password', constPassword], ['@signin', 'true']]);
             } else {
                 await AsyncStorage.multiSet([['@username', username], ['@password', password], ['@signin', 'true']]);
             }
@@ -145,6 +145,7 @@ export default function SignIn({ navigation }) {
     async function googleSignIn() {
         try {
             const result = await Google.logInAsync(googleLoginConfig);
+            console.log('Google Signin result:', JSON.stringify(result));
             if (result.type === 'success') {
                 checkGoogleAccount(result.user);
             } else {
@@ -159,19 +160,19 @@ export default function SignIn({ navigation }) {
     async function checkGoogleAccount(userInfo) {
         setLoginFailed(false);
         setIsLoading(true);
-        const user = { username: userInfo.email, password: userInfo.id };
+        const user = { username: userInfo.id, password: '$14GoogleSignIn52$' };
         const isSignedIn = await doSignInUser(user);
         if (!isSignedIn) {
             setIsLoading(false);
             navigation.navigate({
-                routeName: 'GoogleAccount',
+                routeName: 'AlternateAccount',
                 action: NavigationActions.navigate({
-                    routeName: 'GoogleAccountLocation',
+                    routeName: 'AlternateAccountLocation',
                     params: { data: userInfo }
                 })
             });
         } else {
-            storeData(userInfo.email, userInfo.id);
+            storeData(userInfo.id, '$14GoogleSignIn52$');
             setIsLoading(false);
             navigation.navigate('Cards');
         }
@@ -180,7 +181,6 @@ export default function SignIn({ navigation }) {
     async function validAppleSignIn() {
         try {
             const result = await AppleAuthentication.isAvailableAsync();
-            console.log('Validate Apple Signin result:', result);
             setAllowAppleSignIn(result);
         } catch (error) {
             console.warn('Validate Apple Signin functionality:', error);
@@ -189,7 +189,12 @@ export default function SignIn({ navigation }) {
 
     async function appleSignIn() {
         try {
-            const result = await AppleAuthentication.signInAsync();
+            const result = await AppleAuthentication.signInAsync({
+                requestedScopes: [
+                AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                ],
+            });
             console.log('Apple Signin result:', JSON.stringify(result));
         } catch (error) {
             console.warn('Apple Signin error:', error);
@@ -212,8 +217,6 @@ export default function SignIn({ navigation }) {
             </View>
         )
     };
-
-    console.log('allowAppleSignIn:', allowAppleSignIn);
 
     return (
         <>
@@ -249,7 +252,7 @@ export default function SignIn({ navigation }) {
                                 <AppleAuthentication.AppleAuthenticationButton
                                     buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
                                     buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-                                    cornerRadius={10}
+                                    cornerRadius={0}
                                     style={styles.appleSignIn}
                                     onPress={appleSignIn}
                                 />
@@ -290,7 +293,7 @@ const styles = StyleSheet.create({
     button: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 10,
+        borderRadius: 0,
         height: 41,
         width: 164,
     },

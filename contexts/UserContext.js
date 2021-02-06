@@ -17,7 +17,7 @@ export const UserTypes = {
     SET_USER_ID: 'SET_USER_ID',
     SET_TOKEN: 'SET_TOKEN',
     SET_IS_ONBOARDED: 'SET_IS_ONBOARDED',
-    SET_GOOGLE_ACCOUNT: 'SET_GOOGLE_ACCOUNT',
+    SET_ALTERNATE_ACCOUNT: 'SET_ALTERNATE_ACCOUNT',
     SET_LAST_REACTION: 'SET_LAST_REACTION',
     SET_EMAIL: 'SET_EMAIL',
     SET_PASSWORD: 'SET_PASSWORD',
@@ -44,7 +44,7 @@ const initialState = {
     userId: '',
     token: '',
     isOnboarded: false,
-    googleAccount: false,
+    alternateAccount: false,
     lastReaction: moment.utc().format('YYYY-MM-DDTHH:mm:ss'),
     email: '',
     password: '',
@@ -87,10 +87,10 @@ function userReducer(state, action) {
                 ...state,
                 isOnboarded: payload.isOnboarded,
             }
-        case UserTypes.SET_GOOGLE_ACCOUNT:
+        case UserTypes.SET_ALTERNATE_ACCOUNT:
             return {
                 ...state,
-                googleAccount: payload.googleAccount,
+                alternateAccount: payload.alternateAccount,
             }
         case UserTypes.SET_LAST_REACTION:
             return {
@@ -202,7 +202,7 @@ export function UserProvider({ children }) {
         userId,
         token,
         isOnboarded,
-        googleAccount,
+        alternateAccount,
         lastReaction,
         email,
         password,
@@ -628,7 +628,7 @@ export function UserProvider({ children }) {
             gender,
             imgUrl: profileImg,
             isOnboarded,
-            googleAccount,
+            alternateAccount,
             lastReaction,
             location: {
                 city: city?.trim() || '',
@@ -673,7 +673,7 @@ export function UserProvider({ children }) {
         const info = JSON.parse(infoJSON);
         const {
             isOnboarded,
-            googleAccount,
+            alternateAccount,
             lastReaction,
             birthday,
             gender,
@@ -698,7 +698,7 @@ export function UserProvider({ children }) {
                 token,
                 userId: uid,
                 isOnboarded: Boolean(isOnboarded),
-                googleAccount: Boolean(googleAccount),
+                alternateAccount: Boolean(alternateAccount),
                 lastReaction,
                 email,
                 username,

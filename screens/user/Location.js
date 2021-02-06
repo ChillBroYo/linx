@@ -22,10 +22,10 @@ import {
     pageStyles,
     ProgressBar,
     TOTAL_STEPS,
-    TOTAL_GOOGLE_STEPS,
+    TOTAL_ALTERNATE_STEPS,
     TopBar,
 } from './common';
-import { isSignUpRoute, isGoogleSignUpRoute } from './helpers';
+import { isSignUpRoute, isAlternateSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple } from '../../constants/Colors';
@@ -35,7 +35,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function UserLocation({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
-    const isGoogleSignUpScreen = isGoogleSignUpRoute(navigation);
+    const isAlternateSignUpScreen = isAlternateSignUpRoute(navigation);
     const {
         state: {
             city: contextCity,
@@ -54,20 +54,20 @@ export default function UserLocation({ navigation }) {
     const [distance, setDistance] = useState(contextDistance);
     const [showPicker, setShowPicker] = useState(false);
 
-    var googleInfo;
-    if (isGoogleSignUpScreen) {
-        googleInfo = navigation.getParam('data');
+    var alternateInfo;
+    if (isAlternateSignUpScreen) {
+        alternateInfo = navigation.getParam('data');
     };
 
     useEffect(() => {
-        StatusBar.setBarStyle((isSignUpScreen || isGoogleSignUpScreen) ? 'light-content' : 'dark-content');
+        StatusBar.setBarStyle((isSignUpScreen || isAlternateSignUpScreen) ? 'light-content' : 'dark-content');
     }, []);
 
     function doBack() {
         if (isSignUpScreen) {
             doUpdateContext();
             navigation.goBack();
-        } else if (isGoogleSignUpScreen) {
+        } else if (isAlternateSignUpScreen) {
             navigation.navigate('SignIn');
         } else {
             navigation.goBack();
@@ -83,12 +83,12 @@ export default function UserLocation({ navigation }) {
                 'Linx is currently not available within the ZIP code you have entered. You can still sign up and react to cards. \
                 Once Linx is in your area, we will match you up with friends in your area.',
                 [
-                    { text: 'OK', style: 'cancel', onPress: () => (isSignUpScreen || isGoogleSignUpScreen) ? doSignUp() : doUpdate() },
+                    { text: 'OK', style: 'cancel', onPress: () => (isSignUpScreen || isAlternateSignUpScreen) ? doSignUp() : doUpdate() },
                 ]
             );
         };
 
-        (isSignUpScreen || isGoogleSignUpScreen) ? doSignUp() : doUpdate();
+        (isSignUpScreen || isAlternateSignUpScreen) ? doSignUp() : doUpdate();
     }
 
     async function doSignUp() {
@@ -96,7 +96,7 @@ export default function UserLocation({ navigation }) {
         if (isSignUpScreen) {
             navigation.navigate('SignUpBirthday');
         } else {
-            navigation.navigate('GoogleAccountBirthday');
+            navigation.navigate('AlternateAccountBirthday');
         }
     }
 
@@ -119,10 +119,10 @@ export default function UserLocation({ navigation }) {
                     // state: state.trim(),
                     zip: zip.trim(),
                     distance,
-                    googleAccount: false
+                    alternateAccount: false
                 },
             });
-        } else if (isGoogleSignUpScreen) {
+        } else if (isAlternateSignUpScreen) {
             await dispatch({
                 type: UserTypes.SET_USER_FIELDS,
                 payload: {
@@ -130,12 +130,12 @@ export default function UserLocation({ navigation }) {
                     // state: state.trim(),
                     zip: zip.trim(),
                     distance,
-                    googleAccount: true,
-                    email: googleInfo.email,
-                    password: googleInfo.id,
-                    username: googleInfo.email,
-                    firstName: googleInfo.givenName,
-                    lastName: googleInfo.familyName,
+                    alternateAccount: true,
+                    email: alternateInfo.email,
+                    password: '$14GoogleSignIn52$',
+                    username: alternateInfo.id,
+                    firstName: alternateInfo.givenName,
+                    lastName: alternateInfo.familyName,
                 },
             });
         } else {
@@ -184,10 +184,10 @@ export default function UserLocation({ navigation }) {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={pageStyles.container}>
-                {(isSignUpScreen || isGoogleSignUpScreen) && <TopBar />}
+                {(isSignUpScreen || isAlternateSignUpScreen) && <TopBar />}
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
                     {isSignUpScreen && <ProgressBar step={3} totalSteps={TOTAL_STEPS} />}
-                    {isGoogleSignUpScreen && <ProgressBar step={1} totalSteps={TOTAL_GOOGLE_STEPS} />}
+                    {isAlternateSignUpScreen && <ProgressBar step={1} totalSteps={TOTAL_ALTERNATE_STEPS} />}
                     <SafeAreaView edges={['top']}>
                         <BackArrow doPress={doBack} />
                     </SafeAreaView>
@@ -258,7 +258,7 @@ export default function UserLocation({ navigation }) {
                 </LinearGradient>
                 <BarButton
                     active={!!(city && zip)}
-                    value={(isSignUpScreen || isGoogleSignUpScreen) ? 'Continue' : 'Save'}
+                    value={(isSignUpScreen || isAlternateSignUpScreen) ? 'Continue' : 'Save'}
                     doPress={doSubmit}
                 />
             </View>

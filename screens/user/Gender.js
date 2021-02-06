@@ -19,10 +19,10 @@ import {
     pageStyles,
     ProgressBar,
     TOTAL_STEPS,
-    TOTAL_GOOGLE_STEPS,
+    TOTAL_ALTERNATE_STEPS,
     TopBar,
 } from './common';
-import { isSignUpRoute, isGoogleSignUpRoute } from './helpers';
+import { isSignUpRoute, isAlternateSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import Loader from '../../components/Loader';
@@ -33,7 +33,7 @@ import { wp, hp } from '../../styles/helpers';
 
 export default function UserGender({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
-    const isGoogleSignUpScreen = isGoogleSignUpRoute(navigation);
+    const isAlternateSignUpScreen = isAlternateSignUpRoute(navigation);
     const {
         state: {
             gender: contextGender,
@@ -52,18 +52,18 @@ export default function UserGender({ navigation }) {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        StatusBar.setBarStyle((isSignUpScreen || isGoogleSignUpScreen) ? 'light-content' : 'dark-content');
+        StatusBar.setBarStyle((isSignUpScreen || isAlternateSignUpScreen) ? 'light-content' : 'dark-content');
     }, []);
 
     async function doBack() {
-        if (isSignUpScreen || isGoogleSignUpScreen) {
+        if (isSignUpScreen || isAlternateSignUpScreen) {
             await doUpdateContext();
         }
         navigation.goBack();
     }
 
     function doSubmit() {
-        (isSignUpScreen || isGoogleSignUpScreen) ? doSignUp() : doUpdate();
+        (isSignUpScreen || isAlternateSignUpScreen) ? doSignUp() : doUpdate();
     }
 
     async function doSignUp() {
@@ -111,10 +111,10 @@ export default function UserGender({ navigation }) {
         <>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={pageStyles.container}>
-                    {(isSignUpScreen || isGoogleSignUpScreen) && <TopBar />}
+                    {(isSignUpScreen || isAlternateSignUpScreen) && <TopBar />}
                     <LinearGradient colors={lightGradient} style={pageStyles.container}>
                         {isSignUpScreen && <ProgressBar step={5} totalSteps={TOTAL_STEPS} />}
-                        {isGoogleSignUpScreen && <ProgressBar step={3} totalSteps={TOTAL_GOOGLE_STEPS} />}
+                        {isAlternateSignUpScreen && <ProgressBar step={3} totalSteps={TOTAL_ALTERNATE_STEPS} />}
                         <SafeAreaView edges={['top']}>
                             <BackArrow doPress={doBack} />
                         </SafeAreaView>
@@ -148,7 +148,7 @@ export default function UserGender({ navigation }) {
                     </LinearGradient>
                     <BarButton
                         active={!!gender}
-                        value={(isSignUpScreen || isGoogleSignUpScreen) ? 'Done' : 'Save'}
+                        value={(isSignUpScreen || isAlternateSignUpScreen) ? 'Done' : 'Save'}
                         doPress={doSubmit}
                     />
                 </View>
