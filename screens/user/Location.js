@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-community/async-storage';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import {
     Form,
@@ -132,10 +133,10 @@ export default function UserLocation({ navigation }) {
                     distance,
                     alternateAccount: true,
                     email: alternateInfo.email,
-                    password: '$14GoogleSignIn52$',
-                    username: alternateInfo.id,
-                    firstName: alternateInfo.givenName,
-                    lastName: alternateInfo.familyName,
+                    username: alternateInfo.username,
+                    firstName: alternateInfo.firstName,
+                    lastName: alternateInfo.lastName,
+                    ...(alternateInfo.username.includes('GOOGLE') ? {password: '$14GoogleSignIn52$'} : {password: '$14AppleSignIn52$'}),
                 },
             });
         } else {

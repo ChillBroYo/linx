@@ -45,7 +45,7 @@ export default function SignIn({ navigation }) {
         androidStandaloneAppClientId: `483225426792-n9e45j62sviq1t4voter5udrpdfbgnu7.apps.googleusercontent.com`,
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         validAppleSignIn();
     }, []);
 
@@ -145,9 +145,14 @@ export default function SignIn({ navigation }) {
     async function googleSignIn() {
         try {
             const result = await Google.logInAsync(googleLoginConfig);
-            console.log('Google Signin result:', JSON.stringify(result));
             if (result.type === 'success') {
-                checkGoogleAccount(result.user);
+                const user = {
+                    username: result.user.id + '_GOOGLE',
+                    email: result.user.email,
+                    firstName: result.user.givenName,
+                    lastName: result.user.familyName,
+                };
+                checkGoogleAccount(user);
             } else {
                 Alert.alert('Google Signin failed. Please try again');
             }
@@ -160,7 +165,7 @@ export default function SignIn({ navigation }) {
     async function checkGoogleAccount(userInfo) {
         setLoginFailed(false);
         setIsLoading(true);
-        const user = { username: userInfo.id, password: '$14GoogleSignIn52$' };
+        const user = { username: userInfo.username, password: '$14GoogleSignIn52$' };
         const isSignedIn = await doSignInUser(user);
         if (!isSignedIn) {
             setIsLoading(false);
@@ -172,7 +177,7 @@ export default function SignIn({ navigation }) {
                 })
             });
         } else {
-            storeData(userInfo.id, '$14GoogleSignIn52$');
+            storeData(userInfo.username, '$14GoogleSignIn52$');
             setIsLoading(false);
             navigation.navigate('Cards');
         }
@@ -195,10 +200,37 @@ export default function SignIn({ navigation }) {
                 AppleAuthentication.AppleAuthenticationScope.EMAIL,
                 ],
             });
-            console.log('Apple Signin result:', JSON.stringify(result));
+            const user = {
+                username: result.user + '_APPLE',
+                email: result.email,
+                firstName: result.fullName.givenName,
+                lastName: result.fullName.familyName,
+            };
+            checkAppleAccount(user);
         } catch (error) {
             console.warn('Apple Signin error:', error);
             Alert.alert('Apple Signin failed. Please try again');
+        }
+    }
+
+    async function checkAppleAccount(userInfo) {
+        setLoginFailed(false);
+        setIsLoading(true);
+        const user = { username: userInfo.username, password: '$14AppleSignIn52$' };
+        const isSignedIn = await doSignInUser(user);
+        if (!isSignedIn) {
+            setIsLoading(false);
+            navigation.navigate({
+                routeName: 'AlternateAccount',
+                action: NavigationActions.navigate({
+                    routeName: 'AlternateAccountLocation',
+                    params: { data: userInfo }
+                })
+            });
+        } else {
+            storeData(userInfo.username, '$14AppleSignIn52$');
+            setIsLoading(false);
+            navigation.navigate('Cards');
         }
     }
 
