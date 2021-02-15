@@ -42,7 +42,7 @@ export default function Message({ navigation }) {
     } = useUserContext();
     const [flatListScrollY, setFlatListScrollY] = useState(0);
     const [multiplier, setMultiplier] = useState(1);
-    const [messages, setMessages] = useState(null);
+    const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [commonImages, setCommonImages] = useState([]);
     const contact = navigation.getParam('contact');
@@ -164,8 +164,7 @@ export default function Message({ navigation }) {
 
                 <FlatList
                     ref={flatListRef}
-                    inverted
-                    data={messages}
+                    data={messages.slice().sort((a,b) => a.message_id - b.message_id)}
                     extraData={messages}
                     keyExtractor={item => item.message_id.toString()}
                     onEndReachedThreshold={0.8}
@@ -175,6 +174,7 @@ export default function Message({ navigation }) {
                     onScroll={(e) => {
                         setFlatListScrollY(e.nativeEvent.contentOffset.y);
                     }}
+                    ListHeaderComponent={() => <Text>1231312</Text>}
                     renderItem={({ item }) => {
                         const {
                             message,
