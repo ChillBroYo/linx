@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState, useLayoutEffect } from 'react';
 import {
     Alert,
     FlatList,
@@ -31,7 +31,7 @@ import { getImageMessage, getRandomImage } from './helpers';
 
 export default function Message({ navigation }) {
     const isMountedRef = useIsMountedRef();
-    const flatListRef = useRef(null);
+    let flatListRef = useRef();
     const {
         state: {
             token,
@@ -40,14 +40,13 @@ export default function Message({ navigation }) {
         doGetMessages,
         doGetCommonImages,
     } = useUserContext();
-    const [flatListScrollY, setFlatListScrollY] = useState(0);
     const [multiplier, setMultiplier] = useState(1);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [commonImages, setCommonImages] = useState([]);
     const contact = navigation.getParam('contact');
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         getMessages();
         getCommonImages(contact.id);
     }, []);
@@ -79,7 +78,6 @@ export default function Message({ navigation }) {
         if (isMountedRef.current && messages) {
             await setMessages(messages);
         }
-        scrollToBottom();
     }
 
     async function sendMessage() {
@@ -110,11 +108,6 @@ export default function Message({ navigation }) {
 
     async function loadMoreMessages() {
         setMultiplier(multiplier + 1);
-    }
-
-    function scrollToBottom() {
-        if (flatListScrollY != 0) return;
-        flatListRef.current.scrollToIndex({ index: 0 });
     }
 
     async function getCommonImages(oid) {
@@ -164,15 +157,13 @@ export default function Message({ navigation }) {
 
                 <FlatList
                     ref={flatListRef}
-                    data={messages.slice().sort((a,b) => a.message_id - b.message_id)}
+                    data={messages.slice().reverse()}
                     extraData={messages}
                     keyExtractor={item => item.message_id.toString()}
+                    onContentSizeChange={() => flatListRef.current.scrollToEnd({ animated: false })}
                     onEndReachedThreshold={0.8}
                     onEndReached={({ distanceFromEnd }) => {
                         loadMoreMessages();
-                    }}
-                    onScroll={(e) => {
-                        setFlatListScrollY(e.nativeEvent.contentOffset.y);
                     }}
                     ListHeaderComponent={() => <Text>1231312</Text>}
                     renderItem={({ item }) => {
