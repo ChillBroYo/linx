@@ -122,8 +122,18 @@ export default function Message({ navigation }) {
         }
     }
 
-    const imageMessage = getImageMessage();
-    const randImage = commonImages[getRandomImage(commonImages.length)];
+    listIntroduction = () => {
+        return (
+            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                <Text style={{ fontSize: 16, fontStyle: 'italic', textAlign: 'center', color: '#8D99AE', width: 280 }}>
+                    {getImageMessage()}
+                </Text>
+                <View style={{ paddingVertical: 8}}>
+                    <Image source={{ uri: commonImages[getRandomImage(commonImages.length) ]}} style={{ width: 160, height: 160, resize: 'contain' }} />
+                </View>
+            </View>
+        );
+    }
 
     return (
         <KeyboardAvoidingView
@@ -157,15 +167,16 @@ export default function Message({ navigation }) {
 
                 <FlatList
                     ref={flatListRef}
-                    data={messages.slice().reverse()}
+                    inverted
+                    data={messages}
                     extraData={messages}
                     keyExtractor={item => item.message_id.toString()}
-                    onContentSizeChange={() => flatListRef.current.scrollToEnd({ animated: false })}
+                    onContentSizeChange={() => flatListRef.current.scrollToOffset({ animated: false, offset: 0 })}
                     onEndReachedThreshold={0.8}
                     onEndReached={({ distanceFromEnd }) => {
                         loadMoreMessages();
                     }}
-                    ListHeaderComponent={() => <Text>1231312</Text>}
+                    ListFooterComponent={listIntroduction}
                     renderItem={({ item }) => {
                         const {
                             message,
