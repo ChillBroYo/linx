@@ -7,7 +7,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.15",
+    "version": "1.0.17",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "notification": {
@@ -41,7 +41,7 @@
     },
     "android": {
       "package": "com.linx.linx",
-      "versionCode": 11,
+      "versionCode": 13,
       "googleServicesFile": "./google-services.json",
       "config": {
         "googleSignIn": {
