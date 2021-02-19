@@ -43,7 +43,7 @@ export default function Profile({ navigation }) {
     const [isLoading, setIsLoading] = useState(true);
     const [friend, setFriend] = useState(null);
     const [genderIdentifier, setGenderIdentifier] = useState('');
-    const [commonImages, setCommonImages] = useState(null);
+    const [commonImages, setCommonImages] = useState([]);
     const friendId = navigation.getParam('id');
 
     useEffect(() => {

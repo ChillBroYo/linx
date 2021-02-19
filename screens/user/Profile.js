@@ -41,7 +41,7 @@ export default function UserName({ navigation }) {
             firstName: contextFirstName,
             lastName: contextLastName,
             profileImg: contextProfileImg,
-            googleAccount,
+            alternateAccount,
         },
         dispatch,
         doUpdateUser,
@@ -147,7 +147,7 @@ export default function UserName({ navigation }) {
                                 value={firstName}
                                 onChangeText={firstName => setFirstName(firstName)}
                                 clearButtonMode='while-editing'
-                                //editable={!googleAccount ? true : false}
+                                //editable={!alternateAccount ? true : false}
                                 style={formStyles.input}
                             />
                             <TextInput
@@ -156,7 +156,7 @@ export default function UserName({ navigation }) {
                                 value={lastName}
                                 onChangeText={lastName => setLastName(lastName)}
                                 clearButtonMode='while-editing'
-                                //editable={!googleAccount ? true : false}
+                                //editable={!alternateAccount ? true : false}
                                 style={formStyles.input}
                             />
                         </Form>

@@ -19,10 +19,10 @@ import {
     pageStyles,
     ProgressBar,
     TOTAL_STEPS,
-    TOTAL_GOOGLE_STEPS,
+    TOTAL_ALTERNATE_STEPS,
     TopBar,
 } from './common';
-import { isSignUpRoute, isGoogleSignUpRoute } from './helpers';
+import { isSignUpRoute, isAlternateSignUpRoute } from './helpers';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
 import { lightGradient, purple } from '../../constants/Colors';
@@ -30,7 +30,7 @@ import { UserTypes, useUserContext } from '../../contexts/UserContext';
 
 export default function UserBirthday({ navigation }) {
     const isSignUpScreen = isSignUpRoute(navigation);
-    const isGoogleSignUpScreen = isGoogleSignUpRoute(navigation);
+    const isAlternateSignUpScreen = isAlternateSignUpRoute(navigation);
     const {
         state: {
             ageRange: contextAgeRange,
@@ -44,11 +44,11 @@ export default function UserBirthday({ navigation }) {
     const [ageRange, setAgeRange] = useState(contextAgeRange);
 
     useEffect(() => {
-        StatusBar.setBarStyle((isSignUpScreen || isGoogleSignUpScreen) ? 'light-content' : 'dark-content');
+        StatusBar.setBarStyle((isSignUpScreen || isAlternateSignUpScreen) ? 'light-content' : 'dark-content');
     }, []);
 
     async function doBack() {
-        if (isSignUpScreen || isGoogleSignUpScreen) {
+        if (isSignUpScreen || isAlternateSignUpScreen) {
             await doUpdateContext();
         }
         navigation.goBack();
@@ -56,7 +56,7 @@ export default function UserBirthday({ navigation }) {
 
     function doSubmit() {
         if (!validateForm()) return;
-        (isSignUpScreen || isGoogleSignUpScreen) ? doSignUp() : doUpdate();
+        (isSignUpScreen || isAlternateSignUpScreen) ? doSignUp() : doUpdate();
     }
 
     async function doSignUp() {
@@ -64,7 +64,7 @@ export default function UserBirthday({ navigation }) {
         if (isSignUpScreen) {
             navigation.navigate('SignUpGender');
         } else {
-            navigation.navigate('GoogleAccountGender');
+            navigation.navigate('AlternateAccountGender');
         }
     }
 
@@ -116,10 +116,10 @@ export default function UserBirthday({ navigation }) {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={pageStyles.container}>
-                {(isSignUpScreen || isGoogleSignUpScreen) && <TopBar />}
+                {(isSignUpScreen || isAlternateSignUpScreen) && <TopBar />}
                 <LinearGradient colors={lightGradient} style={pageStyles.container}>
                     {isSignUpScreen && <ProgressBar step={4} totalSteps={TOTAL_STEPS} />}
-                    {isGoogleSignUpScreen && <ProgressBar step={2} totalSteps={TOTAL_GOOGLE_STEPS} />}
+                    {isAlternateSignUpScreen && <ProgressBar step={2} totalSteps={TOTAL_ALTERNATE_STEPS} />}
                     <SafeAreaView edges={['top']}>
                         <BackArrow doPress={doBack} />
                     </SafeAreaView>
@@ -156,7 +156,7 @@ export default function UserBirthday({ navigation }) {
                 </LinearGradient>
                 <BarButton
                     active={!!birthday}
-                    value={(isSignUpScreen || isGoogleSignUpScreen) ? 'Continue' : 'Save'}
+                    value={(isSignUpScreen || isAlternateSignUpScreen) ? 'Continue' : 'Save'}
                     doPress={doSubmit}
                 />
             </View>

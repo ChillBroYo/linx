@@ -3,7 +3,7 @@ export function isSignUpRoute(navigation) {
     return routeName.indexOf('SignUp') != -1;
 }
 
-export function isGoogleSignUpRoute(navigation) {
+export function isAlternateSignUpRoute(navigation) {
     const routeName = navigation.state.routeName;
-    return routeName.indexOf('GoogleAccount') != -1;
+    return routeName.indexOf('AlternateAccount') != -1;
 }

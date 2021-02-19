@@ -1,4 +1,5 @@
 import moment from 'moment';
+import seedrandom from 'seedrandom';
 
 const messages = new Map([
 	[0, 'We think you and [NAME] might get along well. Say hi!'],
@@ -8,11 +9,13 @@ const messages = new Map([
 
 const dayOfYear = moment().format('DDD');
 
-export function getMessage() {
+export function getImageMessage() {
 	const result = 3 % (dayOfYear + 2);
 	return messages.get(result) || messages.get('default');
 }
 
 export function getRandomImage(images) {
-	
+	const rand = seedrandom(dayOfYear.toString());
+	const result = Math.floor(rand() * images);
+	return result;
 }

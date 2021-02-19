@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import AsyncStorage from '@react-native-community/async-storage';
 import * as Google from 'expo-google-app-auth';
 import Loader from '../components/Loader';
@@ -35,6 +36,7 @@ export default function SignIn({ navigation }) {
     const [autoLogin, setAutoLogin] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [loginFailed, setLoginFailed] = useState(false);
+    const [allowAppleSignIn, setAllowAppleSignIn] = useState(false)
 
     const googleLoginConfig = {
         iosClientId: `483225426792-0kscgtmo52h67qscnkrjhkmvdvu05hj0.apps.googleusercontent.com`,
@@ -42,6 +44,10 @@ export default function SignIn({ navigation }) {
         iosStandaloneAppClientId: `483225426792-e2qkmrlhk9mqhh6d7ol5rrec8cokf5ht.apps.googleusercontent.com`,
         androidStandaloneAppClientId: `483225426792-n9e45j62sviq1t4voter5udrpdfbgnu7.apps.googleusercontent.com`,
     }
+
+    useLayoutEffect(() => {
+        validAppleSignIn();
+    }, []);
 
     useLayoutEffect(() => {
         // reset sign up state on screen load
@@ -79,10 +85,10 @@ export default function SignIn({ navigation }) {
         if (loginFailed) Alert.alert('Sign in failed. Please try again');
     }, [loginFailed]);
 
-    async function storeData(email, id) {
+    async function storeData(id, constPassword) {
         try {
-            if (email !== undefined && id !== undefined) {
-                await AsyncStorage.multiSet([['@username', email], ['@password', id], ['@signin', 'true']]);
+            if (id !== undefined && constPassword !== undefined) {
+                await AsyncStorage.multiSet([['@username', id], ['@password', constPassword], ['@signin', 'true']]);
             } else {
                 await AsyncStorage.multiSet([['@username', username], ['@password', password], ['@signin', 'true']]);
             }
@@ -140,7 +146,13 @@ export default function SignIn({ navigation }) {
         try {
             const result = await Google.logInAsync(googleLoginConfig);
             if (result.type === 'success') {
-                checkGoogleAccount(result.user);
+                const user = {
+                    username: result.user.id + '_GOOGLE',
+                    email: result.user.email,
+                    firstName: result.user.givenName,
+                    lastName: result.user.familyName,
+                };
+                checkGoogleAccount(user);
             } else {
                 Alert.alert('Google Signin failed. Please try again');
             }
@@ -153,19 +165,70 @@ export default function SignIn({ navigation }) {
     async function checkGoogleAccount(userInfo) {
         setLoginFailed(false);
         setIsLoading(true);
-        const user = { username: userInfo.email, password: userInfo.id };
+        const user = { username: userInfo.username, password: '$14GoogleSignIn52$' };
         const isSignedIn = await doSignInUser(user);
         if (!isSignedIn) {
             setIsLoading(false);
             navigation.navigate({
-                routeName: 'GoogleAccount',
+                routeName: 'AlternateAccount',
                 action: NavigationActions.navigate({
-                    routeName: 'GoogleAccountLocation',
+                    routeName: 'AlternateAccountLocation',
                     params: { data: userInfo }
                 })
             });
         } else {
-            storeData(userInfo.email, userInfo.id);
+            storeData(userInfo.username, '$14GoogleSignIn52$');
+            setIsLoading(false);
+            navigation.navigate('Cards');
+        }
+    }
+
+    async function validAppleSignIn() {
+        try {
+            const result = await AppleAuthentication.isAvailableAsync();
+            setAllowAppleSignIn(result);
+        } catch (error) {
+            console.warn('Validate Apple Signin functionality:', error);
+        }
+    }
+
+    async function appleSignIn() {
+        try {
+            const result = await AppleAuthentication.signInAsync({
+                requestedScopes: [
+                AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                ],
+            });
+            const user = {
+                username: result.user + '_APPLE',
+                email: result.email,
+                firstName: result.fullName.givenName,
+                lastName: result.fullName.familyName,
+            };
+            checkAppleAccount(user);
+        } catch (error) {
+            console.warn('Apple Signin error:', error);
+            Alert.alert('Apple Signin failed. Please try again');
+        }
+    }
+
+    async function checkAppleAccount(userInfo) {
+        setLoginFailed(false);
+        setIsLoading(true);
+        const user = { username: userInfo.username, password: '$14AppleSignIn52$' };
+        const isSignedIn = await doSignInUser(user);
+        if (!isSignedIn) {
+            setIsLoading(false);
+            navigation.navigate({
+                routeName: 'AlternateAccount',
+                action: NavigationActions.navigate({
+                    routeName: 'AlternateAccountLocation',
+                    params: { data: userInfo }
+                })
+            });
+        } else {
+            storeData(userInfo.username, '$14AppleSignIn52$');
             setIsLoading(false);
             navigation.navigate('Cards');
         }
@@ -217,6 +280,15 @@ export default function SignIn({ navigation }) {
                             <TouchableOpacity activeOpacity={0.8} onPress={googleSignIn}>
                                 <Image source={GOOGLE_SIGNIN} style={styles.googleSignIn} />
                             </TouchableOpacity>
+                            {allowAppleSignIn &&
+                                <AppleAuthentication.AppleAuthenticationButton
+                                    buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+                                    buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                                    cornerRadius={0}
+                                    style={styles.appleSignIn}
+                                    onPress={appleSignIn}
+                                />
+                            }
                             <TouchableOpacity activeOpacity={0.8} onPress={onSignUp}>
                                 <View style={{...styles.button, ...styles.buttonTransparent}}>
                                     <Text style={{...styles.buttonText, color: green}}>Sign up</Text>
@@ -241,6 +313,11 @@ const LINX_LOGO = require('../assets/images/linx_logo.png');
 const GOOGLE_SIGNIN = require('../assets/images/google_signin.png');
 
 const styles = StyleSheet.create({
+    appleSignIn:{
+        marginTop: 10,
+        height: 41,
+        width: 164,
+    },
     background: {
         flex: 1,
         resizeMode: 'cover',
@@ -248,7 +325,7 @@ const styles = StyleSheet.create({
     button: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 10,
+        borderRadius: 0,
         height: 41,
         width: 164,
     },

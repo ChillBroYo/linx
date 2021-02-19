@@ -40,7 +40,7 @@ export default function Settings({ navigation }) {
             ageRange,
             gender,
             sameGender,
-            googleAccount,
+            alternateAccount,
         },
         doLogoutUser,
     } = useUserContext();
@@ -120,7 +120,7 @@ export default function Settings({ navigation }) {
 
     async function removeStoredData() {
         try {
-            if (!googleAccount) {
+            if (!alternateAccount) {
                 await AsyncStorage.multiRemove(['@password', '@signin']);
             } else {
                 await AsyncStorage.multiRemove(['@username', '@password', '@signin']);
@@ -179,7 +179,7 @@ export default function Settings({ navigation }) {
                             </View>
                         </TouchableOpacity>
                         <View style={styles.divider} />
-                        {!googleAccount &&
+                        {!alternateAccount &&
                             <>
                                 <TouchableOpacity onPress={doEmail}>
                                     <View style={styles.row}>

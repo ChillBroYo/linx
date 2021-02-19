@@ -27,6 +27,7 @@ import {
 import { useUserContext } from '../../contexts/UserContext';
 import getApiEndpoint from '../../helpers/apiEndpoint';
 import { useInterval, useIsMountedRef } from '../../helpers/hooks';
+import { getImageMessage, getRandomImage } from './helpers';
 
 export default function Message({ navigation }) {
     const isMountedRef = useIsMountedRef();
@@ -37,15 +38,18 @@ export default function Message({ navigation }) {
             userId,
         },
         doGetMessages,
+        doGetCommonImages,
     } = useUserContext();
     const [flatListScrollY, setFlatListScrollY] = useState(0);
     const [multiplier, setMultiplier] = useState(1);
     const [messages, setMessages] = useState(null);
     const [newMessage, setNewMessage] = useState('');
+    const [commonImages, setCommonImages] = useState([]);
     const contact = navigation.getParam('contact');
 
     useEffect(() => {
         getMessages();
+        getCommonImages(contact.id);
     }, []);
 
     useInterval(getMessages, 1000);
@@ -112,6 +116,21 @@ export default function Message({ navigation }) {
         if (flatListScrollY != 0) return;
         flatListRef.current.scrollToIndex({ index: 0 });
     }
+
+    async function getCommonImages(oid) {
+        const queryParams = {
+            token,
+            user_id: userId,
+            oid,
+        };
+        const images_urls = await doGetCommonImages(queryParams);
+        if (isMountedRef.current && images_urls) {
+            await setCommonImages(images_urls);
+        }
+    }
+
+    const imageMessage = getImageMessage();
+    const randImage = commonImages[getRandomImage(commonImages.length)];
 
     return (
         <KeyboardAvoidingView
