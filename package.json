@@ -20,7 +20,7 @@
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/picker": "1.6.0",
     "@react-navigation/web": "^1.0.0-alpha.9",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "expo": "^38.0.0",
     "expo-app-auth": "~9.1.1",
     "expo-asset": "~8.1.7",
