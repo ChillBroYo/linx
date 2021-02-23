@@ -171,7 +171,7 @@ export default function Message({ navigation }) {
                     data={messages}
                     extraData={messages}
                     keyExtractor={item => item.message_id.toString()}
-                    onContentSizeChange={() => flatListRef.current.scrollToOffset({ animated: false, offset: 0 })}
+                    onContentSizeChange={() => flatListRef.current.scrollToOffset({ animated: true, offset: 0 })}
                     onEndReachedThreshold={0.8}
                     onEndReached={({ distanceFromEnd }) => {
                         loadMoreMessages();
