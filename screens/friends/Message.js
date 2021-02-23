@@ -129,7 +129,7 @@ export default function Message({ navigation }) {
                     {getImageMessage()}
                 </Text>
                 <View style={{ paddingVertical: 8}}>
-                    <Image source={{ uri: commonImages[getRandomImage(commonImages.length) ]}} style={{ width: 160, height: 160, resize: 'contain' }} />
+                    <Image source={{ uri: commonImages[getRandomImage(commonImages.length) ]}} style={{ width: 160, height: 160, resizeMode: 'contain' }} />
                 </View>
             </View>
         );

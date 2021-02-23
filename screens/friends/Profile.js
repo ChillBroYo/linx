@@ -91,7 +91,7 @@ export default function Profile({ navigation }) {
     }
 
     function getAge() {
-        return moment(friend?.info?.birthday).fromNow(true);
+        return moment(friend?.info?.birthday, "MM-DD-YYYY").fromNow(true);
     }
 
     function getInitials() {

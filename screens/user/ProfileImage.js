@@ -6,6 +6,7 @@ import { lightGradient } from '../../constants/Colors';
 import Loader from '../../components/Loader';
 import { Camera } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useUserContext } from '../../contexts/UserContext';
 import * as ImagePicker from 'expo-image-picker';
 import { popup2 } from '../helpers';
@@ -60,7 +61,7 @@ export default function UserProfileImage({ navigation }) {
     }
 
     async function selectImage() {
-        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
             Alert.alert(popup2.title, popup2.message,
                 [
@@ -96,7 +97,7 @@ export default function UserProfileImage({ navigation }) {
             <View style={globalStyles.cameraContainer}>
                 <View style={globalStyles.navigationButtonContainer}>
                     <TouchableOpacity style={globalStyles.backButtonContainer} onPress={() => navigation.goBack()}>
-                        <Ionicons name="ios-arrow-back" style={globalStyles.backButton} />
+                        <MaterialIcons name="arrow-back-ios" style={globalStyles.backButton} />
                     </TouchableOpacity>
                 </View>
                 <Camera style={globalStyles.camera} type={type} ref={camera} />
@@ -116,7 +117,7 @@ export default function UserProfileImage({ navigation }) {
                             )
                         }}
                     >
-                        <Ionicons name="ios-reverse-camera" style={globalStyles.flipCamera} />
+                        <Ionicons name="ios-camera-reverse" style={globalStyles.flipCamera} />
                     </TouchableOpacity>
                 </View>
             </View>

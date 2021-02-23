@@ -3,7 +3,7 @@ import {
     StyleSheet,
     TouchableWithoutFeedback,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { black } from '../constants/Colors';
 import { wp, hp, stdHeight } from '../styles/helpers';
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -11,8 +11,8 @@ import { RFValue } from 'react-native-responsive-fontsize';
 export default function BackArrow({ doPress }) {
     return (
         <TouchableWithoutFeedback onPress={doPress}>
-            <Ionicons
-                name="ios-arrow-back"
+            <MaterialIcons
+                name="arrow-back-ios"
                 style={style.backArrow}
             />
         </TouchableWithoutFeedback>

@@ -12,7 +12,7 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient} from 'expo-linear-gradient';
 import TermsConditions from '../components/TermsConditions';
 import {
@@ -142,7 +142,7 @@ export default function Settings({ navigation }) {
                                 <View style={styles.column}>
                                     <Text style={styles.settingHeader}>Profile</Text>
                                 </View>
-                                <Ionicons name="ios-arrow-forward" size={20} />
+                                <MaterialIcons name="arrow-forward-ios" size={20} />
                             </View>
                         </TouchableOpacity>
                         <View style={styles.divider} />
@@ -153,7 +153,7 @@ export default function Settings({ navigation }) {
                                     <Text>{city}, {state} {zip}</Text>
                                     <Text>Max distance: {distance} miles</Text>
                                 </View>
-                                <Ionicons name="ios-arrow-forward" size={20} />
+                                <MaterialIcons name="arrow-forward-ios" size={20} />
                             </View>
                         </TouchableOpacity>
                         <View style={styles.divider} />
@@ -164,7 +164,7 @@ export default function Settings({ navigation }) {
                                     <Text>{birthday}</Text>
                                     <Text>Age range:  {ageRange.join('-')} years old</Text>
                                 </View>
-                                <Ionicons name="ios-arrow-forward" size={20} />
+                                <MaterialIcons name="arrow-forward-ios" size={20} />
                             </View>
                         </TouchableOpacity>
                         <View style={styles.divider} />
@@ -175,7 +175,7 @@ export default function Settings({ navigation }) {
                                     <Text style={styles.settingsText}>{gender}</Text>
                                     <Text>Connect with {sameGender ? 'people like me' : 'everyone'}</Text>
                                 </View>
-                                <Ionicons name="ios-arrow-forward" size={20} />
+                                <MaterialIcons name="arrow-forward-ios" size={20} />
                             </View>
                         </TouchableOpacity>
                         <View style={styles.divider} />
@@ -187,7 +187,7 @@ export default function Settings({ navigation }) {
                                             <Text style={styles.settingHeader}>Account email</Text>
                                             <Text>{email}</Text>
                                         </View>
-                                        <Ionicons name="ios-arrow-forward" size={20} />
+                                        <MaterialIcons name="arrow-forward-ios" size={20} />
                                     </View>
                                 </TouchableOpacity>
                                 <View style={styles.divider} />
@@ -196,7 +196,7 @@ export default function Settings({ navigation }) {
                                         <View style={styles.column}>
                                             <Text style={styles.settingHeader}>Change password</Text>
                                         </View>
-                                        <Ionicons name="ios-arrow-forward" size={20} />
+                                        <MaterialIcons name="arrow-forward-ios" size={20} />
                                     </View>
                                 </TouchableOpacity>
                                 <View style={styles.divider} />

@@ -37,7 +37,7 @@ export default function TabBarIcon({ focused, name }) {
                     )}
                     style={styles.icon}
                 />}*/
-                <MaterialCommunityIcons name='settings-outline' size={RFValue(40, stdHeight)} color={focused ? '#439E73' : '#8D99AE'} />
+                <MaterialCommunityIcons name='cog-outline' size={RFValue(40, stdHeight)} color={focused ? '#439E73' : '#8D99AE'} />
             );
         default:
             return null;
