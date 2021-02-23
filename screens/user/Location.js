@@ -136,7 +136,7 @@ export default function UserLocation({ navigation }) {
                     username: alternateInfo.username,
                     firstName: alternateInfo.firstName,
                     lastName: alternateInfo.lastName,
-                    ...(alternateInfo.username.includes('GOOGLE') ? {password: '$14GoogleSignIn52$'} : {password: '$14AppleSignIn52$'}),
+                    password: alternateInfo.password
                 },
             });
         } else {

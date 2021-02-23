@@ -151,35 +151,15 @@ export default function SignIn({ navigation }) {
                     email: result.user.email,
                     firstName: result.user.givenName,
                     lastName: result.user.familyName,
+                    password: '$14GoogleSignIn52$'
                 };
-                checkGoogleAccount(user);
+                checkAlternateAccount(user);
             } else {
                 Alert.alert('Google Signin failed. Please try again');
             }
         } catch (error) {
             console.warn('Google Signin error:', error);
             Alert.alert('Google Signin failed. Please try again');
-        }
-    }
-
-    async function checkGoogleAccount(userInfo) {
-        setLoginFailed(false);
-        setIsLoading(true);
-        const user = { username: userInfo.username, password: '$14GoogleSignIn52$' };
-        const isSignedIn = await doSignInUser(user);
-        if (!isSignedIn) {
-            setIsLoading(false);
-            navigation.navigate({
-                routeName: 'AlternateAccount',
-                action: NavigationActions.navigate({
-                    routeName: 'AlternateAccountLocation',
-                    params: { data: userInfo }
-                })
-            });
-        } else {
-            storeData(userInfo.username, '$14GoogleSignIn52$');
-            setIsLoading(false);
-            navigation.navigate('Cards');
         }
     }
 
@@ -205,18 +185,19 @@ export default function SignIn({ navigation }) {
                 email: result.email,
                 firstName: result.fullName.givenName,
                 lastName: result.fullName.familyName,
+                password: '$14AppleSignIn52$'
             };
-            checkAppleAccount(user);
+            checkAlternateAccount(user);
         } catch (error) {
             console.warn('Apple Signin error:', error);
             Alert.alert('Apple Signin failed. Please try again');
         }
     }
 
-    async function checkAppleAccount(userInfo) {
+    async function checkAlternateAccount(userInfo) {
         setLoginFailed(false);
         setIsLoading(true);
-        const user = { username: userInfo.username, password: '$14AppleSignIn52$' };
+        const user = { username: userInfo.username, password: userInfo.password };
         const isSignedIn = await doSignInUser(user);
         if (!isSignedIn) {
             setIsLoading(false);
@@ -228,7 +209,7 @@ export default function SignIn({ navigation }) {
                 })
             });
         } else {
-            storeData(userInfo.username, '$14AppleSignIn52$');
+            storeData(userInfo.username, userInfo.password);
             setIsLoading(false);
             navigation.navigate('Cards');
         }

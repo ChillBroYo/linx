@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState, useLayoutEffect } from 'react';
 import {
     Alert,
     FlatList,
@@ -31,7 +31,7 @@ import { getImageMessage, getRandomImage } from './helpers';
 
 export default function Message({ navigation }) {
     const isMountedRef = useIsMountedRef();
-    const flatListRef = useRef(null);
+    let flatListRef = useRef();
     const {
         state: {
             token,
@@ -40,14 +40,13 @@ export default function Message({ navigation }) {
         doGetMessages,
         doGetCommonImages,
     } = useUserContext();
-    const [flatListScrollY, setFlatListScrollY] = useState(0);
     const [multiplier, setMultiplier] = useState(1);
-    const [messages, setMessages] = useState(null);
+    const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [commonImages, setCommonImages] = useState([]);
     const contact = navigation.getParam('contact');
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         getMessages();
         getCommonImages(contact.id);
     }, []);
@@ -79,7 +78,6 @@ export default function Message({ navigation }) {
         if (isMountedRef.current && messages) {
             await setMessages(messages);
         }
-        scrollToBottom();
     }
 
     async function sendMessage() {
@@ -112,11 +110,6 @@ export default function Message({ navigation }) {
         setMultiplier(multiplier + 1);
     }
 
-    function scrollToBottom() {
-        if (flatListScrollY != 0) return;
-        flatListRef.current.scrollToIndex({ index: 0 });
-    }
-
     async function getCommonImages(oid) {
         const queryParams = {
             token,
@@ -129,8 +122,18 @@ export default function Message({ navigation }) {
         }
     }
 
-    const imageMessage = getImageMessage();
-    const randImage = commonImages[getRandomImage(commonImages.length)];
+    listIntroduction = () => {
+        return (
+            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                <Text style={{ fontSize: 16, fontStyle: 'italic', textAlign: 'center', color: '#8D99AE', width: 280 }}>
+                    {getImageMessage()}
+                </Text>
+                <View style={{ paddingVertical: 8}}>
+                    <Image source={{ uri: commonImages[getRandomImage(commonImages.length) ]}} style={{ width: 160, height: 160, resize: 'contain' }} />
+                </View>
+            </View>
+        );
+    }
 
     return (
         <KeyboardAvoidingView
@@ -168,13 +171,12 @@ export default function Message({ navigation }) {
                     data={messages}
                     extraData={messages}
                     keyExtractor={item => item.message_id.toString()}
+                    onContentSizeChange={() => flatListRef.current.scrollToOffset({ animated: true, offset: 0 })}
                     onEndReachedThreshold={0.8}
                     onEndReached={({ distanceFromEnd }) => {
                         loadMoreMessages();
                     }}
-                    onScroll={(e) => {
-                        setFlatListScrollY(e.nativeEvent.contentOffset.y);
-                    }}
+                    ListFooterComponent={listIntroduction}
                     renderItem={({ item }) => {
                         const {
                             message,
