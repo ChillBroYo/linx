@@ -41,7 +41,7 @@
     },
     "android": {
       "package": "com.linx.linx",
-      "versionCode": 14,
+      "versionCode": 15,
       "googleServicesFile": "./google-services.json",
       "config": {
         "googleSignIn": {
