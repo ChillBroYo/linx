@@ -1,5 +1,5 @@
 import { Alert, Platform } from 'react-native';
-import { Notifications } from 'expo';
+import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 
@@ -26,11 +26,10 @@ export async function registerForPushNotificationsAsync(callback) {
     }
 
     if (Platform.OS === 'android') {
-        Notifications.createChannelAndroidAsync('default', {
+        Notifications.setNotificationChannelAsync('default', {
             name: 'default',
-            sound: true,
-            priority: 'max',
-            vibrate: [0, 250, 250, 250],
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
         });
     }
 }
@@ -39,12 +38,18 @@ export async function registerForPushNotificationsAsync(callback) {
 // call .remove() on return value to remove listener
 // listener is passed the notification object
 // listener function: (notification) => { do something... }
-export function addNotificationListener(listener) {
-    return Notifications.addListener(listener);
+export function addNotificationListenerBackground(listener) {
+    console.log('background called');
+    return Notifications.addNotificationResponseReceivedListener(listener);
+}
+
+export function addNotificationListenerForeground(listener) {
+    console.log('foreground called');
+    return Notifications.addNotificationReceivedListener(listener);
 }
 
 // https://docs.expo.io/versions/v35.0.0/sdk/notifications/#localnotification
 export function presentLocalNotification(localNotification) {
-    Notifications.presentLocalNotificationAsync(localNotification);
+    Notifications.scheduleNotificationAsync(localNotification);
 }
 

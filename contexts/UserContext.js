@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer, useState } from 'react';
 import { Alert } from 'react-native';
-import { Notifications } from 'expo';
+import * as Notifications from 'expo-notifications';
 import axios from 'axios';
 import moment from 'moment';
 import getApiEndpoint from '../helpers/apiEndpoint';
