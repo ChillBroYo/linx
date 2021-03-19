@@ -1,21 +1,20 @@
 import { Alert, Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import * as Permissions from 'expo-permissions';
 
 // expoPushToken will be passed to callback
 export async function registerForPushNotificationsAsync(callback) {
     if (Constants.isDevice) {
-        const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
         if (existingStatus !== 'granted') {
-            const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+            const { status } = await Notifications.requestPermissionsAsync();
             finalStatus = status;
         }
         if (finalStatus !== 'granted') {
             return Alert.alert('Failed to get push token for push notifications');
         }
-        const expoPushToken = await Notifications.getExpoPushTokenAsync();
+        const expoPushToken = (await Notifications.getExpoPushTokenAsync()).data;
         console.log({ expoPushToken });
         if (callback) {
             callback(expoPushToken);
@@ -29,7 +28,10 @@ export async function registerForPushNotificationsAsync(callback) {
         Notifications.setNotificationChannelAsync('default', {
             name: 'default',
             importance: Notifications.AndroidImportance.MAX,
+            lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+            showBadge: true,
             vibrationPattern: [0, 250, 250, 250],
+            enableVibrate: true
         });
     }
 }
@@ -46,6 +48,17 @@ export function addNotificationListenerBackground(listener) {
 export function addNotificationListenerForeground(listener) {
     console.log('foreground called');
     return Notifications.addNotificationReceivedListener(listener);
+}
+
+export function displayNotificationForeground() {
+    return Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: true,
+            shouldSetBadge: true,
+            priority: Notifications.AndroidNotificationPriority.MAX
+        }),
+    });
 }
 
 // https://docs.expo.io/versions/v35.0.0/sdk/notifications/#localnotification

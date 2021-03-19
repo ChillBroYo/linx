@@ -719,7 +719,7 @@ export function UserProvider({ children }) {
         // force update push token on every sign in
         // push token is unique every time the app is installed on a device
         const user = res;
-        info.expoPushToken = await Notifications.getExpoPushTokenAsync();
+        info.expoPushToken = (await Notifications.getExpoPushTokenAsync()).data;
         user.info = JSON.stringify(info);
         user.user_id = user.uid;
         delete user.uid;

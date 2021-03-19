@@ -22,8 +22,11 @@ import { green, white } from '../constants/Colors';
 import {
     addNotificationListenerBackground,
     addNotificationListenerForeground,
+    displayNotificationForeground,
     registerForPushNotificationsAsync
 } from '../helpers/notifications';
+
+displayNotificationForeground();
 
 export default function SignIn({ navigation }) {
     const insets = useSafeAreaInsets();
