@@ -73,9 +73,7 @@ export default function SignIn({ navigation }) {
         }
 
         const notificationLogListenerBackground = addNotificationListenerBackground(handleNotification);
-        console.log('background', notificationLogListenerBackground);
         const notificationLogListenerForeground = addNotificationListenerForeground(handleNotification);
-        console.log('foreground', notificationLogListenerForeground);
 
         return () => {
             notificationLogListenerBackground.remove();

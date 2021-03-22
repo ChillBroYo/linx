@@ -1,6 +1,5 @@
-	import React from 'react';
+import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-
 import MainTabNavigator from './MainTabNavigator';
 import ResetPassword from '../screens/ResetPassword';
 import SignIn from '../screens/SignInScreen';

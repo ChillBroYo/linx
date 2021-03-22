@@ -41,12 +41,10 @@ export async function registerForPushNotificationsAsync(callback) {
 // listener is passed the notification object
 // listener function: (notification) => { do something... }
 export function addNotificationListenerBackground(listener) {
-    console.log('background called');
     return Notifications.addNotificationResponseReceivedListener(listener);
 }
 
 export function addNotificationListenerForeground(listener) {
-    console.log('foreground called');
     return Notifications.addNotificationReceivedListener(listener);
 }
 

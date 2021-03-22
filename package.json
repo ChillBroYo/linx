@@ -33,6 +33,7 @@
     "expo-image-picker": "~9.2.0",
     "expo-linear-gradient": "~8.4.0",
     "expo-linking": "~2.0.1",
+    "expo-notifications": "~0.8.2",
     "expo-permissions": "~10.0.0",
     "expo-sharing": "~8.5.0",
     "expo-web-browser": "~8.6.0",
@@ -62,12 +63,12 @@
     "react-native-screens": "~2.15.2",
     "react-native-text-input-mask": "^1.0.6",
     "react-native-web": "~0.13.12",
-    "react-navigation": "^3.13.0",
-    "react-navigation-stack": "^2.5.1",
+    "react-navigation": "^4.4.4",
+    "react-navigation-stack": "^1.10.3",
+    "react-navigation-tabs": "^1.2.0",
     "react-text-mask": "^5.4.3",
     "rollup": "^1.27.2",
-    "seedrandom": "^3.0.5",
-    "expo-notifications": "~0.8.2"
+    "seedrandom": "^3.0.5"
   },
   "devDependencies": {
     "babel-preset-expo": "8.3.0",

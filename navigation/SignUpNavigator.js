@@ -1,4 +1,4 @@
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import SignUpBirthday from '../screens/user/Birthday';
 import SignUpCredentials from '../screens/user/Credentials';
 import SignUpGender from '../screens/user/Gender';

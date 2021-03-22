@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import HomeScreen from '../screens/newHomeScreen';
 import CardsStack from './CardsNavigator';
 import FriendsStack from './FriendsNavigator';
