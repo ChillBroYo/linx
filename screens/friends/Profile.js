@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
     Alert,
+    FlatList,
     Image,
     ScrollView,
     StyleSheet,
@@ -10,16 +11,12 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import axios from 'axios';
-import qs from 'query-string';
 import moment from 'moment';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import BackArrow from '../../components/BackArrow';
 import BarButton from '../../components/BarButton';
-import Loader from '../../components/Loader';
 import {
-    black,
-    green,
     grey,
     lightGradient,
     purple,
@@ -27,11 +24,12 @@ import {
 } from '../../constants/Colors';
 import { useUserContext } from '../../contexts/UserContext';
 import getApiEndpoint from '../../helpers/apiEndpoint';
-import { useInterval, useIsMountedRef } from '../../helpers/hooks';
+import { useIsMountedRef } from '../../helpers/hooks';
 
 export default function Profile({ navigation }) {
     const insets = useSafeAreaInsets();
     const isMountedRef = useIsMountedRef();
+    let flatListRef = useRef();
     const {
         state: {
             token,
@@ -206,13 +204,15 @@ export default function Profile({ navigation }) {
                             <Text style={styles.sectionHeader}>
                                 You both liked
                             </Text>
-                            <ScrollView horizontal contentContainerStyle={{ marginVertical: 10 }}>
-                                {commonImages == null ? null
-                                    : commonImages.map((url, index) => {
-                                        return(<Image source={{ uri: url }} style={styles.imageWrapper} />)
-                                    })
-                                }
-                            </ScrollView>
+                            <FlatList
+                                ref={flatListRef}
+                                horizontal={true}
+                                data={commonImages}
+                                keyExtractor={item => item.toString()}
+                                renderItem={({ item }) => {
+                                    return(<Image source={{ uri: item }} style={styles.imageWrapper} />);
+                                }}
+                            />
                         </View>
                     </View>
                 </ScrollView>
