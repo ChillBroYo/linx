@@ -7,7 +7,7 @@ import TabBarIcon from '../components/TabBarIcon';
 
 const FriendsStack = createStackNavigator(
     {
-        FriendsHome,
+        FriendsHome: { screen: FriendsHome, path: 'home' },
         FriendsMessage,
         FriendsProfile,
     },

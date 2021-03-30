@@ -1,4 +1,5 @@
 import { Alert, Platform } from 'react-native';
+import * as Linking from 'expo-linking';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
@@ -36,16 +37,18 @@ export async function registerForPushNotificationsAsync(callback) {
     }
 }
 
-// listeners are not called when when present local notifications
-// call .remove() on return value to remove listener
-// listener is passed the notification object
-// listener function: (notification) => { do something... }
-export function addNotificationListenerBackground(listener) {
-    return Notifications.addNotificationResponseReceivedListener(listener);
+export function addNotificationListenerBackground() {
+    return Notifications.addNotificationResponseReceivedListener((response) => {
+        //Linking.openURL('exp://192.168.254.36:19000/--/main/friends/chat');
+        console.log('resonse', response);
+        Linking.openURL('https://www.google.com/');
+    });
 }
 
-export function addNotificationListenerForeground(listener) {
-    return Notifications.addNotificationReceivedListener(listener);
+export function addNotificationListenerForeground() {
+    return Notifications.addNotificationReceivedListener((notification) => {
+        console.log(notification);
+    });
 }
 
 export function displayNotificationForeground() {
@@ -59,8 +62,10 @@ export function displayNotificationForeground() {
     });
 }
 
-// https://docs.expo.io/versions/v35.0.0/sdk/notifications/#localnotification
-export function presentLocalNotification(localNotification) {
-    Notifications.scheduleNotificationAsync(localNotification);
+export async function presentNotification(notification) {
+    await Notifications.scheduleNotificationAsync(notification);
 }
 
+export function removeNotificationListener(listener) {
+    Notifications.removeNotificationSubscription(listener);
+}

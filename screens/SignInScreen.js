@@ -23,7 +23,8 @@ import {
     addNotificationListenerBackground,
     addNotificationListenerForeground,
     displayNotificationForeground,
-    registerForPushNotificationsAsync
+    registerForPushNotificationsAsync,
+    removeNotificationListener
 } from '../helpers/notifications';
 
 displayNotificationForeground();
@@ -72,12 +73,12 @@ export default function SignIn({ navigation }) {
             console.log('New notification:', { notification });
         }
 
-        const notificationLogListenerBackground = addNotificationListenerBackground(handleNotification);
-        const notificationLogListenerForeground = addNotificationListenerForeground(handleNotification);
+        const notificationLogListenerBackground = addNotificationListenerBackground();
+        const notificationLogListenerForeground = addNotificationListenerForeground();
 
         return () => {
-            notificationLogListenerBackground.remove();
-            notificationLogListenerForeground.remove();
+            removeNotificationListener(notificationLogListenerBackground);
+            removeNotificationListener(notificationLogListenerForeground);
         };
     }, []);
 

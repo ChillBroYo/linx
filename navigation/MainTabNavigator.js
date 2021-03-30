@@ -9,7 +9,7 @@ import { hp } from '../styles/helpers';
 
 // BOTTOM TAB
 const BottomTabRouteConfig = {
-    Friends: FriendsStack,
+    Friends: { screen: FriendsStack, path: 'friends' },
     Cards: CardsStack,
     Settings: SettingsStack,
 };

@@ -53,6 +53,7 @@
         "CAMERA"
       ]
     },
-    "description": ""
+    "description": "",
+    "scheme": "linx"
   }
 }

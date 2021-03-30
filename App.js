@@ -1,6 +1,7 @@
 import AppLoading from 'expo-app-loading';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
+import * as Linking from 'expo-linking';
 import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,6 +12,7 @@ import { UserProvider } from './contexts/UserContext';
 
 export default function App(props) {
     const [isLoadingComplete, setLoadingComplete] = useState(false);
+    const prefix = Linking.createURL('/');
 
     if (!isLoadingComplete && !props.skipLoadingScreen) {
         return (
@@ -28,7 +30,7 @@ export default function App(props) {
                 <UserProvider>
                     <View style={styles.container}>
                         <StatusBar barStyle="light-content" />
-                        <AppNavigator />
+                        <AppNavigator uriPrefix={prefix} />
                     </View>
                 </UserProvider>
             </SafeAreaProvider>
