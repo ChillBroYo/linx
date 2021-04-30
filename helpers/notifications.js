@@ -39,9 +39,9 @@ export async function registerForPushNotificationsAsync(callback) {
 
 export function addNotificationListenerBackground() {
     return Notifications.addNotificationResponseReceivedListener((response) => {
-        //Linking.openURL('exp://192.168.254.36:19000/--/main/friends/chat');
         console.log('resonse', response);
-        Linking.openURL('https://www.google.com/');
+        //Linking.openURL('exp://192.168.254.36:19000/--/main/friends/chat');
+        //Linking.openURL('https://www.google.com/');
     });
 }
 
