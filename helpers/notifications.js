@@ -1,21 +1,21 @@
 import { Alert, Platform } from 'react-native';
-import { Notifications } from 'expo';
+import * as Linking from 'expo-linking';
+import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import * as Permissions from 'expo-permissions';
 
 // expoPushToken will be passed to callback
 export async function registerForPushNotificationsAsync(callback) {
     if (Constants.isDevice) {
-        const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
         if (existingStatus !== 'granted') {
-            const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+            const { status } = await Notifications.requestPermissionsAsync();
             finalStatus = status;
         }
         if (finalStatus !== 'granted') {
             return Alert.alert('Failed to get push token for push notifications');
         }
-        const expoPushToken = await Notifications.getExpoPushTokenAsync();
+        const expoPushToken = (await Notifications.getExpoPushTokenAsync()).data;
         console.log({ expoPushToken });
         if (callback) {
             callback(expoPushToken);
@@ -26,25 +26,46 @@ export async function registerForPushNotificationsAsync(callback) {
     }
 
     if (Platform.OS === 'android') {
-        Notifications.createChannelAndroidAsync('default', {
+        Notifications.setNotificationChannelAsync('default', {
             name: 'default',
-            sound: true,
-            priority: 'max',
-            vibrate: [0, 250, 250, 250],
+            importance: Notifications.AndroidImportance.MAX,
+            lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+            showBadge: true,
+            vibrationPattern: [0, 250, 250, 250],
+            enableVibrate: true
         });
     }
 }
 
-// listeners are not called when when present local notifications
-// call .remove() on return value to remove listener
-// listener is passed the notification object
-// listener function: (notification) => { do something... }
-export function addNotificationListener(listener) {
-    return Notifications.addListener(listener);
+export function addNotificationListenerBackground() {
+    return Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log('resonse', response);
+        //Linking.openURL('exp://192.168.254.36:19000/--/main/friends/chat');
+        //Linking.openURL('linx/:main/friends/chat');
+    });
 }
 
-// https://docs.expo.io/versions/v35.0.0/sdk/notifications/#localnotification
-export function presentLocalNotification(localNotification) {
-    Notifications.presentLocalNotificationAsync(localNotification);
+export function addNotificationListenerForeground() {
+    return Notifications.addNotificationReceivedListener((notification) => {
+        console.log(notification);
+    });
 }
 
+export function displayNotificationForeground() {
+    return Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: true,
+            shouldSetBadge: true,
+            priority: Notifications.AndroidNotificationPriority.MAX
+        }),
+    });
+}
+
+export async function presentNotification(notification) {
+    await Notifications.scheduleNotificationAsync(notification);
+}
+
+export function removeNotificationListener(listener) {
+    Notifications.removeNotificationSubscription(listener);
+}

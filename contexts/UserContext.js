@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer, useState } from 'react';
 import { Alert } from 'react-native';
-import { Notifications } from 'expo';
+import * as Notifications from 'expo-notifications';
 import axios from 'axios';
 import moment from 'moment';
 import getApiEndpoint from '../helpers/apiEndpoint';
@@ -719,7 +719,7 @@ export function UserProvider({ children }) {
         // force update push token on every sign in
         // push token is unique every time the app is installed on a device
         const user = res;
-        info.expoPushToken = await Notifications.getExpoPushTokenAsync();
+        info.expoPushToken = (await Notifications.getExpoPushTokenAsync()).data;
         user.info = JSON.stringify(info);
         user.user_id = user.uid;
         delete user.uid;

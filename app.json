@@ -11,8 +11,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "notification": {
-        "icon": "./assets/images/notification_icon.png",
-        "iosDisplayInForeground": true
+        "icon": "./assets/images/notification_icon.png"
     },
     "splash": {
       "image": "./assets/images/cover_image.png",
@@ -43,6 +42,7 @@
       "package": "com.linx.linx",
       "versionCode": 14,
       "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi": true,
       "config": {
         "googleSignIn": {
           "apiKey": "AIzaSyBPDNhtYo3t9p9UogB-x5g4D7pAHg_-1c4",
@@ -53,6 +53,7 @@
         "CAMERA"
       ]
     },
-    "description": ""
+    "description": "",
+    "scheme": "linx"
   }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import HomeScreen from '../screens/newHomeScreen';
 import CardsStack from './CardsNavigator';
 import FriendsStack from './FriendsNavigator';
@@ -9,7 +9,7 @@ import { hp } from '../styles/helpers';
 
 // BOTTOM TAB
 const BottomTabRouteConfig = {
-    Friends: FriendsStack,
+    Friends: { screen: FriendsStack, path: 'friends' },
     Cards: CardsStack,
     Settings: SettingsStack,
 };

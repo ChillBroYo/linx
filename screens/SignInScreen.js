@@ -20,9 +20,14 @@ import Loader from '../components/Loader';
 import { UserTypes, useUserContext } from '../contexts/UserContext';
 import { green, white } from '../constants/Colors';
 import {
-    addNotificationListener,
-    registerForPushNotificationsAsync
+    addNotificationListenerBackground,
+    addNotificationListenerForeground,
+    displayNotificationForeground,
+    registerForPushNotificationsAsync,
+    removeNotificationListener
 } from '../helpers/notifications';
+
+displayNotificationForeground();
 
 export default function SignIn({ navigation }) {
     const insets = useSafeAreaInsets();
@@ -68,9 +73,13 @@ export default function SignIn({ navigation }) {
             console.log('New notification:', { notification });
         }
 
-        const notificationLogListener = addNotificationListener(handleNotification);
+        const notificationLogListenerBackground = addNotificationListenerBackground();
+        const notificationLogListenerForeground = addNotificationListenerForeground();
 
-        return () => notificationLogListener.remove();
+        return () => {
+            removeNotificationListener(notificationLogListenerBackground);
+            removeNotificationListener(notificationLogListenerForeground);
+        };
     }, []);
 
     useLayoutEffect(() => {

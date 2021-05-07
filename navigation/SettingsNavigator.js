@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import SettingsHome from '../screens/Settings';
 import SettingsBirthday from '../screens/user/Birthday';
 import SettingsEmail from '../screens/user/Email';
