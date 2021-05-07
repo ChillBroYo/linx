@@ -41,7 +41,7 @@ export function addNotificationListenerBackground() {
     return Notifications.addNotificationResponseReceivedListener((response) => {
         console.log('resonse', response);
         //Linking.openURL('exp://192.168.254.36:19000/--/main/friends/chat');
-        //Linking.openURL('https://www.google.com/');
+        //Linking.openURL('linx/:main/friends/chat');
     });
 }
 
